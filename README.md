@@ -1,1 +1,25 @@
-# neko-bot-jda
+![](https://circleci.com/gh/Nekos-life/neko-bot-jda.svg?style=svg) ![](https://dickswordapp.com/api/guilds/333713662739218433/widget.json) ![](https://dickswordapp.com/api/guilds/334186716770598912/custom.svg) ![](https://cdn.discordapp.com/attachments/377619690513498133/406183455123177481/OpenSauce.svg) ![](https://cdn.discordapp.com/attachments/377619690513498133/406183436571639808/License.svg) 
+# Neko.jda
+
+The current version of the pubilc Discord bot Neko 
+
+
+### Prerequisites
+
+* Requires [RethinkDb](https://www.rethinkdb.com/)
+
+* You will need to edit [Constants](src/main/java/life/nekos/bot/commons/Constants.java)
+
+## Built With
+
+* [JDA](https://github.com/DV8FromTheWorld/JDA) - Java wrapper Discord 
+* [Gradle](https://gradle.org/) - Dependency Management
+
+## Contributing
+
+Please read [CONTRIBUTING.md]() for details on our code of conduct, and the process for submitting pull requests to us.
+
+## License
+
+This project is licensed under the AGPL-3.0 License - see the [LICENSE.md](LICENSE) file for details
+

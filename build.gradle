@@ -1,0 +1,118 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
+    id 'idea'
+    //id 'findbugs'
+    id 'com.github.ben-manes.versions' version '0.20.0'
+    id 'net.rdrei.android.buildtimetracker' version '0.11.0'
+    //id 'com.sedmelluq.jdaction' version '1.0.2' //broken af
+}
+
+mainClassName = "life.nekos.bot.NekoBot"
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    //JDA
+    compile group: 'net.dv8tion', name: 'JDA', version: '3.7.1_390'
+    //Command handler
+    //compile group: 'com.github.Repulser', name: 'jda-command', version: '1.1.1'
+    compile group: 'com.github.rainestormee', name: 'jda-command', version: '1.1.2'
+    //waiter
+    compile 'com.jagrosh:jda-utilities:2.1.2'
+    //Unirest for requests
+    compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
+    //Rethinkdb driver
+    compile group: 'com.rethinkdb', name: 'rethinkdb-driver', version: '2.3.3'
+    //owo spark
+    compile "com.sparkjava:spark-core:2.6.0"
+    // gjson
+    compile 'com.google.code.gson:gson:2.2.4'
+    //Logging
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    // eval things
+    compile group: 'org.codehaus.groovy', name: 'groovy', version: '2.5.0-beta-1'
+    //lavaplayer
+    compile 'com.sedmelluq:lavaplayer:1.3.7'
+    //wot
+    compile 'net.java.dev.jna:jna:4.5.2'
+    //str utls
+    compile 'com.google.guava:guava:23.4-jre'
+    //nas
+    compile 'com.sedmelluq:jda-nas:1.0.6'
+    //fuzzy wussy
+    compile 'me.xdrop:fuzzywuzzy:1.1.10'
+    //pokes
+    compile 'me.sargunvohra.lib:pokekotlin:2.3.0'
+    //colors
+    compile 'com.github.SvenWoltmann:color-thief-java:master-SNAPSHOT'
+
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.9'
+}
+
+
+compileJava {
+    classpath = sourceSets.main.compileClasspath
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+build.dependsOn shadowJar
+
+artifacts {
+    archives shadowJar
+}
+
+task cleanDistTar(type: Delete) { delete files(distTar) }
+distTar { classifier = "trash" }
+distTar.finalizedBy cleanDistTar
+
+task cleanDistZip(type: Delete) { delete files(distZip) }
+distZip { classifier = "trash" }
+distZip.finalizedBy cleanDistZip
+
+task cleanShittyJar(type: Delete) { delete files(jar) }
+jar { classifier = "trash" }
+jar.finalizedBy cleanShittyJar
+
+jar {
+    classifier = "nodeps"
+}
+
+shadowJar {
+    classifier = ""
+    baseName 'neko'
+}
+
+buildtimetracker {
+    reporters {
+        csv {
+            output "build/times.csv"
+            append true
+            header false
+        }
+
+        summary {
+            ordered false
+            threshold 50
+            barstyle "unicode"
+        }
+
+        csvSummary {
+            csv "build/times.csv"
+        }
+    }
+}
