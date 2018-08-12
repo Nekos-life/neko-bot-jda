@@ -1,6 +1,6 @@
 package life.nekos.bot.commons;
 
-public final class ConstantsExample {
+public final class Constants {
 
 	public static final long[] OWNERS = {};
 	public static final String DEBUG_TOKEN =
