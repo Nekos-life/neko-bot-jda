@@ -17,6 +17,6 @@ public final class ConstantsExample {
 	public static String TOKEN = "";
 	public static boolean IS_DEBUG = false;
 
-	private ConstantsExample() {
+	private Constants() {
 	}
 }
