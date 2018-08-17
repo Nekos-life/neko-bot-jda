@@ -66,7 +66,7 @@ public class HugCommand implements Command {
                                                     .setDescription(
                                                             String.format(
                                                                     "%s You got a hug from %s %s",
-                                                                    name, msg.getMember().getEffectiveName(), Nekos.getCat()))
+                                                                    name, message.getMember().getEffectiveName(), Nekos.getCat()))
                                                     .setColor(
                                                             Colors.getEffectiveMemberColor(
                                                                     message.getGuild().getMember(user)))

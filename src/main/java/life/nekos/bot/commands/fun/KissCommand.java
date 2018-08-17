@@ -29,7 +29,7 @@ public class KissCommand implements Command {
                     .sendMessage(
                             new EmbedBuilder()
                                     .setColor(Colors.getEffectiveColor(message))
-                                    .setDescription("You must mention a user")
+                                    .setDescription("Who do you want to kiss?? " + Formats.NEKO_C_EMOTE)
                                     .build())
                     .queue();
             return;
@@ -37,23 +37,42 @@ public class KissCommand implements Command {
         List<User> mentionedUsers = message.getMentionedUsers();
         message.addReaction("\uD83D\uDC8B").queue();
         for (User user : mentionedUsers) {
-            String name = message.getGuild().getMember(user).getEffectiveName();
-            try {
+            if (user == message.getJDA().getSelfUser()) {
+                message.getChannel().sendMessage("Nyaaaaaaaaaa, nu dun kiss mee~").queue();
+                break;
+            }
+            if (user == message.getAuthor()) {
                 message
                         .getChannel()
-                        .sendMessage(
-                                new EmbedBuilder()
-                                        .setDescription(
-                                                String.format(
-                                                        "%s You got a kiss from %s owo",
-                                                        name, message.getMember().getEffectiveName()))
-                                        .setColor(Colors.getEffectiveMemberColor(message.getGuild().getMember(user)))
-                                        .setImage(Nekos.getKiss())
-                                        .build())
+                        .sendMessage("oh? why you want to kiss yourself? Find a friend nya~")
                         .queue();
-            } catch (Exception e) {
-                NekoBot.log.error("kiss broken? ", e);
+                break;
             }
+            String name = message.getGuild().getMember(user).getEffectiveName();
+            message
+                    .getChannel()
+                    .sendMessage("💕")
+                    .queue(
+                        msg -> {
+                            try {
+                                msg.editMessage(
+                                        new EmbedBuilder()
+                                                .setDescription(
+                                                        String.format(
+                                                                "%s You got a kiss from %s owo",
+                                                                name, message.getMember().getEffectiveName()))
+                                                .setColor(
+                                                        Colors.getEffectiveMemberColor(msg.getGuild().getMember(user)))
+                                                .setImage(Nekos.getKiss())
+                                                .build())
+                                        .queue();
+                            } catch (Exception e) {
+                                NekoBot.log.error("broken kiss? ", e);
+                                if (BotChecks.canReact(msg)) {
+                                    msg.addReaction("🚫").queue();
+                                }
+                            }
+                        });
         }
     }
 }

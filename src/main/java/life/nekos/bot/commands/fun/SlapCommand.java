@@ -107,7 +107,7 @@ import java.util.List;
 public class SlapCommand implements Command {
     @Override
     public void execute(Message message, String args) {
-
+        Models.statsUp("slap");
         if (message.getMentionedUsers().isEmpty()) {
             message
                     .getChannel()
@@ -119,26 +119,46 @@ public class SlapCommand implements Command {
                     .queue();
             return;
         }
-        Models.statsUp("slap");
+
         List<User> mentionedUsers = message.getMentionedUsers();
+        message.addReaction("\uD83E\uDD17").queue();
         for (User user : mentionedUsers) {
-            try {
-                String name = message.getGuild().getMember(user).getEffectiveName();
+            if (user == message.getJDA().getSelfUser()) {
+                message.getChannel().sendMessage("Nyaaaaaaaaaa, nu dun touch mee~").queue();
+                break;
+            }
+            if (user == message.getAuthor()) {
                 message
                         .getChannel()
-                        .sendMessage(
-                                new EmbedBuilder()
-                                        .setDescription(
-                                                String.format(
-                                                        "%s You got slapped by %s %s",
-                                                        name, message.getMember().getEffectiveName(), Formats.getCat()))
-                                        .setColor(Colors.getEffectiveMemberColor(message.getGuild().getMember(user)))
-                                        .setImage(Nekos.getSlap())
-                                        .build())
+                        .sendMessage("oh? why you want to cuddle yourself? Find a friend nya~")
                         .queue();
-            } catch (Exception e) {
-                NekoBot.log.error("oh slap broke?? ", e);
+                break;
             }
+            String name = message.getGuild().getMember(user).getEffectiveName();
+            message
+                    .getChannel()
+                    .sendMessage("😦")
+                    .queue(
+                            msg -> {
+                                try {
+                                    msg.editMessage(
+                                            new EmbedBuilder()
+                                                    .setDescription(
+                                                            String.format(
+                                                                    "%s You got slapped by %s %s",
+                                                                    name, message.getMember().getEffectiveName(), Formats.getCat()))
+                                                    .setColor(
+                                                            Colors.getEffectiveMemberColor(msg.getGuild().getMember(user)))
+                                                    .setImage(Nekos.getCuddle())
+                                                    .build())
+                                            .queue();
+                                } catch (Exception e) {
+                                    NekoBot.log.error("broken slap ", e);
+                                    if (BotChecks.canReact(msg)) {
+                                        msg.addReaction("🚫").queue();
+                                    }
+                                }
+                            });
         }
     }
 }
