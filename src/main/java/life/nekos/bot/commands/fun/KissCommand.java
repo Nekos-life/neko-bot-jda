@@ -5,7 +5,9 @@ import com.github.rainestormee.jdacommand.CommandAttribute;
 import com.github.rainestormee.jdacommand.CommandDescription;
 import life.nekos.bot.NekoBot;
 import life.nekos.bot.commons.Colors;
+import life.nekos.bot.commons.Formats;
 import life.nekos.bot.commons.apis.Nekos;
+import life.nekos.bot.commons.checks.BotChecks;
 import life.nekos.bot.commons.db.Models;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -68,7 +70,8 @@ public class KissCommand implements Command {
                                         .queue();
                             } catch (Exception e) {
                                 NekoBot.log.error("broken kiss? ", e);
-                                if (BotChecks.canReact(msg)) {
+                                if (
+                                        BotChecks.canReact(msg)) {
                                     msg.addReaction("🚫").queue();
                                 }
                             }
