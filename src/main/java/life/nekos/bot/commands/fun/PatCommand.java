@@ -108,7 +108,7 @@ import java.util.List;
 public class PatCommand implements Command {
     @Override
     public void execute(Message message, String args) {
-
+        Models.statsUp("pat");
         if (message.getMentionedUsers().isEmpty()) {
             message
                     .getChannel()
@@ -120,26 +120,45 @@ public class PatCommand implements Command {
                     .queue();
             return;
         }
-        Models.statsUp("pat");
+
         List<User> mentionedUsers = message.getMentionedUsers();
         for (User user : mentionedUsers) {
-            try {
-                String name = message.getGuild().getMember(user).getEffectiveName();
+            if (user == message.getJDA().getSelfUser()) {
+                message.getChannel().sendMessage("Nyaaaaaaaaaa, nu dun pat mee~").queue();
+                break;
+            }
+            if (user == message.getAuthor()) {
                 message
                         .getChannel()
-                        .sendMessage(
-                                new EmbedBuilder()
-                                        .setDescription(
-                                                String.format(
-                                                        "%s You got a pat from %s %s",
-                                                        name, message.getMember().getEffectiveName(), Formats.getCat()))
-                                        .setColor(Colors.getEffectiveMemberColor(message.getGuild().getMember(user)))
-                                        .setImage(Nekos.getPat())
-                                        .build())
+                        .sendMessage("oh? why you want to pat yourself? Find a friend nya~")
                         .queue();
-            } catch (Exception e) {
-                NekoBot.log.error("oh pat broke?? ", e);
+                break;
             }
+            String name = message.getGuild().getMember(user).getEffectiveName();
+            message
+                    .getChannel()
+                    .sendMessage("\\o/")
+                    .queue(
+                            msg -> {
+                                try {
+                                    msg.editMessage(
+                                            new EmbedBuilder()
+                                                    .setDescription(
+                                                            String.format(
+                                                                    "%s You got a pat from %s %s",
+                                                                    name, message.getMember().getEffectiveName(), Formats.getCat()))
+                                                    .setColor(
+                                                            Colors.getEffectiveMemberColor(msg.getGuild().getMember(user)))
+                                                    .setImage(Nekos.getCuddle())
+                                                    .build())
+                                            .queue();
+                                } catch (Exception e) {
+                                    NekoBot.log.error("broken pat ", e);
+                                    if (BotChecks.canReact(msg)) {
+                                        msg.addReaction("🚫").queue();
+                                    }
+                                }
+                            });
         }
     }
 }

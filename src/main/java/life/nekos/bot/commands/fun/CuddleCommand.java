@@ -67,14 +67,14 @@ public class CuddleCommand implements Command {
                                                     .setDescription(
                                                             String.format(
                                                                     "%s You got cuddles from %s %s",
-                                                                    name, msg.getMember().getEffectiveName(), Formats.getCat()))
+                                                                    name, message.getMember().getEffectiveName(), Formats.getCat()))
                                                     .setColor(
                                                             Colors.getEffectiveMemberColor(msg.getGuild().getMember(user)))
                                                     .setImage(Nekos.getCuddle())
                                                     .build())
                                             .queue();
                                 } catch (Exception e) {
-                                    NekoBot.log.error("broken hug ", e);
+                                    NekoBot.log.error("broken cuddle ", e);
                                     if (BotChecks.canReact(msg)) {
                                         msg.addReaction("🚫").queue();
                                     }
