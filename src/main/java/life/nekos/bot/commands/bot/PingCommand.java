@@ -76,19 +76,12 @@ public class PingCommand implements Command {
             p.paginate(trigger.getChannel(), 1);
             return;
         }
+
 	    trigger
 			    .getChannel()
-			    .sendMessage("Ping: \uD83C\uDFD3")
-			    .queue(
-					    m ->
-							    m.editMessage(
-									    "⏳ Ping: "
-											    + trigger
-											    .getCreationTime()
-											    .until(m.getCreationTime(), ChronoUnit.MILLIS)
-											    + "ms | \uD83D\uDC93 Web-socket: "
-											    + trigger.getJDA().getPing()
+			    .sendMessage(
+									    "⏳ Ping: " + trigger.getJDA().getPing()
 											    + "ms")
-									    .queue());
+									    .queue();
     }
 }

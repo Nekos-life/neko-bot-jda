@@ -3,6 +3,7 @@ package life.nekos.bot.commands.owner;
 import com.github.rainestormee.jdacommand.Command;
 import com.github.rainestormee.jdacommand.CommandAttribute;
 import com.github.rainestormee.jdacommand.CommandDescription;
+import life.nekos.bot.commons.SendNeko;
 import life.nekos.bot.commons.SendPoke;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -19,7 +20,7 @@ public class CoinCommand implements Command {
 
     @Override
     public void execute(Message trigger, String args) {
-        SendPoke.send(trigger, false);
+        SendNeko.send(trigger, false);
         trigger.delete().queue();
     }
 }

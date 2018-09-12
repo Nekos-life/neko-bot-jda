@@ -6,6 +6,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.utils.MiscUtil;
 
 import java.text.MessageFormat;
+import java.util.Calendar;
 import java.util.stream.LongStream;
 
 import static life.nekos.bot.commons.Constants.OWNERS;
@@ -35,4 +36,59 @@ public class MiscChecks {
         return message.getJDA().getSelfUser() == message.getAuthor()
                 || message.getContentDisplay().startsWith(Models.getPrefix(message));
     }
+
+    public static boolean isMagicDay(Calendar cal){
+        if(cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+            return true;
+        }
+        if (cal.get(Calendar.MONTH) == Calendar.JANUARY
+                && cal.get(Calendar.DAY_OF_MONTH) == 1) {
+            return true;
+        }
+        if (cal.get(Calendar.MONTH) == Calendar.DECEMBER
+                && cal.get(Calendar.DAY_OF_MONTH) == 25) {
+            return true;
+        }
+
+        if (cal.get(Calendar.MONTH) == Calendar.JULY
+                && cal.get(Calendar.DAY_OF_MONTH) == 4) {
+            return true;
+        }
+        if (cal.get(Calendar.MONTH) == Calendar.NOVEMBER
+                && cal.get(Calendar.DAY_OF_WEEK_IN_MONTH) == 4
+                && cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) {
+            return true;
+        }
+        if (cal.get(Calendar.MONTH) == Calendar.MAY
+                && cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY
+                && cal.get(Calendar.DAY_OF_MONTH) > (31 - 7) ) {
+            return true;
+        }
+        if (cal.get(Calendar.MONTH) == Calendar.SEPTEMBER
+                && cal.get(Calendar.DAY_OF_WEEK_IN_MONTH) == 1
+                && cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+            return true;
+        }
+        if (cal.get(Calendar.MONTH) == Calendar.FEBRUARY
+                && cal.get(Calendar.DAY_OF_WEEK_IN_MONTH) == 3
+                && cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+            return true;
+        }
+        if (cal.get(Calendar.MONTH) == Calendar.NOVEMBER
+                && cal.get(Calendar.DAY_OF_MONTH) == 11) {
+            return true;
+        }
+        if (cal.get(Calendar.MONTH) == Calendar.JANUARY
+                && cal.get(Calendar.DAY_OF_WEEK_IN_MONTH) == 3
+                && cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+            return true;
+        }
+        if (cal.get(Calendar.MONTH) == Calendar.APRIL
+                && cal.get(Calendar.DAY_OF_MONTH) == 20) {
+            return true;
+        }
+        return false;
+    }
+
+
 }

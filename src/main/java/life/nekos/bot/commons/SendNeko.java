@@ -11,7 +11,9 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 // TODO check msg prems
@@ -20,12 +22,9 @@ import java.util.stream.Collectors;
  */
 public class SendNeko {
 
-	private static boolean isMatch(String msg) {
-		if (!msg.toLowerCase().startsWith(">")) {
-			return false;
-		}
-		int match = FuzzySearch.ratio(">catch", msg.toLowerCase());
-		return (match > 85);
+	private static boolean isMatch(String msg, String word) {
+		int match = FuzzySearch.ratio(word, msg.toLowerCase());
+		return (match > 95);
 	}
 
 	private static String canLewd(Message msg) {
@@ -50,6 +49,11 @@ public class SendNeko {
 		if (!BotChecks.canSend(event)) {
 			return;
 		}
+        String[] prefixes = {"!",".",">","<","~","n","/"};
+        String[] sufixes = {"catch","gimme","mine","yus","owo","give","nya","mew","nyaaa"};
+		String sufix = sufixes[new Random().nextInt(sufixes.length)];
+        String prefix = prefixes[new Random().nextInt(prefixes.length)];
+        String catchStr = prefix+sufix;
 		try {
 			event
 					.getChannel()
@@ -57,7 +61,7 @@ public class SendNeko {
 							new EmbedBuilder()
 									.setFooter(
 											Formats.getCat()
-													+ " A wild neko has appeared\nUse >catch to catch it before it gets away \\o/",
+													+ " A wild neko has appeared\nUse "+ catchStr +" to catch it before it gets away \\o/",
 											event.getJDA().getSelfUser().getEffectiveAvatarUrl())
 									.setColor(Colors.getEffectiveColor(event))
 									.setImage(canLewd(event))
@@ -69,7 +73,7 @@ public class SendNeko {
 										MessageReceivedEvent.class,
 										e ->
 												(!sent || e.getAuthor() != event.getAuthor())
-														&& isMatch(e.getMessage().getContentRaw().toLowerCase())
+														&& isMatch(e.getMessage().getContentRaw().toLowerCase(), catchStr)
 														&& e.getTextChannel().equals(event.getTextChannel()),
 										e -> {
 											nekomsg.delete().queue();
@@ -93,7 +97,7 @@ public class SendNeko {
 																ms -> {
 																	List<Message> spam =
 																			ms.stream()
-																					.filter(m -> isMatch(m.getContentRaw().toLowerCase()))
+																					.filter(m -> isMatch(m.getContentRaw().toLowerCase(), catchStr))
 																					.collect(Collectors.toList());
 																	if (spam.size() < 2 && spam.size() > 0) {
 																		spam.get(0).delete().queue();

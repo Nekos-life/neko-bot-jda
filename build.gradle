@@ -54,6 +54,8 @@ dependencies {
     //colors
     compile 'com.github.SvenWoltmann:color-thief-java:master-SNAPSHOT'
 
+    compile 'com.github.dwango:slack-webhook-appender:master-SNAPSHOT'
+
 }
 
 task wrapper(type: Wrapper) {
