@@ -312,7 +312,7 @@ public class Formats {
     }
 
     public static Long getEmoteID(String text) {
-        String ID = CharMatcher.DIGIT.retainFrom(text);
+        String ID = CharMatcher.digit().retainFrom(text);
         return Long.parseLong(ID);
     }
 

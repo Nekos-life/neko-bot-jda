@@ -83,7 +83,11 @@ public class PornHubAudioSourceManager implements AudioSourceManager, HttpConfig
 
     @Override
     public void shutdown() {
-        IOUtils.closeQuietly(httpInterfaceManager);
+        try {
+            httpInterfaceManager.close();
+        } catch (final IOException ioe) {
+            // ignore
+        }
     }
 
     @Override
