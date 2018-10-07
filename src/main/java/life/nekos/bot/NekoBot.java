@@ -56,7 +56,7 @@ public class NekoBot {
         log.info(JDAInfo.VERSION);
         log.setLevel(INFO);
 
-        if (args.length > 0 && args[0].contains("debug")) {
+        if (args.length > 0 && args[0].contains("debug") || IS_DEBUG) {
             IS_DEBUG = true;
             TOKEN = DEBUG_TOKEN;
             log.setLevel(DEBUG);
