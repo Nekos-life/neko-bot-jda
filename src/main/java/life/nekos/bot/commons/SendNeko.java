@@ -49,7 +49,7 @@ public class SendNeko {
 		if (!BotChecks.canSend(event)) {
 			return;
 		}
-        String[] prefixes = {"!",".",">","<","~","n","/"};
+        String[] prefixes = {"!",".",">","<","n","/"};
         String[] sufixes = {"catch","gimme","mine","yus","owo","give","nya","mew","nyaaa"};
 		String sufix = sufixes[new Random().nextInt(sufixes.length)];
         String prefix = prefixes[new Random().nextInt(prefixes.length)];
