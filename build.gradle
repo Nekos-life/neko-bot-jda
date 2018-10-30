@@ -24,7 +24,7 @@ dependencies {
     compile group: 'net.dv8tion', name: 'JDA', version: '3.8.0_435'
     //Command handler
     //compile group: 'com.github.Repulser', name: 'jda-command', version: '1.1.1'
-    compile group: 'com.github.rainestormee', name: 'jda-command', version: '1.1.2'
+    compile 'com.github.rainestormee:JDA-Command:1.1.2'
     //waiter
     compile 'com.jagrosh:jda-utilities:2.1.2'
     //Unirest for requests
@@ -53,8 +53,7 @@ dependencies {
     compile 'me.sargunvohra.lib:pokekotlin:2.3.0'
     //colors
     compile 'com.github.SvenWoltmann:color-thief-java:master-SNAPSHOT'
-
-    compile 'com.github.dwango:slack-webhook-appender:master-SNAPSHOT'
+    
 
 }
 

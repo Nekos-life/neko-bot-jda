@@ -68,6 +68,7 @@ public class SettingsCommand implements Command {
                                 Formats.error(
                                         "You lack the `MANAGE_SERVER` Permissions needed to set the prefix for this guild"))
                                 .queue();
+                        break;
                     }
                     if (!arg[1].equalsIgnoreCase("set")) {
                         ch.sendMessage(Formats.error(MessageFormat.format("Use {0}config prefix set", gp)))
@@ -143,6 +144,7 @@ public class SettingsCommand implements Command {
                                     Formats.error(
                                             "You lack the `MANAGE_SERVER` Permissions needed to set the neko channel for this guild"))
                                     .queue();
+                            break;
                         }
                         g.put("nekochannel", event.getTextChannel().getId());
                         Models.setGuild(g);
@@ -176,6 +178,7 @@ public class SettingsCommand implements Command {
                                     Formats.error(
                                             "You lack the `MANAGE_SERVER` Permissions needed to set the neko channel for this guild"))
                                     .queue();
+                            break;
                         }
                         g.put("nekochannel", null);
                         Models.setGuild(g);
