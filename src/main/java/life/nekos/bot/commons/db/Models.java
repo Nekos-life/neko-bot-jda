@@ -130,20 +130,20 @@ public class Models {
             NekoBot.log.info("its a magic day!! owo");
             if (isDonor_plus(user)) {
                 NekoBot.log.info(user.getName() + " Is donor added 2x nekos");
-                userData.put("nekos", nekos + 8);
-                userData.put("nekosall", nekosall + 8);
-            } else {
-                userData.put("nekos", nekos + 4);
-                userData.put("nekosall", nekosall + 4);
-            }
-        } else {
-            if (isDonor_plus(user)) {
-                NekoBot.log.info(user.getName() + " Is donor added 2x nekos");
                 userData.put("nekos", nekos + 4);
                 userData.put("nekosall", nekosall + 4);
             } else {
                 userData.put("nekos", nekos + 2);
                 userData.put("nekosall", nekosall + 2);
+            }
+        } else {
+            if (isDonor_plus(user)) {
+                NekoBot.log.info(user.getName() + " Is donor added 2x nekos");
+                userData.put("nekos", nekos + 2);
+                userData.put("nekosall", nekosall + 2);
+            } else {
+                userData.put("nekos", nekos + 1);
+                userData.put("nekosall", nekosall + 1);
             }
         }
 
