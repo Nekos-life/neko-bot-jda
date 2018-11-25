@@ -150,7 +150,7 @@ public class PatCommand implements Command {
                                                                     name, message.getMember().getEffectiveName(), Formats.getCat()))
                                                     .setColor(
                                                             Colors.getEffectiveMemberColor(msg.getGuild().getMember(user)))
-                                                    .setImage(Nekos.getCuddle())
+                                                    .setImage(Nekos.getPat())
                                                     .build())
                                             .queue();
                                 } catch (Exception e) {
