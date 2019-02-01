@@ -19,7 +19,7 @@ import java.text.MessageFormat;
         name = "play",
         triggers = {"play", "p"},
         attributes = {@CommandAttribute(key = "music"), @CommandAttribute(key = "dm")},
-        description = "play some url || search term"
+        description = "play some url | search term"
 )
 public class PlayCommand implements Command {
     public void execute(Message message, String args) {
