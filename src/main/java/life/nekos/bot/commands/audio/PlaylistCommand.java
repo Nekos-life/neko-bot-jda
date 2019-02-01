@@ -16,7 +16,7 @@ import java.text.MessageFormat;
         name = "playlist",
         triggers = {"playlist", "pl"},
         attributes = {@CommandAttribute(key = "music"), @CommandAttribute(key = "dm")},
-        description = "play some playlist url || search term"
+        description = "play some playlist url | search term"
 )
 public class PlaylistCommand implements Command {
     public void execute(Message event, String args) {
