@@ -31,7 +31,7 @@ public class SildeShowCommand implements Command {
         if (!canDelete(event)) {
             event
                     .getTextChannel()
-                    .sendMessage(Formats.error("You lack the `manage_messgaes` permission"))
+                    .sendMessage(Formats.error("I lack the `manage_messgaes` permission"))
                     .queue();
             return;
 
