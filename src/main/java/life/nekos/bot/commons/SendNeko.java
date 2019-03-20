@@ -72,7 +72,7 @@ public class SendNeko {
 								waiter.waitForEvent(
 										MessageReceivedEvent.class,
 										e ->
-												(!sent || e.getAuthor() != event.getAuthor())
+												(!sent || (e.getAuthor() != event.getAuthor()) || !e.getAuthor().isBot())
 														&& isMatch(e.getMessage().getContentRaw().toLowerCase(), catchStr)
 														&& e.getTextChannel().equals(event.getTextChannel()),
 										e -> {
