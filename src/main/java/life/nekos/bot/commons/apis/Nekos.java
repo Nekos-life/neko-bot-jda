@@ -13,7 +13,7 @@ public class Nekos {
     private static final OkHttpClient client = new OkHttpClient();
 
     public static String makeReqAndGetResAsString(String path, String jsonKey) throws Exception {
-        Request req = new Request.Builder().url("\"https://nekos.life/api/v2/img/" + path).build();
+        Request req = new Request.Builder().url("https://nekos.life/api/v2/img/" + path).build();
         Response res = client.newCall(req).execute();
         try (ResponseBody responseBody = res.body()) {
             if(!res.isSuccessful()) throw new IOException("shit, req failed with "+res+" wsi down again?");
