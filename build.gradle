@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     //JDA
-    compile group: 'net.dv8tion', name: 'JDA', version: '3.8.0_435'
+    compile group: 'net.dv8tion', name: 'JDA', version: '3.8.3_462'
     //Command handler
     //compile group: 'com.github.Repulser', name: 'jda-command', version: '1.1.1'
     compile 'com.github.rainestormee:JDA-Command:1.1.2'
@@ -40,7 +40,7 @@ dependencies {
     // eval things
     compile group: 'org.codehaus.groovy', name: 'groovy', version: '2.5.2'
     //lavaplayer
-    compile 'com.sedmelluq:lavaplayer:1.3.7'
+    compile 'com.sedmelluq:lavaplayer:1.3.12'
     //wot
     compile 'net.java.dev.jna:jna:4.5.2'
     //str utls
