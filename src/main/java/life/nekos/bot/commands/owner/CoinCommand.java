@@ -20,6 +20,11 @@ public class CoinCommand implements Command {
 
     @Override
     public void execute(Message trigger, String args) {
+        if (!args.isEmpty()){
+            SendPoke.send(trigger, false);
+            trigger.delete().queue();
+            return;
+        }
         SendNeko.send(trigger, false);
         trigger.delete().queue();
     }
