@@ -27,7 +27,7 @@ public class FoxCommand implements Command {
                     .getChannel()
                     .sendMessage(
                             new EmbedBuilder()
-                                    .setDescription("Fox girls \\o/")
+                                    .setDescription("")
                                     .setColor(Colors.getEffectiveColor(message))
                                     .setImage(Nekos.getFox())
                                     .build())
