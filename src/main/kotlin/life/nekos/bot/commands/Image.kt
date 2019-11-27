@@ -40,13 +40,20 @@ class Image : Cog {
         // them all together rather than individually.
     }
 
-    @Command(description = "Random nekos OwO", aliases = ["owo", "wew", "nyaaaa"], nsfw = true)
+    @Command(description = "Random nekos owO", aliases = ["owo", "wew", "nyaaaa"], nsfw = true)
     fun lewd(ctx: Context) {
         NekosLife.lewd().thenAccept {
             embed(ctx, "Nekos owo", it) {
                 setColor(Color.magenta)
             }
         }.join()
+    }
+
+    @Command(description = "Random nekos owO")
+    fun neko(ctx: Context) {
+        NekosLife.neko().thenAccept {
+            embed(ctx, "Nekos \\o/", it)
+        }
     }
 
     @Async
@@ -76,7 +83,4 @@ class Image : Cog {
             .submit()
             .await()
     }
-
-
-
 }
