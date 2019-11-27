@@ -1,5 +1,6 @@
 package life.nekos.bot.commands
 
+import kotlinx.coroutines.future.await
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.DonorOnly
 import me.devoxin.flight.annotations.Async
@@ -56,11 +57,24 @@ class Image : Cog {
         nsfw = true
     )
     suspend fun lewds(ctx: Context) {
+        //val color = getEffectiveColor()
         val m = ctx.sendAsync("\u200b")
+
+        for (i in 1 until 21) {
+            val lewd = NekosLife.lewd().await()
+            editMessage(m) {
+                //setColor(color)
+                setTitle("Lewd Nekos \\o/") // @TODO emotes
+                setDescription("$i of 20")
+                setImage(lewd)
+            }
+        }
     }
 
-    suspend fun slideshow(message: Message, count: Int = 0) {
-
+    suspend fun editMessage(m: Message, builder: EmbedBuilder.() -> Unit) {
+        m.editMessage(EmbedBuilder().apply(builder).build())
+            .submit()
+            .await()
     }
 
 
