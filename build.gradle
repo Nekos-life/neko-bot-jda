@@ -1,154 +1,18 @@
-buildscript {
-    ext.kotlin_version = "1.3.60"
-    ext.kotlin_coro_version = "1.3.2"
-
-    repositories {
-        jcenter()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 plugins {
-    id 'java'
-    id 'kotlin'
-    id 'idea'
-    id 'application'
-    id "org.jetbrains.kotlin.jvm" version "1.3.60"
+    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
 }
 
-mainClassName = "life.nekos.bot.NekoBot"
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+group 'life.nekos'
+version '1.0.0'
 
 repositories {
-    jcenter()
     mavenCentral()
-    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
-    // Discord
-    compile ('net.dv8tion:JDA:4.0.0_64') {
-        exclude module: 'opus-java'
-    }
-
-    // Audio
-    compile 'com.sedmelluq:lavaplayer:1.3.29'
-    compile 'com.sedmelluq:jda-nas:1.1.0'
-
-    // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlin_coro_version"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlin_coro_version"
-
-    compile 'com.github.Devoxin:Flight:1.2.0'
-    //Command handler
-    //compile group: 'com.github.Repulser', name: 'jda-command', version: '1.1.1'
-    compile 'com.github.rainestormee:JDA-Command:1.1.2'
-    //waiter
-    compile 'com.jagrosh:jda-utilities:2.1.2'
-    //Unirest for requests
-    compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
-    //Rethinkdb driver
-    compile group: 'com.rethinkdb', name: 'rethinkdb-driver', version: '2.3.3'
-    //owo spark
-    compile "com.sparkjava:spark-core:2.6.0"
-    // gjson
-    compile 'com.google.code.gson:gson:2.2.4'
-    //Logging
-    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    // eval things
-    compile group: 'org.codehaus.groovy', name: 'groovy', version: '2.5.2'
-
-    //wot
-    compile 'net.java.dev.jna:jna:4.5.2'
-    //str utls
-    compile 'com.google.guava:guava:23.4-jre'
-    //fuzzy wussy
-    compile 'me.xdrop:fuzzywuzzy:1.1.10'
-    //pokes
-    compile 'me.sargunvohra.lib:pokekotlin:2.3.0'
-    //colors
-    compile 'com.github.SvenWoltmann:color-thief-java:master-SNAPSHOT'
-    
-
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.9'
-}
-
-
-compileJava {
-    classpath = sourceSets.main.compileClasspath
-    options.encoding = 'UTF-8'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-build.dependsOn shadowJar
-
-artifacts {
-    archives shadowJar
-}
-
-task cleanDistTar(type: Delete) { delete files(distTar) }
-distTar { classifier = "trash" }
-distTar.finalizedBy cleanDistTar
-
-task cleanDistZip(type: Delete) { delete files(distZip) }
-distZip { classifier = "trash" }
-distZip.finalizedBy cleanDistZip
-
-task cleanShittyJar(type: Delete) { delete files(jar) }
-jar { classifier = "trash" }
-jar.finalizedBy cleanShittyJar
-
-jar {
-    classifier = "nodeps"
-}
-
-shadowJar {
-    classifier = ""
-    baseName 'neko'
-}
-
-buildtimetracker {
-    reporters {
-        csv {
-            output "build/times.csv"
-            append true
-            header false
-        }
-
-        summary {
-            ordered false
-            threshold 50
-            barstyle "unicode"
-        }
-
-        csvSummary {
-            csv "build/times.csv"
-        }
-    }
-}
-
-
-findbugs {
-    sourceSets = [sourceSets.main]
-    effort = 'max'
-    ignoreFailures = true
-    showProgress = true
-    reportLevel = 'high'
 }

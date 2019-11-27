@@ -1,4 +1,4 @@
-package utils
+package life.nekos.bot.utils
 
 import okhttp3.*
 import java.io.IOException

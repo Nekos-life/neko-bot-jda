@@ -3,7 +3,7 @@ package life.nekos.bot.apis
 import okhttp3.HttpUrl
 import okhttp3.ResponseBody
 import org.json.JSONObject
-import utils.Api
+import life.nekos.bot.utils.Api
 import java.util.concurrent.CompletableFuture
 
 object NekosLife : Api() {
@@ -15,6 +15,7 @@ object NekosLife : Api() {
     fun nsfwAvatar() = jsonEndpoint("/img/nsfw_avatar", "url")
     fun poke() = jsonEndpoint("/img/poke", "url")
     fun anal() = jsonEndpoint("/img/anal", "url")
+    fun pussy() = jsonEndpoint("/img/pussy", "url")
     fun neko() = jsonEndpoint("/img/neko", "url")
     fun lewd() = jsonEndpoint("/img/lewd", "url")
     fun fox() = jsonEndpoint("/img/fox_girl", "url")

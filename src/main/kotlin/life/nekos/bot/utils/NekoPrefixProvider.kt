@@ -1,4 +1,4 @@
-package utils
+package life.nekos.bot.utils
 
 import life.nekos.bot.Loader
 import me.devoxin.flight.models.PrefixProvider

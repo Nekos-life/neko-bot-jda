@@ -5,7 +5,7 @@ import life.nekos.bot.listeners.FlightEventAdapter
 import me.devoxin.flight.api.CommandClient
 import me.devoxin.flight.api.CommandClientBuilder
 import net.dv8tion.jda.api.entities.Activity
-import utils.NekoPrefixProvider
+import life.nekos.bot.utils.NekoPrefixProvider
 
 object Loader {
 

@@ -1,5 +1,6 @@
 package life.nekos.bot.listeners
 
+import life.nekos.bot.framework.annotations.DonorOnly
 import me.devoxin.flight.api.CommandError
 import me.devoxin.flight.api.CommandWrapper
 import me.devoxin.flight.api.Context
@@ -34,6 +35,10 @@ class FlightEventAdapter : DefaultCommandClientAdapter() {
     }
 
     override fun onCommandPreInvoke(ctx: Context, command: CommandWrapper): Boolean {
+        if (command.method.isAnnotationPresent(DonorOnly::class.java)) {
+            // check donor, send error otherwise with emote 475801484282429450
+        }
+
         return true
     }
 
