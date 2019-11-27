@@ -35,6 +35,8 @@ object Loader {
             setToken(token)
             setShards(-1)
         }
+
+        commandClient.registerCommands("life.nekos.bot.commands")
     }
 
 }
