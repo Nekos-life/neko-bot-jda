@@ -42,7 +42,7 @@ public class AlexApis {
 
     public static String getCoffee() throws Exception {
         Request request =
-                new Request.Builder().url("https://coffee.alexflipnote.xyz/random.json").build();
+                new Request.Builder().url("").build();
         Response response = client.newCall(request).execute();
         try (ResponseBody responseBody = response.body()) {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
