@@ -19,7 +19,9 @@ class Image : Cog {
     fun fox(ctx: Context) {
         NekosLife.fox().thenAccept {
             embed(ctx, "Fox girls \\o/", it)
-        }
+        }.join() // Exceptions thrown upstream are thrown here
+        // which are caught by the FlightEventAdapter so we can handle
+        // them all together rather than individually.
     }
 
 }

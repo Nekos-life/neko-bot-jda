@@ -9,12 +9,24 @@ import net.dv8tion.jda.api.Permission
 
 class FlightEventAdapter : DefaultCommandClientAdapter() {
 
+    fun rootCauseOf(ex: Throwable): Throwable {
+        val cause = ex.cause
+
+        if (cause != null) {
+            return rootCauseOf(cause)
+        }
+
+        return ex
+    }
+
+
     override fun onBadArgument(ctx: Context, error: BadArgument) {
 
     }
 
     override fun onCommandError(ctx: Context, error: CommandError) {
-
+        val cause = rootCauseOf(error.original)
+        ctx.send("oop\n```\n${cause.message}```")
     }
 
     override fun onCommandPostInvoke(ctx: Context, command: CommandWrapper, failed: Boolean) {
