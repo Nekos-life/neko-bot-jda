@@ -3,6 +3,7 @@ package life.nekos.bot.commands
 import kotlinx.coroutines.future.await
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.DonorOnly
+import life.nekos.bot.utils.Formats
 import me.devoxin.flight.annotations.Async
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.CommandWrapper
@@ -56,6 +57,11 @@ class Image : Cog {
         }
     }
 
+    @Command(description = "mew!")
+    fun nya(ctx: Context) {
+        ctx.send("${ctx.author.asMention}, Mew!!~ ${Formats.cats.random()}")
+    }
+
     @Async
     @DonorOnly
     @Command(
@@ -63,24 +69,27 @@ class Image : Cog {
         aliases = ["lewdslideshow", "lss", "mewww", "o.o"],
         nsfw = true
     )
-    suspend fun lewds(ctx: Context) {
-        //val color = getEffectiveColor()
-        val m = ctx.sendAsync("\u200b")
+    suspend fun lewds(ctx: Context) = Shell.slideshow(ctx) { m, cycle, total ->
+        val image = NekosLife.lewd().await()
 
-        for (i in 1 until 21) {
-            val lewd = NekosLife.lewd().await()
-            editMessage(m) {
-                //setColor(color)
-                setTitle("Lewd Nekos \\o/") // @TODO emotes
-                setDescription("$i of 20")
-                setImage(lewd)
-            }
-        }
+        m.editMessage(EmbedBuilder()
+            //.setColor()
+            .setDescription("$cycle of $total")
+            .setImage(image)
+            .build()
+        ).submit().await()
     }
 
-    suspend fun editMessage(m: Message, builder: EmbedBuilder.() -> Unit) {
-        m.editMessage(EmbedBuilder().apply(builder).build())
-            .submit()
-            .await()
+    @Async
+    @Command(description = "Neko slideshow", aliases = ["slideshow", "ss", "mew", "nyaa"])
+    suspend fun nekos(ctx: Context) = Shell.slideshow(ctx) { m, cycle, total ->
+        val image = NekosLife.neko().await()
+
+        m.editMessage(EmbedBuilder()
+            //.setColor()
+            .setDescription("$cycle of $total")
+            .setImage(image)
+            .build()
+        ).submit().await()
     }
 }
