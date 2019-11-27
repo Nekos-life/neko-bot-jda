@@ -17,6 +17,11 @@ import java.util.concurrent.Executors
 class Image : Cog {
     private val scheduler = Executors.newSingleThreadExecutor()
 
+    override fun localCheck(ctx: Context, command: CommandWrapper): Boolean {
+        // Model.statsUp(command.name)
+        return true
+    }
+
     fun embed(ctx: Context, description: String, imageUrl: String,
               embedOptions: EmbedBuilder.() -> Unit = {}) {
         ctx.embed {
@@ -25,11 +30,6 @@ class Image : Cog {
             setImage(imageUrl)
             apply(embedOptions)
         }
-    }
-
-    override fun localCheck(ctx: Context, command: CommandWrapper): Boolean {
-        // Model.statsUp(command.name)
-        return true
     }
 
     @Command(description = "Random fox girl", aliases = ["fox_girl", "fg"])
@@ -54,7 +54,7 @@ class Image : Cog {
     fun neko(ctx: Context) {
         NekosLife.neko().thenAccept {
             embed(ctx, "Nekos \\o/", it)
-        }
+        }.join()
     }
 
     @Command(description = "mew!")
