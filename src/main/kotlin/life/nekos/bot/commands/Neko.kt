@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.entities.Message
 import java.awt.Color
 import java.util.concurrent.Executors
 
-class Image : Cog {
+class Neko : Cog {
     private val scheduler = Executors.newSingleThreadExecutor()
 
     override fun localCheck(ctx: Context, command: CommandWrapper): Boolean {
@@ -36,9 +36,7 @@ class Image : Cog {
     fun fox(ctx: Context) {
         NekosLife.fox().thenAccept {
             embed(ctx, "Fox girls \\o/", it)
-        }.join() // Exceptions thrown upstream are returned here
-        // which are caught by the FlightEventAdapter so we can handle
-        // them all together rather than individually.
+        }
     }
 
     @Command(description = "Random nekos owO", aliases = ["owo", "wew", "nyaaaa"], nsfw = true)
@@ -47,14 +45,14 @@ class Image : Cog {
             embed(ctx, "Nekos owo", it) {
                 setColor(Color.magenta)
             }
-        }.join()
+        }
     }
 
     @Command(description = "Random nekos owO")
     fun neko(ctx: Context) {
         NekosLife.neko().thenAccept {
             embed(ctx, "Nekos \\o/", it)
-        }.join()
+        }
     }
 
     @Command(description = "mew!")

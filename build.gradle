@@ -37,7 +37,7 @@ dependencies {
     }
 
     // Command Handler
-    compile 'com.github.Devoxin:Flight:1.2.0'
+    compile 'com.github.Devoxin:Flight:1.2.1'
 
     // Audio
     compile 'com.sedmelluq:lavaplayer:1.3.29'

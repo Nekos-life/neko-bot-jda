@@ -1,6 +1,8 @@
 package life.nekos.bot
 
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory
+import life.nekos.bot.framework.parsers.stringorbool.StringBool
+import life.nekos.bot.framework.parsers.stringorbool.StringOrBool
 import life.nekos.bot.listeners.FlightEventAdapter
 import me.devoxin.flight.api.CommandClient
 import me.devoxin.flight.api.CommandClientBuilder
@@ -25,6 +27,7 @@ object Loader {
             .setOwnerIds(248294452307689473L, 180093157554388993L)
             .setPrefixProvider(NekoPrefixProvider())
             .registerDefaultParsers()
+            .addCustomParser(StringBool::class.java, StringOrBool())
             .addEventListeners(FlightEventAdapter())
             .build()
 

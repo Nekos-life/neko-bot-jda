@@ -30,7 +30,7 @@ class Nsfw : Cog {
     fun anal(ctx: Context) {
         NekosLife.anal().thenAccept {
             embed(ctx, Formats.LEWD_EMOTE, it)
-        }.join()
+        }
     }
 
     @DonorOnly
@@ -38,7 +38,7 @@ class Nsfw : Cog {
     fun kuni(ctx: Context) {
         NekosLife.kuni().thenAccept {
             embed(ctx, "kuni owo", it)
-        }.join()
+        }
     }
 
     @DonorOnly
@@ -46,7 +46,7 @@ class Nsfw : Cog {
     fun pussy(ctx: Context) {
         NekosLife.pussy().thenAccept {
             embed(ctx, "uwu pussy", it)
-        }.join()
+        }
     }
 
 }
