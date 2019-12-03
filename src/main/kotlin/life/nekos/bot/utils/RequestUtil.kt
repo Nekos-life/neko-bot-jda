@@ -41,7 +41,10 @@ object RequestUtil {
     }
 
     fun request(builder: Request.Builder.() -> Unit): PendingRequest {
-        val req = Request.Builder().apply(builder).build()
-        return PendingRequest(req)
+        return request(Request.Builder().apply(builder).build())
+    }
+
+    fun request(request: Request): PendingRequest {
+        return PendingRequest(request)
     }
 }

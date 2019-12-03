@@ -2,7 +2,6 @@ package life.nekos.bot.apis
 
 import okhttp3.*
 import org.json.JSONObject
-import life.nekos.bot.utils.Api
 import java.io.InputStream
 import java.util.concurrent.CompletableFuture
 

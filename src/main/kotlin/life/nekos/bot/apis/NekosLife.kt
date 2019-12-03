@@ -3,7 +3,6 @@ package life.nekos.bot.apis
 import okhttp3.HttpUrl
 import okhttp3.ResponseBody
 import org.json.JSONObject
-import life.nekos.bot.utils.Api
 import java.util.concurrent.CompletableFuture
 
 object NekosLife : Api() {

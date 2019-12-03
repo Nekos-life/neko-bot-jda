@@ -1,5 +1,6 @@
-package life.nekos.bot.utils
+package life.nekos.bot.apis
 
+import life.nekos.bot.utils.RequestUtil
 import okhttp3.*
 import java.io.IOException
 import java.util.concurrent.CompletableFuture
@@ -41,34 +42,10 @@ open class Api {
     }
 
     fun performRequest(request: Request): CompletableFuture<ResponseBody> {
-        val future = CompletableFuture<ResponseBody>()
-
-        httpClient.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                future.completeExceptionally(e)
+        return RequestUtil.request(request).submit()
+            .thenApply {
+                return@thenApply it.body()
+                    ?: throw IllegalStateException("ResponseBody for request ${it.request().url().encodedPath()} is null!")
             }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (!response.isSuccessful) {
-                    future.completeExceptionally(
-                        IllegalStateException("Request to ${call.request().url().encodedPath()} yielded code ${response.code()}")
-                    )
-                    return
-                }
-
-                val body = response.body()
-
-                if (body == null) {
-                    future.completeExceptionally(
-                        IllegalStateException("ResponseBody for request ${call.request().url().encodedPath()} is null!")
-                    )
-                    return
-                }
-
-                future.complete(body)
-            }
-        })
-
-        return future
     }
 }
