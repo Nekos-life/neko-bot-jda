@@ -17,7 +17,7 @@ class NekoPrefixProvider() : PrefixProvider {
             prefixes.add("~~~")
         } else {
             if (message.isFromGuild) {
-                val botPrefix = Database.getPrefix(message.guild.idLong) ?: "~"
+                val botPrefix = Database.getPrefix(message.guild.id) ?: "~"
                 prefixes.add(botPrefix)
             } else {
                 prefixes.add("~")
