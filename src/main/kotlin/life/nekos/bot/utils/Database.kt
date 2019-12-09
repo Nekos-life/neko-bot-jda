@@ -4,6 +4,9 @@ package life.nekos.bot.utils
 import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
+import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.UpdateOptions
+import life.nekos.bot.entities.User
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import org.bson.Document
@@ -22,14 +25,31 @@ object Database {
     val guilds = neko.getCollection("guilds")
 
     fun getPrefix(guildId: String) = getFrom(guilds, guildId) { getString("prefix") }
+    fun getUser(userId: String) = getFrom(users, userId) { User.fromDocument(this) }
 
 
+    fun getDocument(c: MongoCollection<Document>, id: String) = c.find(BasicDBObject("_id", id)).firstOrNull()
 
     fun <T> getFrom(c: MongoCollection<Document>, id: String, apply: Document.() -> T): T? {
-        val doc = c.find(BasicDBObject("_id", id))
-            .firstOrNull() ?: return null
+        return getDocument(c, id)?.apply()
+    }
 
-        return apply(doc)
+    fun update(c: MongoCollection<Document>, id: String, apply: Mapper.() -> Unit) {
+        val updated = Mapper().apply(apply).doc
+
+        c.updateOne(
+            eq("_id", id),
+            Document("\$set", updated),
+            UpdateOptions().upsert(true)
+        )
+    }
+
+    class Mapper {
+        val doc = Document()
+
+        infix fun String.eq(other: Any) {
+            doc.append(this, other)
+        }
     }
 }
 

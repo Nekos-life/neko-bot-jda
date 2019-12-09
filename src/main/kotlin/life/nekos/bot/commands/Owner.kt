@@ -2,6 +2,7 @@ package life.nekos.bot.commands
 
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.parsers.stringorbool.StringBool
+import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.RequestUtil
 import life.nekos.bot.utils.WumpDump
 import me.devoxin.flight.annotations.Command
