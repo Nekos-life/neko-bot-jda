@@ -17,7 +17,8 @@ class NekoPrefixProvider() : PrefixProvider {
             prefixes.add("~~~")
         } else {
             if (message.isFromGuild) {
-                prefixes.add("~") // TODO: Query database for guild prefix. Provide default if non-existent.
+                val botPrefix = Database.getPrefix(message.guild.idLong) ?: "~"
+                prefixes.add(botPrefix)
             } else {
                 prefixes.add("~")
             }
