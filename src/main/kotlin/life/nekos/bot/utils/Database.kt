@@ -6,6 +6,7 @@ import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.UpdateOptions
+import life.nekos.bot.entities.Guild
 import life.nekos.bot.entities.User
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
@@ -14,9 +15,6 @@ import java.util.*
 import java.util.concurrent.ThreadLocalRandom
 
 
-/**
- * Created by Tom on 10/4/2017.
- */
 object Database {
     val mango = MongoClients.create()
 
@@ -25,6 +23,8 @@ object Database {
     val guilds = neko.getCollection("guilds")
 
     fun getPrefix(guildId: String) = getFrom(guilds, guildId) { getString("prefix") }
+    fun getGuild(guildId: String) = getFrom(guilds, guildId) { Guild.fromDocument(this) }
+        ?: Guild.emptyGuild(guildId)
     fun getUser(userId: String) = getFrom(users, userId) { User.fromDocument(this) }
         ?: User.emptyUser(userId)
 
