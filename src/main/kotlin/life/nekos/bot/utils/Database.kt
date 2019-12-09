@@ -26,7 +26,7 @@ object Database {
 
     fun getPrefix(guildId: String) = getFrom(guilds, guildId) { getString("prefix") }
     fun getUser(userId: String) = getFrom(users, userId) { User.fromDocument(this) }
-
+        ?: User.emptyUser(userId)
 
     fun getDocument(c: MongoCollection<Document>, id: String) = c.find(BasicDBObject("_id", id)).firstOrNull()
 
