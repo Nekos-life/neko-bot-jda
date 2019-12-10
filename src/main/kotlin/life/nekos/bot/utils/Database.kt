@@ -23,8 +23,10 @@ object Database {
     val guilds = neko.getCollection("guilds")
 
     fun getPrefix(guildId: String) = getFrom(guilds, guildId) { getString("prefix") }
+
     fun getGuild(guildId: String) = getFrom(guilds, guildId) { Guild.fromDocument(this) }
         ?: Guild.emptyGuild(guildId)
+
     fun getUser(userId: String) = getFrom(users, userId) { User.fromDocument(this) }
         ?: User.emptyUser(userId)
 

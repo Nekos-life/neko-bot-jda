@@ -25,7 +25,7 @@ class Neko : Cog {
     fun embed(ctx: Context, description: String, imageUrl: String,
               embedOptions: EmbedBuilder.() -> Unit = {}) {
         ctx.embed {
-            //setColor()
+            //setColor() // effective color
             setDescription(description)
             setImage(imageUrl)
             apply(embedOptions)
@@ -55,7 +55,7 @@ class Neko : Cog {
         }
     }
 
-    @Command(description = "mew!")
+    @Command(description = "Mew!")
     fun nya(ctx: Context) {
         ctx.send("${ctx.author.asMention}, Mew!!~ ${Formats.cats.random()}")
     }
@@ -71,7 +71,7 @@ class Neko : Cog {
         val image = NekosLife.lewd().await()
 
         m.editMessage(EmbedBuilder()
-            //.setColor()
+            //.setColor() // effective color
             .setDescription("$cycle of $total")
             .setImage(image)
             .build()
@@ -84,7 +84,7 @@ class Neko : Cog {
         val image = NekosLife.neko().await()
 
         m.editMessage(EmbedBuilder()
-            //.setColor()
+            //.setColor() // random color
             .setDescription("$cycle of $total")
             .setImage(image)
             .build()

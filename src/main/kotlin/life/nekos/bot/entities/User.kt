@@ -7,7 +7,7 @@ import java.time.Instant
 
 data class User(val id: String, var nekos: Long, var nekosAll: Long,
                 var exp: Long, var level: Long, var premium: Int,
-                var registerDate: String) {
+                var registerDate: String, var optedIn: Boolean, var is18: Boolean) {
 
     fun update(changes: User.() -> Unit) {
         changes(this)
@@ -19,6 +19,8 @@ data class User(val id: String, var nekos: Long, var nekosAll: Long,
             "level" to level
             "premium" to premium
             "regdate" to registerDate
+            "opted_in" to optedIn
+            "is_18" to is18
         }
     }
 
@@ -33,13 +35,15 @@ data class User(val id: String, var nekos: Long, var nekosAll: Long,
             val level = doc.getLong("level")
             val premium = doc.getInteger("premium")
             val dateRegistered = doc.getString("regdate")
+            val optedIn = doc.getBoolean("opted_in")
+            val is18 = doc.getBoolean("is_18")
 
-            return User(id, nekos, nekosAll, exp, level, premium, dateRegistered)
+            return User(id, nekos, nekosAll, exp, level, premium, dateRegistered, optedIn, is18)
         }
 
         fun emptyUser(id: String): User {
             val regDate = dateFormatter.format(Instant.now())
-            return User(id, 0L, 0L, 0L, 0L, 0, regDate)
+            return User(id, 0L, 0L, 0L, 0L, 0, regDate, optedIn = false, is18 = false)
         }
     }
 
