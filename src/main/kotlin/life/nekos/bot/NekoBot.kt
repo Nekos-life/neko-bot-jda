@@ -5,6 +5,8 @@ import net.dv8tion.jda.api.sharding.ShardManager
 
 class NekoBot(private val sm: ShardManager) : ShardManager by sm {
 
+    fun home() = sm.getGuildById(333713662739218433L)
+
     companion object {
         fun new(options: DefaultShardManagerBuilder.() -> Unit): NekoBot {
             val shardManager = DefaultShardManagerBuilder()

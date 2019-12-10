@@ -1,5 +1,6 @@
 package life.nekos.bot.commands
 
+import life.nekos.bot.utils.Checks
 import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.toReactionString
@@ -49,10 +50,15 @@ class User : Cog {
             addField("${Formats.NEKO_V_EMOTE} Total Nekos Caught", "**${profile.nekosAll}**", false)
             addField("${Formats.NEKO_C_EMOTE} Current Nekos", "**${profile.nekos}**", false)
             addField("${Formats.DATE_EMOTE} Date Registered", "**${profile.registerDate}**", false)
-        }
 
-        // isDonor
-        // isDonorPlus
+            if (Checks.isDonor(target.id)) {
+                addField("${Formats.PATRON_EMOTE} Donor", "**Commands unlocked**", false)
+            }
+
+            if (Checks.isDonorPlus(target.id)) {
+                addField("${Formats.PATRON_EMOTE} Donor+", "**Commands, 2x exp and nekos unlocked**", false)
+            }
+        }
     }
 
     @Command(aliases = ["free", "catch"], description = "Releases one of your nekos for others to catch >.< (You cannot catch a neko you released)")

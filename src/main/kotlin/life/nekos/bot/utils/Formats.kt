@@ -6,7 +6,7 @@ import java.text.MessageFormat;
  * Created by Tom on 10/5/2017.
  */
 object Formats {
-    val httpRx = "((http:\\/\\/|https:\\/\\/)?(www.)?(([a-zA-Z0-9-]){2,}\\.){1,4}([a-zA-Z]){2,6}(\\/([a-zA-Z-_\\/\\.0-9#:?=&;,]*)?)?)"
+    val httpRx = "(https?:\\/\\/)?(www\\.)?(([a-zA-Z0-9-]){2,}\\.){1,4}([a-zA-Z]){2,6}(\\/([a-zA-Z-_\\/\\.0-9#:?=&;,]*)?)?)"
     val cats = listOf(
         "｡＾･ｪ･＾｡",
         "( ͒ ु- •̫̮ – ू ͒)",
