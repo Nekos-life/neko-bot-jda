@@ -2,7 +2,6 @@ package life.nekos.bot.commands
 
 import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats
-import life.nekos.bot.utils.toReaction
 import life.nekos.bot.utils.toReactionString
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.CommandWrapper
