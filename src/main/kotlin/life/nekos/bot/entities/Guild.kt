@@ -10,9 +10,9 @@ data class Guild(val id: String, var prefix: String?, var nekoChannel: String?,
         changes(this)
 
         Database.update(Database.users, id) {
-            "prefix" to prefix
-            "nekochannel" to nekoChannel
-            "msgcnt" to msgCnt
+            "prefix" eq prefix
+            "nekochannel" eq nekoChannel
+            "msgcnt" eq msgCnt
         }
     }
 

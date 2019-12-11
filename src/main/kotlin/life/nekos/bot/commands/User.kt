@@ -1,9 +1,7 @@
 package life.nekos.bot.commands
 
-import life.nekos.bot.utils.Checks
-import life.nekos.bot.utils.Database
-import life.nekos.bot.utils.Formats
-import life.nekos.bot.utils.toReactionString
+import life.nekos.bot.framework.Paginator
+import life.nekos.bot.utils.*
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.CommandWrapper
 import me.devoxin.flight.api.Context
@@ -20,9 +18,32 @@ class User : Cog {
         return true
     }
 
-    @Command(aliases = ["lb", "top", "ranks"], description = "Global leaderboard. Category can be either \"nekos\" or \"levels\"")
-    fun leaderboard(ctx: Context, category: String) {
+    fun findUserById(ctx: Context, id: String): String {
+        return ctx.jda.shardManager!!.getUserById(id)?.asTag ?: "Unknown User#0000"
+    }
 
+    @Command(aliases = ["lb", "top", "ranks"], description = "Global leaderboard. Category can be either \"nekos\" or \"levels\"")
+    fun leaderboard(ctx: Context, category: String, @Optional page: Int?) {
+        val data = when (category) {
+            "nekos" -> Database.getTopNekos()
+            "levels" -> Database.getTopExp()
+            else -> return ctx.send(Formats.error("**Use `lb nekos` or `lb levels`**"))
+        }
+
+        val items = data.map { "${Formats.USER_EMOTE} **__Name__**: **${findUserById(ctx, it.id)}**\n" +
+                "**%${Formats.NEKO_V_EMOTE} __Nekos__**: **${it.nekos}**\n\n"
+        }
+
+        val paginator = Paginator(items) {
+            selectedPage = page ?: 1
+        }
+
+        ctx.embed {
+            setColor(Colors.getEffectiveColor(ctx))
+            setTitle("${Formats.MAGIC_EMOTE} **Global leaderboard for Nekos** ${Formats.NEKO_C_EMOTE}")
+            setDescription(paginator.display())
+            setFooter("Page ${paginator.page()}/${paginator.maxPages}")
+        }
     }
 
     @Command(aliases = ["rank", "exp"], description = "Shows your, or another user's profile.")
@@ -40,7 +61,7 @@ class User : Cog {
         ctx.message.addReaction(Formats.USER_EMOTE.toReactionString()).queue()
 
         ctx.embed {
-            //setColor() // effective
+            setColor(Colors.getEffectiveColor(ctx))
             setAuthor("Profile for ${targetUser.name}", targetUser.effectiveAvatarUrl, targetUser.effectiveAvatarUrl)
             setThumbnail(targetUser.effectiveAvatarUrl)
             setFooter("Profile for ${targetUser.name}", "https://media.discordapp.net/attachments/333742928218554368/374966699524620289/profile.png")
@@ -62,9 +83,22 @@ class User : Cog {
     }
 
     @Command(aliases = ["free", "catch"], description = "Releases one of your nekos for others to catch >.< (You cannot catch a neko you released)")
-    fun release(ctx: Context, @Greedy @Optional user: Member?) {
-        val target = user ?: ctx.member
+    fun release(ctx: Context) {
+        val data = Database.getUser(ctx.author.id)
 
+        if (data.nekos == 0L) {
+            return ctx.send("Nya~ You do not have any nekos to release nya~")
+        }
+
+        data.update {
+            nekos = data.nekos - 1
+        }
+
+        // release
+
+        if (Checks.isMessageRemovable(ctx)) {
+            ctx.message.delete().queue()
+        }
     }
 
     @Command(description = "Send someone a neko image.", guildOnly = true)

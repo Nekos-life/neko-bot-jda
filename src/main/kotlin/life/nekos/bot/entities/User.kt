@@ -4,6 +4,7 @@ import life.nekos.bot.utils.Database
 import org.bson.Document
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.util.*
 
 data class User(val id: String, var nekos: Long, var nekosAll: Long,
                 var exp: Long, var level: Long, var premium: Int,
@@ -13,14 +14,14 @@ data class User(val id: String, var nekos: Long, var nekosAll: Long,
         changes(this)
 
         Database.update(Database.users, id) {
-            "nekos" to nekos
-            "nekosall" to nekosAll
-            "exp" to exp
-            "level" to level
-            "premium" to premium
-            "regdate" to registerDate
-            "opted_in" to optedIn
-            "is_18" to is18
+            "nekos" eq nekos
+            "nekosall" eq nekosAll
+            "exp" eq exp
+            "level" eq level
+            "premium" eq premium
+            "regdate" eq registerDate
+            "opted_in" eq optedIn
+            "is_18" eq is18
         }
     }
 
@@ -42,7 +43,7 @@ data class User(val id: String, var nekos: Long, var nekosAll: Long,
         }
 
         fun emptyUser(id: String): User {
-            val regDate = dateFormatter.format(Instant.now())
+            val regDate = dateFormatter.format(Date.from(Instant.now()))
             return User(id, 0L, 0L, 0L, 0L, 0, regDate, optedIn = false, is18 = false)
         }
     }

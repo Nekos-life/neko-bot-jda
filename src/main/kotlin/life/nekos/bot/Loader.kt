@@ -20,14 +20,14 @@ object Loader {
     @JvmStatic
     fun main(args: Array<String>) {
         isDebug = args.any { it == "--debug" }
-        val token = if (isDebug) "" else ""
+        val token = if (isDebug) "NDIzODU4MDE2NDEzMjg2NDAw.XfAkqA.8k_nQZsZwh42OwPQZBG_mTSU-m4" else ""
 
         commandClient = CommandClientBuilder()
             .setPrefixes()
             .setOwnerIds(248294452307689473L, 180093157554388993L)
             .setPrefixProvider(NekoPrefixProvider())
             .registerDefaultParsers()
-            .addCustomParser(StringBool::class.java, StringOrBool())
+            //.addCustomParser(StringBool::class.java, StringOrBool())
             .addEventListeners(FlightEventAdapter())
             .build()
 
@@ -36,7 +36,7 @@ object Loader {
             setActivity(Activity.playing("https://nekos.life"))
             setAudioSendFactory(NativeAudioSendFactory())
             setToken(token)
-            setShards(-1)
+            setShardsTotal(-1)
         }
 
         commandClient.registerCommands("life.nekos.bot.commands")

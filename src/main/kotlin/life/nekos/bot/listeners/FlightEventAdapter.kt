@@ -22,16 +22,17 @@ class FlightEventAdapter : DefaultCommandClientAdapter() {
 
 
     override fun onBadArgument(ctx: Context, error: BadArgument) {
-
+        ctx.send("You must provide an argument for `${error.argument.name}`, nya~")
     }
 
     override fun onCommandError(ctx: Context, error: CommandError) {
         val cause = rootCauseOf(error.original)
         ctx.send("oop\n```\n${cause.message}```")
+        error.original.printStackTrace()
     }
 
     override fun onCommandPostInvoke(ctx: Context, command: CommandWrapper, failed: Boolean) {
-
+        println("Command ${command.name} finished execution. Failed: $failed")
     }
 
     override fun onCommandPreInvoke(ctx: Context, command: CommandWrapper): Boolean {
@@ -43,7 +44,8 @@ class FlightEventAdapter : DefaultCommandClientAdapter() {
     }
 
     override fun onParseError(ctx: Context, error: Throwable) {
-
+        ctx.send("An error occurred during argument parsing.\n```\n$error```")
+        error.printStackTrace()
     }
 
     override fun onBotMissingPermissions(ctx: Context, command: CommandWrapper, permissions: List<Permission>) {

@@ -3,6 +3,7 @@ package life.nekos.bot.commands
 import kotlinx.coroutines.future.await
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.DonorOnly
+import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import me.devoxin.flight.annotations.Async
 import me.devoxin.flight.annotations.Command
@@ -15,8 +16,6 @@ import java.awt.Color
 import java.util.concurrent.Executors
 
 class Neko : Cog {
-    private val scheduler = Executors.newSingleThreadExecutor()
-
     override fun localCheck(ctx: Context, command: CommandWrapper): Boolean {
         // Model.statsUp(command.name)
         return true
@@ -25,7 +24,7 @@ class Neko : Cog {
     fun embed(ctx: Context, description: String, imageUrl: String,
               embedOptions: EmbedBuilder.() -> Unit = {}) {
         ctx.embed {
-            //setColor() // effective color
+            setColor(Colors.getEffectiveColor(ctx))
             setDescription(description)
             setImage(imageUrl)
             apply(embedOptions)
@@ -71,7 +70,7 @@ class Neko : Cog {
         val image = NekosLife.lewd().await()
 
         m.editMessage(EmbedBuilder()
-            //.setColor() // effective color
+            .setColor(Colors.getEffectiveColor(ctx))
             .setDescription("$cycle of $total")
             .setImage(image)
             .build()
@@ -84,7 +83,7 @@ class Neko : Cog {
         val image = NekosLife.neko().await()
 
         m.editMessage(EmbedBuilder()
-            //.setColor() // random color
+            .setColor(Colors.getRandomColor())
             .setDescription("$cycle of $total")
             .setImage(image)
             .build()

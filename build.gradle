@@ -45,6 +45,9 @@ dependencies {
 
     implementation 'org.json:json:20180813'
     implementation 'org.mongodb:mongodb-driver-sync:3.11.2'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+
+    compile 'org.reflections:reflections:0.9.11'
 }
 
 compileKotlin {

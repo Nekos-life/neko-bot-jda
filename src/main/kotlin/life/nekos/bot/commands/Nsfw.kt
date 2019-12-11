@@ -2,6 +2,7 @@ package life.nekos.bot.commands
 
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.DonorOnly
+import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.CommandWrapper
@@ -19,7 +20,7 @@ class Nsfw : Cog {
     fun embed(ctx: Context, description: String, imageUrl: String,
               embedOptions: EmbedBuilder.() -> Unit = {}) {
         ctx.embed {
-            //setColor() // effective color
+            setColor(Colors.getEffectiveColor(ctx))
             setDescription(description)
             setImage(imageUrl)
             apply(embedOptions)

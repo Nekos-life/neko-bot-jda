@@ -5,6 +5,7 @@ import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoClients
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.UpdateOptions
 import life.nekos.bot.entities.Guild
 import life.nekos.bot.entities.User
@@ -22,6 +23,7 @@ object Database {
     val users = neko.getCollection("users")
     val guilds = neko.getCollection("guilds")
 
+    /** Actual functions **/
     fun getPrefix(guildId: String) = getFrom(guilds, guildId) { getString("prefix") }
 
     fun getGuild(guildId: String) = getFrom(guilds, guildId) { Guild.fromDocument(this) }
@@ -29,6 +31,16 @@ object Database {
 
     fun getUser(userId: String) = getFrom(users, userId) { User.fromDocument(this) }
         ?: User.emptyUser(userId)
+
+    fun getTopExp() = sortedDescending(users, "exp") { User.fromDocument(this) }
+    fun getTopNekos() = sortedDescending(users, "nekos") { User.fromDocument(this) }
+
+    /** Internal stuff **/
+    fun <T> sortedDescending(c: MongoCollection<Document>, sortKey: String, apply: Document.() -> T) = c.find()
+        .sort(Sorts.descending(sortKey))
+        .limit(50)
+        .map { apply(it) }
+        .toList()
 
     fun getDocument(c: MongoCollection<Document>, id: String) = c.find(BasicDBObject("_id", id)).firstOrNull()
 
@@ -49,7 +61,7 @@ object Database {
     class Mapper {
         val doc = Document()
 
-        infix fun String.eq(other: Any) {
+        infix fun String.eq(other: Any?) {
             doc.append(this, other)
         }
     }
