@@ -20,7 +20,7 @@ object Loader {
     @JvmStatic
     fun main(args: Array<String>) {
         isDebug = args.any { it == "--debug" }
-        val token = if (isDebug) "NDIzODU4MDE2NDEzMjg2NDAw.Xf0z6w.SZ-iD7AmG9hhxxRsRSnL6seoR5A" else ""
+        val token = Config["token"]
 
         commandClient = CommandClientBuilder()
             .setPrefixes()
