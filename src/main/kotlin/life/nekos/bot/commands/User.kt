@@ -1,6 +1,7 @@
 package life.nekos.bot.commands
 
 import life.nekos.bot.framework.Paginator
+import life.nekos.bot.framework.annotations.ArgDoc
 import life.nekos.bot.utils.*
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.CommandWrapper
@@ -22,7 +23,8 @@ class User : Cog {
         return ctx.jda.shardManager!!.getUserById(id)?.asTag ?: "Unknown User#0000"
     }
 
-    @Command(aliases = ["lb", "top", "ranks"], description = "Global leaderboard. Category can be either \"nekos\" or \"levels\"")
+    @Command(aliases = ["lb", "top", "ranks"], description = "Global leaderboard. Category must be either \"nekos\" or \"levels\"")
+    @ArgDoc("category", "must be either `nekos` or `levels`")
     fun leaderboard(ctx: Context, category: String, @Optional page: Int?) {
         val data = when (category) {
             "nekos" -> Database.getTopNekos()

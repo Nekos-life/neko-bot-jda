@@ -1,7 +1,8 @@
 package life.nekos.bot.listeners
 
+import life.nekos.bot.framework.annotations.ArgDoc
 import life.nekos.bot.framework.annotations.DonorOnly
-import me.devoxin.flight.api.CommandError
+import life.nekos.bot.utils.getAnnotationOrNull
 import me.devoxin.flight.api.CommandWrapper
 import me.devoxin.flight.api.Context
 import me.devoxin.flight.api.DefaultCommandClientAdapter
@@ -11,24 +12,24 @@ import net.dv8tion.jda.api.Permission
 class FlightEventAdapter : DefaultCommandClientAdapter() {
 
     fun rootCauseOf(ex: Throwable): Throwable {
-        val cause = ex.cause
+        return ex.cause?.let { rootCauseOf(ex) } ?: ex
+    }
 
-        if (cause != null) {
-            return rootCauseOf(cause)
+
+    override fun onBadArgument(ctx: Context, command: CommandWrapper, error: BadArgument) {
+        val argInfo = command.method.getAnnotationOrNull(ArgDoc::class.java)
+
+        if (argInfo != null && argInfo.name == error.argument.name) {
+            ctx.send("`${error.argument.name}` ${argInfo.desc}, nya~")
+        } else {
+            ctx.send("You must provide an argument for `${error.argument.name}`, nya~")
         }
-
-        return ex
     }
 
-
-    override fun onBadArgument(ctx: Context, error: BadArgument) {
-        ctx.send("You must provide an argument for `${error.argument.name}`, nya~")
-    }
-
-    override fun onCommandError(ctx: Context, error: CommandError) {
-        val cause = rootCauseOf(error.original)
+    override fun onCommandError(ctx: Context, command: CommandWrapper, error: Throwable) {
+        val cause = rootCauseOf(error)
         ctx.send("oop\n```\n${cause.message}```")
-        error.original.printStackTrace()
+        error.printStackTrace()
     }
 
     override fun onCommandPostInvoke(ctx: Context, command: CommandWrapper, failed: Boolean) {
@@ -43,7 +44,7 @@ class FlightEventAdapter : DefaultCommandClientAdapter() {
         return true
     }
 
-    override fun onParseError(ctx: Context, error: Throwable) {
+    override fun onParseError(ctx: Context, command: CommandWrapper, error: Throwable) {
         ctx.send("An error occurred during argument parsing.\n```\n$error```")
         error.printStackTrace()
     }
