@@ -2,13 +2,11 @@ package life.nekos.bot.commands
 
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.parsers.stringorbool.StringBool
-import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.RequestUtil
 import life.nekos.bot.utils.WumpDump
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.Context
 import me.devoxin.flight.arguments.Greedy
-import me.devoxin.flight.arguments.Optional
 import me.devoxin.flight.models.Cog
 import net.dv8tion.jda.api.entities.Icon
 import java.io.InputStreamReader
@@ -50,7 +48,7 @@ class Owner : Cog {
     }
 
     @Command(aliases = ["exec"], description = "Runs a shell command.", developerOnly = true)
-    fun ssh(ctx: Context, command: String, @Optional @Greedy args: String?) {
+    fun ssh(ctx: Context, command: String, @Greedy args: String?) {
         val commandArgs = args?.split(" ")?.toTypedArray() ?: arrayOf()
 
         val proc = ProcessBuilder()

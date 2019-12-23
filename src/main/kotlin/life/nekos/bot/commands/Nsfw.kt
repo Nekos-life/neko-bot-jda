@@ -19,7 +19,7 @@ class Nsfw : Cog {
 
     fun embed(ctx: Context, description: String, imageUrl: String,
               embedOptions: EmbedBuilder.() -> Unit = {}) {
-        ctx.embed {
+        ctx.send {
             setColor(Colors.getEffectiveColor(ctx))
             setDescription(description)
             setImage(imageUrl)

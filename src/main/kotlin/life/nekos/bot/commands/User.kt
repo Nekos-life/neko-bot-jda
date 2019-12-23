@@ -7,7 +7,6 @@ import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.CommandWrapper
 import me.devoxin.flight.api.Context
 import me.devoxin.flight.arguments.Greedy
-import me.devoxin.flight.arguments.Optional
 import me.devoxin.flight.models.Cog
 import net.dv8tion.jda.api.entities.Member
 import java.time.Instant
@@ -25,11 +24,14 @@ class User : Cog {
 
     @Command(aliases = ["lb", "top", "ranks"], description = "Global leaderboard. Category must be either \"nekos\" or \"levels\"")
     @ArgDoc("category", "must be either `nekos` or `levels`")
-    fun leaderboard(ctx: Context, category: String, @Optional page: Int?) {
+    fun leaderboard(ctx: Context, category: String, page: Int = 1) {
         val data = when (category) {
             "nekos" -> Database.getTopNekos()
             "levels" -> Database.getTopExp()
-            else -> return ctx.send(Formats.error("**Use `lb nekos` or `lb levels`**"))
+            else -> {
+                ctx.send(Formats.error("**Use `lb nekos` or `lb levels`**"))
+                return
+            }
         }
 
         val items = data.map { "${Formats.USER_EMOTE} **__Name__**: **${findUserById(ctx, it.id)}**\n" +
@@ -37,10 +39,10 @@ class User : Cog {
         }
 
         val paginator = Paginator(items) {
-            selectedPage = page ?: 1
+            selectedPage = page
         }
 
-        ctx.embed {
+        ctx.send {
             setColor(Colors.getEffectiveColor(ctx))
             setTitle("${Formats.MAGIC_EMOTE} **Global leaderboard for Nekos** ${Formats.NEKO_C_EMOTE}")
             setDescription(paginator.display())
@@ -49,20 +51,20 @@ class User : Cog {
     }
 
     @Command(aliases = ["rank", "exp"], description = "Shows your, or another user's profile.")
-    fun profile(ctx: Context, @Greedy @Optional user: Member?) {
-        val target = user ?: ctx.member
-        val targetUser = target!!.user
+    fun profile(ctx: Context, @Greedy user: Member = ctx.member!!) {
+        val targetUser = user.user
 
         if (targetUser.isBot) {
-            return ctx.embed {
+            ctx.send {
                 setDescription("Bots don't have profiles ;p")
             }
+            return
         }
 
-        val profile = Database.getUser(target.id)
+        val profile = Database.getUser(user.id)
         ctx.message.addReaction(Formats.USER_EMOTE.toReactionString()).queue()
 
-        ctx.embed {
+        ctx.send {
             setColor(Colors.getEffectiveColor(ctx))
             setAuthor("Profile for ${targetUser.name}", targetUser.effectiveAvatarUrl, targetUser.effectiveAvatarUrl)
             setThumbnail(targetUser.effectiveAvatarUrl)
@@ -74,11 +76,11 @@ class User : Cog {
             addField("${Formats.NEKO_C_EMOTE} Current Nekos", "**${profile.nekos}**", false)
             addField("${Formats.DATE_EMOTE} Date Registered", "**${profile.registerDate}**", false)
 
-            if (Checks.isDonor(target.id)) {
+            if (Checks.isDonor(user.id)) {
                 addField("${Formats.PATRON_EMOTE} Donor", "**Commands unlocked**", false)
             }
 
-            if (Checks.isDonorPlus(target.id)) {
+            if (Checks.isDonorPlus(user.id)) {
                 addField("${Formats.PATRON_EMOTE} Donor+", "**Commands, 2x exp and nekos unlocked**", false)
             }
         }
@@ -89,7 +91,8 @@ class User : Cog {
         val data = Database.getUser(ctx.author.id)
 
         if (data.nekos == 0L) {
-            return ctx.send("Nya~ You do not have any nekos to release nya~")
+            ctx.send("Nya~ You do not have any nekos to release nya~")
+            return
         }
 
         data.update {
@@ -104,8 +107,7 @@ class User : Cog {
     }
 
     @Command(description = "Send someone a neko image.", guildOnly = true)
-    fun send(ctx: Context, @Greedy @Optional user: Member?) {
-        val target = user ?: ctx.member
+    fun send(ctx: Context, @Greedy user: Member = ctx.member!!) {
 
     }
 

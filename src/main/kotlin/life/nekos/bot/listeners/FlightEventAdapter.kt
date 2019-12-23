@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.Permission
 class FlightEventAdapter : DefaultCommandClientAdapter() {
 
     fun rootCauseOf(ex: Throwable): Throwable {
-        return ex.cause?.let { rootCauseOf(it) } ?: ex
+        return ex.cause?.let(::rootCauseOf) ?: ex
     }
 
 

@@ -5,15 +5,12 @@ import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
-import me.devoxin.flight.annotations.Async
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.CommandWrapper
 import me.devoxin.flight.api.Context
 import me.devoxin.flight.models.Cog
 import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.entities.Message
 import java.awt.Color
-import java.util.concurrent.Executors
 
 class Neko : Cog {
     override fun localCheck(ctx: Context, command: CommandWrapper): Boolean {
@@ -23,7 +20,7 @@ class Neko : Cog {
 
     fun embed(ctx: Context, description: String, imageUrl: String,
               embedOptions: EmbedBuilder.() -> Unit = {}) {
-        ctx.embed {
+        ctx.send {
             setColor(Colors.getEffectiveColor(ctx))
             setDescription(description)
             setImage(imageUrl)
@@ -59,7 +56,6 @@ class Neko : Cog {
         ctx.send("${ctx.author.asMention}, Mew!!~ ${Formats.cats.random()}")
     }
 
-    @Async
     @DonorOnly
     @Command(
         description = "Neko slideshow \\o//",
@@ -77,7 +73,6 @@ class Neko : Cog {
         ).submit().await()
     }
 
-    @Async
     @Command(description = "Neko slideshow", aliases = ["slideshow", "ss", "mew", "nyaa"])
     suspend fun nekos(ctx: Context) = Shell.slideshow(ctx) { m, cycle, total ->
         val image = NekosLife.neko().await()
