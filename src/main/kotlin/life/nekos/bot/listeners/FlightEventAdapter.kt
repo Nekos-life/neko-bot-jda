@@ -2,7 +2,6 @@ package life.nekos.bot.listeners
 
 import life.nekos.bot.framework.annotations.ArgDoc
 import life.nekos.bot.framework.annotations.DonorOnly
-import life.nekos.bot.utils.getAnnotationOrNull
 import me.devoxin.flight.api.CommandWrapper
 import me.devoxin.flight.api.Context
 import me.devoxin.flight.api.DefaultCommandClientAdapter
