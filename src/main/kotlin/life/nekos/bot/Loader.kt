@@ -17,6 +17,7 @@ object Loader {
     lateinit var bot: NekoBot
     lateinit var commandClient: CommandClient
 
+    @ExperimentalStdlibApi
     @JvmStatic
     fun main(args: Array<String>) {
         isDebug = args.any { it == "--debug" }
