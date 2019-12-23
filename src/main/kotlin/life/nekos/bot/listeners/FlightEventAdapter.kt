@@ -8,6 +8,8 @@ import me.devoxin.flight.api.Context
 import me.devoxin.flight.api.DefaultCommandClientAdapter
 import me.devoxin.flight.exceptions.BadArgument
 import net.dv8tion.jda.api.Permission
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.hasAnnotation
 
 class FlightEventAdapter : DefaultCommandClientAdapter() {
 
@@ -17,7 +19,7 @@ class FlightEventAdapter : DefaultCommandClientAdapter() {
 
 
     override fun onBadArgument(ctx: Context, command: CommandWrapper, error: BadArgument) {
-        val argInfo = command.method.getAnnotationOrNull(ArgDoc::class.java)
+        val argInfo = command.method.findAnnotation<ArgDoc>()
 
         if (argInfo != null && argInfo.name == error.argument.name) {
             ctx.send("`${error.argument.name}` ${argInfo.desc}, nya~")
@@ -36,8 +38,9 @@ class FlightEventAdapter : DefaultCommandClientAdapter() {
         println("Command ${command.name} finished execution. Failed: $failed")
     }
 
+    @ExperimentalStdlibApi
     override fun onCommandPreInvoke(ctx: Context, command: CommandWrapper): Boolean {
-        if (command.method.isAnnotationPresent(DonorOnly::class.java)) {
+        if (command.method.hasAnnotation<DonorOnly>()) {
             // check donor, send error otherwise with emote 475801484282429450
         }
 

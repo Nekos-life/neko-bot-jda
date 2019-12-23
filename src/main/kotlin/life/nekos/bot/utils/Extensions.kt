@@ -9,11 +9,3 @@ fun String.toReactionString(): String {
 
     return this.substringAfter(':').substringBefore('>')
 }
-
-fun <T : Annotation> Method.getAnnotationOrNull(annotation: Class<T>): T? {
-    if (this.isAnnotationPresent(annotation)) {
-        return this.getAnnotation(annotation)
-    }
-
-    return null
-}
