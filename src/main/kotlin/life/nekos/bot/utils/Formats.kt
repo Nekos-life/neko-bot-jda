@@ -197,6 +197,8 @@ object Formats {
         DISCORD_EMOTE, BOT_EMOTE, LINK_EMOTE, PAYPAL_EMOTE, PATRON_EMOTE
     )
 
+    fun randomCat() = cats.random()
+
     fun codeBox(text: String, lang: String): String {
         return MessageFormat.format("```{0}\n{1}\n```", lang, text)
     }

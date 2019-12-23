@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.entities.Member
 
 class Mod : Cog {
 
-    @Command(description = "Bans an asshat", aliases = ["gtfo"], guildOnly = true,
+    @Command(aliases = ["gtfo"], description = "Bans an asshat", guildOnly = true,
         botPermissions = [Permission.BAN_MEMBERS], userPermissions = [Permission.BAN_MEMBERS])
     fun ban(ctx: Context, member: Member, reason: String = "None specified") {
         member.ban(7, reason).queue {
