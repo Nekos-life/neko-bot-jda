@@ -44,3 +44,16 @@ object Loader {
     }
 
 }
+
+/**
+ * TODO: Fun category
+ * TODO: Bot category
+ * TODO: Audio category
+ * TODO: Finish user category
+ * TODO: Finish owner category
+ * TODO: Finish stats integration
+ * TODO: Neko Spawning/SendNeko+SendPoke
+ * TODO: Handlers
+ * TODO: Checks (@FlightEventAdapter).
+ * TODO: Web server.
+ */
