@@ -29,6 +29,7 @@ object NekosLife : Api() {
 
     fun eightBall() = request { path = "/8ball" }
         .thenApply { it.string() }
+        .thenApply { JSONObject(it) }
 
     fun chat(text: String, owo: Boolean) = request {
         path = "/chat"

@@ -56,4 +56,23 @@ class Fun : Cog {
         }
     }
 
+    @Command(aliases = ["8", "8ball", "8b"], description = "random why?")
+    suspend fun ball(ctx: Context, @Greedy question: String) {
+        if (!question.endsWith('?')) {
+            ctx.send("\uD83D\uDEAB Nuu, nya! That doesn't look like a question? didn't anyone teach you punctuation??")
+            return
+        }
+
+        val res = NekosLife.eightBall().await()
+        val answer = res.getString("response")
+        val imageUrl = res.getString("url")
+
+        ctx.send {
+            Colors.getEffectiveColor(ctx)
+            setAuthor("Magic \uD83C\uDFB1", ctx.jda.getInviteUrl(), ctx.author.effectiveAvatarUrl)
+            setDescription("❓: $question\nℹ: $answer")
+            setImage(imageUrl)
+        }
+    }
+
 }
