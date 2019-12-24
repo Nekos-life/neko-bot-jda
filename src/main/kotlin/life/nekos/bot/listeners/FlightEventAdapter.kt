@@ -1,6 +1,6 @@
 package life.nekos.bot.listeners
 
-import life.nekos.bot.framework.annotations.ArgDoc
+import life.nekos.bot.framework.annotations.CommandHelp
 import life.nekos.bot.framework.annotations.DonorOnly
 import me.devoxin.flight.api.CommandWrapper
 import me.devoxin.flight.api.Context
@@ -18,13 +18,11 @@ class FlightEventAdapter : DefaultCommandClientAdapter() {
 
 
     override fun onBadArgument(ctx: Context, command: CommandWrapper, error: BadArgument) {
-        val argInfo = command.method.findAnnotation<ArgDoc>()
+        val extraInfo = command.method.findAnnotation<CommandHelp>()?.let {
+            "\n\n```\n${it.help.trimIndent()}```"
+        } ?: ""
 
-        if (argInfo != null && argInfo.name == error.argument.name) {
-            ctx.send("`${error.argument.name}` ${argInfo.desc}, nya~")
-        } else {
-            ctx.send("You must provide an argument for `${error.argument.name}`, nya~")
-        }
+        ctx.send("You must provide an argument for `${error.argument.name}`, nya~$extraInfo")
     }
 
     override fun onCommandError(ctx: Context, command: CommandWrapper, error: Throwable) {

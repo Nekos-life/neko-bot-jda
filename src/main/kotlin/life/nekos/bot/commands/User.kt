@@ -1,7 +1,7 @@
 package life.nekos.bot.commands
 
 import life.nekos.bot.framework.Paginator
-import life.nekos.bot.framework.annotations.ArgDoc
+import life.nekos.bot.framework.annotations.CommandHelp
 import life.nekos.bot.utils.*
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.CommandWrapper
@@ -23,7 +23,11 @@ class User : Cog {
     }
 
     @Command(aliases = ["lb", "top", "ranks"], description = "Global leaderboard. Category must be either \"nekos\" or \"levels\"")
-    @ArgDoc("category", "must be either `nekos` or `levels`")
+    @CommandHelp("""
+        category:
+          nekos
+          levels
+    """)
     fun leaderboard(ctx: Context, category: String, page: Int = 1) {
         val data = when (category) {
             "nekos" -> Database.getTopNekos()

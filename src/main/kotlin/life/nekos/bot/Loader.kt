@@ -1,6 +1,7 @@
 package life.nekos.bot
 
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory
+import life.nekos.bot.framework.CustomHelpCommand
 import life.nekos.bot.framework.parsers.stringorbool.StringBool
 import life.nekos.bot.framework.parsers.stringorbool.StringOrBool
 import life.nekos.bot.listeners.FlightEventAdapter
@@ -24,12 +25,12 @@ object Loader {
         val token = Config["token"]
 
         commandClient = CommandClientBuilder()
-            .setPrefixes()
             .setOwnerIds(248294452307689473L, 180093157554388993L)
             .setPrefixProvider(NekoPrefixProvider())
             .registerDefaultParsers()
             .addCustomParser(StringBool::class.java, StringOrBool())
             .addEventListeners(FlightEventAdapter())
+            .configureDefaultHelpCommand { enabled = false }
             .build()
 
         bot = NekoBot.new {
@@ -40,6 +41,7 @@ object Loader {
             setShardsTotal(-1)
         }
 
+        commandClient.registerCommands(CustomHelpCommand())
         commandClient.registerCommands("life.nekos.bot.commands")
     }
 
