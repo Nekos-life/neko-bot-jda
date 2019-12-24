@@ -1,6 +1,7 @@
 package life.nekos.bot.commands
 
 import kotlinx.coroutines.future.await
+import life.nekos.bot.apis.AlexFlipnote
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.CommandHelp
 import life.nekos.bot.utils.Colors
@@ -72,6 +73,18 @@ class Fun : Cog {
             setAuthor("Magic \uD83C\uDFB1", ctx.jda.getInviteUrl(), ctx.author.effectiveAvatarUrl)
             setDescription("❓: $question\nℹ: $answer")
             setImage(imageUrl)
+        }
+    }
+
+    @Command(description = "random coffee ^^")
+    suspend fun coffee(ctx: Context) {
+        val coffee = AlexFlipnote.coffee().await()
+
+        ctx.send {
+            setColor(Colors.getEffectiveColor(ctx))
+            setDescription("coffee \\o/")
+            setImage(coffee)
+            setFooter("API provided by AlexFlipnote")
         }
     }
 
