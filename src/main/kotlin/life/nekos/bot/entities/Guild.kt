@@ -27,7 +27,7 @@ data class Guild(val id: String, var prefix: String?, var nekoChannel: String?,
             return Guild(id, prefix, nekoChannel, msgCnt)
         }
 
-        fun emptyGuild(id: String): Guild {
+        fun empty(id: String): Guild {
             return Guild(id, null, null, 0L)
         }
     }

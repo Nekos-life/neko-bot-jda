@@ -1,6 +1,7 @@
 package life.nekos.bot.utils
 
-import java.lang.reflect.Method
+import java.util.concurrent.CompletableFuture
+
 
 fun String.toReactionString(): String {
     if (!this.contains(':')) {
@@ -8,4 +9,13 @@ fun String.toReactionString(): String {
     }
 
     return this.substringAfter(':').substringBefore('>')
+}
+
+fun <T> CompletableFuture<T>.thenException(block: (Throwable) -> Unit): CompletableFuture<T> {
+    exceptionally {
+        block(it)
+        return@exceptionally null
+    }
+
+    return this
 }

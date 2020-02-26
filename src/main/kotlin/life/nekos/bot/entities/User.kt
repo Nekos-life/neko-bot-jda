@@ -42,7 +42,7 @@ data class User(val id: String, var nekos: Long, var nekosAll: Long,
             return User(id, nekos, nekosAll, exp, level, premium, dateRegistered, optedIn, is18)
         }
 
-        fun emptyUser(id: String): User {
+        fun empty(id: String): User {
             val regDate = dateFormatter.format(Date.from(Instant.now()))
             return User(id, 0L, 0L, 0L, 0L, 0, regDate, optedIn = false, is18 = false)
         }

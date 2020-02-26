@@ -27,10 +27,10 @@ object Database {
     fun getPrefix(guildId: String) = getFrom(guilds, guildId) { getString("prefix") }
 
     fun getGuild(guildId: String) = getFrom(guilds, guildId) { Guild.fromDocument(this) }
-        ?: Guild.emptyGuild(guildId)
+        ?: Guild.empty(guildId)
 
     fun getUser(userId: String) = getFrom(users, userId) { User.fromDocument(this) }
-        ?: User.emptyUser(userId)
+        ?: User.empty(userId)
 
     fun getTopExp() = sortedDescending(users, "exp") { User.fromDocument(this) }
     fun getTopNekos() = sortedDescending(users, "nekos") { User.fromDocument(this) }

@@ -4,6 +4,7 @@ import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.parsers.stringorbool.StringBool
 import life.nekos.bot.utils.RequestUtil
 import life.nekos.bot.utils.WumpDump
+import life.nekos.bot.utils.thenException
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.Context
 import me.devoxin.flight.arguments.Greedy
@@ -59,9 +60,13 @@ class Owner : Cog {
         val stderr = InputStreamReader(proc.errorStream).readText()
         val content = String.format("- - - - - STDOUT - - - - -\n{}\n\n- - - - - STDERR - - - - -\n{}", stdout, stderr)
 
-        WumpDump.paste(content).thenAccept {
-            ctx.send("**Shell output:** <$it>")
-        }
+        WumpDump.paste(content)
+            .thenAccept {
+                ctx.send("**Shell output:** <$it>")
+            }
+            .thenException {
+                ctx.send(it.localizedMessage)
+            }
     }
 
 }
