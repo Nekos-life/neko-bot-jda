@@ -57,13 +57,13 @@ class Send(private val ctx: Context) {
                 ctx.send {
                     setColor(Colors.getEffectiveColor(ctx))
                     setImage(it)
-                    setFooter("${Formats.randomCat()} A wild neko has appeared! Use $keyword to catch it before it gets away \\o/")
+                    //setFooter("${Formats.randomCat()} A wild neko has appeared! Use $keyword to catch it before it gets away \\o/")
                 }
             }
             .thenCompose { drop ->
                 ctx.commandClient.waitFor<MessageReceivedEvent>({
-                    it.channel.idLong == drop.channel.idLong && it.author.idLong != dropper &&
-                            it.message.contentRaw.toLowerCase() == keyword
+                    it.channel.idLong == drop.channel.idLong && it.author.idLong != dropper //&&
+                            //it.message.contentRaw.toLowerCase() == keyword
                 }, TimeUnit.MINUTES.toMillis(2))
             }
             .thenAccept(::handleNekoAccept)

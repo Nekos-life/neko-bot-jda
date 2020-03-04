@@ -1,7 +1,6 @@
 package life.nekos.bot.apis
 
 import life.nekos.bot.apis.entities.Color
-import life.nekos.bot.apis.entities.RGB
 import okhttp3.*
 import org.json.JSONObject
 import java.io.InputStream
