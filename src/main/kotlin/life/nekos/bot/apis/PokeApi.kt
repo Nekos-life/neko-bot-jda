@@ -13,9 +13,8 @@ object PokeApi : Api() {
             .build()
             .toRequest()
 
-
+        return performRequest(ep)
+            .thenApply { "" /* TODO */ }
     }
-
-    class Pokemon()
 
 }
