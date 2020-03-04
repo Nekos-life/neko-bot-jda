@@ -1,6 +1,7 @@
 package life.nekos.bot
 
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory
+import life.nekos.bot.apis.PokeApi
 import life.nekos.bot.framework.CustomHelpCommand
 import life.nekos.bot.framework.parsers.stringorbool.StringBool
 import life.nekos.bot.framework.parsers.stringorbool.StringOrBool
@@ -23,6 +24,10 @@ object Loader {
     fun main(args: Array<String>) {
         isDebug = args.any { it == "--debug" }
         val token = Config["token"]
+
+        PokeApi.getPokemon(3).thenAccept {
+            println(it.id.toString() + " - " + it.name)
+        }
 
         commandClient = CommandClientBuilder()
             .setOwnerIds(248294452307689473L, 180093157554388993L)
