@@ -4,7 +4,7 @@ import java.io.FileReader
 import java.util.*
 
 object Config {
-    private val CONFIG_FILE_NAME = "config.properties"
+    private const val CONFIG_FILE_NAME = "config.properties"
     private val props = Properties()
 
     init {

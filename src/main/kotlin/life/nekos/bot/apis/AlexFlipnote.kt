@@ -1,5 +1,7 @@
 package life.nekos.bot.apis
 
+import life.nekos.bot.apis.entities.Color
+import life.nekos.bot.apis.entities.RGB
 import okhttp3.*
 import org.json.JSONObject
 import java.io.InputStream
@@ -17,7 +19,7 @@ object AlexFlipnote : Api() {
             .toRequest()
 
         return performRequest(endpoint)
-            .thenApply { it.byteStream() }
+            .thenApply(ResponseBody::byteStream)
     }
 
     fun color(hex: String): CompletableFuture<Color> {
@@ -26,8 +28,9 @@ object AlexFlipnote : Api() {
             .build()
 
         return performRequest(request)
-            .thenApply { it.string() }
-            .thenApply { createColorFromJsonString(it) }
+            .thenApply(ResponseBody::string)
+            .thenApply(::JSONObject)
+            .thenApply(Color::fromObject)
     }
 
     fun coffee(): CompletableFuture<String> {
@@ -36,60 +39,8 @@ object AlexFlipnote : Api() {
             .build()
 
         return performRequest(request)
-            .thenApply { it.string() }
-            .thenApply { JSONObject(it) }
+            .thenApply(ResponseBody::string)
+            .thenApply(::JSONObject)
             .thenApply { it.getString("file") }
-    }
-
-    class Color(
-        val textContrast: String,
-        val brightness: Int,
-        val hex: String,
-        val imageUrl: String,
-        val gradientImageUrl: String,
-        val integer: Int,
-        val name: String,
-        val rgb: String,
-        val rgbValues: RGB,
-        val shade: List<String>,
-        val tint: List<String>
-    )
-
-    class RGB(val r: Int, val g: Int, val b: Int)
-
-    fun createColorFromJsonString(str: String): Color {
-        val json = JSONObject(str)
-        val textContrast = json.getString("blackorwhite_text")
-        val brightness = json.getInt("brightness")
-        val hex = json.getString("hex")
-        val imageUrl = json.getString("image")
-        val gradientImageUrl = json.getString("image_gradient")
-        val integer = json.getInt("int")
-        val name = json.getString("name")
-        val rgb = json.getString("rgb")
-
-        val rgbValuesJson = json.getJSONObject("rgb_values")
-        val rgbValues = RGB(
-            rgbValuesJson.getInt("r"),
-            rgbValuesJson.getInt("g"),
-            rgbValuesJson.getInt("b")
-        )
-
-        val shade = json.getJSONArray("shade").map { it as String }.toList()
-        val tint = json.getJSONArray("tint").map { it as String }.toList()
-
-        return Color(
-            textContrast,
-            brightness,
-            hex,
-            imageUrl,
-            gradientImageUrl,
-            integer,
-            name,
-            rgb,
-            rgbValues,
-            shade,
-            tint
-        )
     }
 }

@@ -28,8 +28,8 @@ object NekosLife : Api() {
     fun why() = jsonEndpoint("/why", "why")
 
     fun eightBall() = request { path = "/8ball" }
-        .thenApply { it.string() }
-        .thenApply { JSONObject(it) }
+        .thenApply(ResponseBody::string)
+        .thenApply(::JSONObject)
 
     fun chat(text: String, owo: Boolean) = request {
         path = "/chat"
@@ -40,13 +40,13 @@ object NekosLife : Api() {
                 "owo" eq "true"
             }
         }
-    }.thenApply { it.string() }
-        .thenApply { JSONObject(it) }
+    }.thenApply(ResponseBody::string)
+        .thenApply(::JSONObject)
         .thenApply { it.getString("response") }
 
     fun jsonEndpoint(endpoint: String, jsonKey: String) = request { path = endpoint }
-        .thenApply { it.string() }
-        .thenApply { JSONObject(it) }
+        .thenApply(ResponseBody::string)
+        .thenApply(::JSONObject)
         .thenApply { it.getString(jsonKey) }
 
     fun request(builder: Endpoint.() -> Unit): CompletableFuture<ResponseBody> {

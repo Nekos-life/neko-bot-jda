@@ -48,6 +48,10 @@ object Loader {
 }
 
 /**
+ * TODO: Extensively test the Database entity system and port the User entity over.
+ */
+
+/**
  * TODO: Fun category
  * TODO: Bot category
  * TODO: Audio category

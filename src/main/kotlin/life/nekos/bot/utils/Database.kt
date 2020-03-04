@@ -26,8 +26,11 @@ object Database {
     /** Actual functions **/
     fun getPrefix(guildId: String) = getFrom(guilds, guildId) { getString("prefix") }
 
-    fun getGuild(guildId: String) = getFrom(guilds, guildId) { Guild.fromDocument(this) }
-        ?: Guild.empty(guildId)
+    //fun getGuild(guildId: String) = getFrom(guilds, guildId) { Guild.fromDocument(this) }
+    //    ?: Guild.empty(guildId)
+
+    fun getGuild(guildId: String) = getFrom(guilds, guildId) { Klash.construct(this.toJson()) }
+        ?: Guild(guildId)
 
     fun getUser(userId: String) = getFrom(users, userId) { User.fromDocument(this) }
         ?: User.empty(userId)
@@ -43,10 +46,7 @@ object Database {
         .toList()
 
     fun getDocument(c: MongoCollection<Document>, id: String) = c.find(BasicDBObject("_id", id)).firstOrNull()
-
-    fun <T> getFrom(c: MongoCollection<Document>, id: String, apply: Document.() -> T): T? {
-        return getDocument(c, id)?.apply()
-    }
+    fun <T> getFrom(c: MongoCollection<Document>, id: String, apply: Document.() -> T) = getDocument(c, id)?.apply()
 
     fun update(c: MongoCollection<Document>, id: String, apply: Mapper.() -> Unit) {
         val updated = Mapper().apply(apply).doc
@@ -54,6 +54,14 @@ object Database {
         c.updateOne(
             eq("_id", id),
             Document("\$set", updated),
+            UpdateOptions().upsert(true)
+        )
+    }
+
+    fun updateEntire(c: MongoCollection<Document>, id: String, json: String) {
+        c.updateOne(
+            eq("_id", id),
+            Document("\$set", Document.parse(json)),
             UpdateOptions().upsert(true)
         )
     }

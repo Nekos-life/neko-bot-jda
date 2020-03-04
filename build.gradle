@@ -37,7 +37,7 @@ dependencies {
     }
 
     // Command Handler
-    implementation 'com.github.Devoxin:Flight:1.4.3'
+    implementation 'com.github.Devoxin:Flight:1.5.1'
 
     // Audio
     implementation 'com.sedmelluq:lavaplayer:1.3.34'

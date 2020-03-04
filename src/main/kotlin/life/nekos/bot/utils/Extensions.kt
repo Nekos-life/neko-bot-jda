@@ -1,5 +1,6 @@
 package life.nekos.bot.utils
 
+import me.devoxin.flight.api.Context
 import java.util.concurrent.CompletableFuture
 
 
@@ -18,4 +19,9 @@ fun <T> CompletableFuture<T>.thenException(block: (Throwable) -> Unit): Completa
     }
 
     return this
+}
+
+fun Context.isNsfw(): Boolean {
+    return this.textChannel?.isNSFW ?: this.privateChannel != null
+    // Only in NSFW text channels, or DMs.
 }
