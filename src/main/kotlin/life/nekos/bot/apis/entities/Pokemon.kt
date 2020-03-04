@@ -1,3 +1,6 @@
 package life.nekos.bot.apis.entities
 
-class Pokemon
+class Pokemon(
+    val id: Int,
+    val name: String
+)
