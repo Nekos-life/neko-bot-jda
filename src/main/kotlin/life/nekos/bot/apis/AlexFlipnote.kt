@@ -29,7 +29,7 @@ object AlexFlipnote : Api() {
         return performRequest(request)
             .thenApply(ResponseBody::string)
             .thenApply(::JSONObject)
-            .thenApply(Color::fromObject)
+            .thenApply { Color.fromObject(it) }
     }
 
     fun coffee(): CompletableFuture<String> {
