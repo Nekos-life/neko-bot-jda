@@ -1,5 +1,6 @@
 package life.nekos.bot.commands
 
+import com.sun.management.OperatingSystemMXBean
 import life.nekos.bot.Loader
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
@@ -10,6 +11,8 @@ import me.devoxin.flight.api.Context
 import me.devoxin.flight.models.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message
+import java.lang.management.ManagementFactory
+import java.text.DecimalFormat
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
@@ -50,13 +53,34 @@ class Bot : Cog {
 
     @Command(description = "My statistics~", guildOnly = true)
     fun stats(ctx: Context) {
+        /* Uptime */
         val uptime = System.currentTimeMillis() - Loader.bootTime
         val formattedUptime = TextUtils.toTimeString(uptime)
 
+        /* CPU usage */
+        val osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean::class.java)
+        val procCpuUsage = dpFormatter.format(osBean.processCpuLoad * 100)
+        val sysCpuUsage = dpFormatter.format(osBean.systemCpuLoad * 100)
+
+        /* RAM usage */
+        val usedRaw = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()
+        val usedPercent = dpFormatter.format(usedRaw.toDouble() / Runtime.getRuntime().totalMemory() * 100)
+        val usedMb = dpFormatter.format(usedRaw.toDouble() / 1048576)
+
+        /* Shards */
+        val alive = Loader.bot.shardsRunning
+        val dead = Loader.bot.shardsTotal - Loader.bot.shardsRunning
+        val avgLatency = Loader.bot.averageGatewayPing.toInt()
+
+        /* Output Builder: Bot */
         val content = StringBuilder(String.format("%12s===== NekoBot =====\n", ""))
         content.append(String.format("%-15s: %s\n", "Uptime", formattedUptime))
         content.append(String.format("%-15s: %d\n", "Threads", Thread.activeCount()))
+        content.append(String.format("%-15s: %s%%\n", "CPU Usage [SYS]", sysCpuUsage))
+        content.append(String.format("%-15s: %s%%\n", "CPU Usage [JVM]", procCpuUsage))
+        content.append(String.format("%-15s: %sMB (%s%%)\n", "RAM Usage", usedMb, usedPercent))
 
+        /* Output Builder: Shards */
         content.append(String.format("\n%12s===== Shards  =====\n", ""))
         content.append(String.format("%3s | %-28s | %-3s\n", "ID", "Status", "Latency"))
 
@@ -64,7 +88,13 @@ class Bot : Cog {
             content.append(String.format("%3d | %-28s | %-3dms\n", shard.shardInfo.shardId, shard.status.name, shard.gatewayPing))
         }
 
+        content.append(String.format("\nAlive: %d | Dead: %d | Avg. Latency: %dms", alive, dead, avgLatency))
+
         ctx.send("```prolog\n$content```")
+    }
+
+    companion object {
+        private val dpFormatter = DecimalFormat("0.00")
     }
 
 }
