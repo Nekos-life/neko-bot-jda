@@ -4,7 +4,7 @@ import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.parsers.stringorbool.StringBool
 import life.nekos.bot.utils.RequestUtil
 import life.nekos.bot.utils.WumpDump
-import life.nekos.bot.utils.thenException
+import life.nekos.bot.utils.extensions.thenException
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.Context
 import me.devoxin.flight.arguments.Greedy

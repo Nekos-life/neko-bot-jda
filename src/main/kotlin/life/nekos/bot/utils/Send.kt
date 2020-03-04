@@ -1,15 +1,15 @@
 package life.nekos.bot.utils
 
-import life.nekos.bot.NekoBot
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.apis.PokeApi
+import life.nekos.bot.utils.extensions.isNsfw
+import life.nekos.bot.utils.extensions.thenException
 import me.devoxin.flight.api.Context
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 

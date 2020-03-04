@@ -1,8 +1,9 @@
 package life.nekos.bot.commands
 
+import life.nekos.bot.Loader
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
-import life.nekos.bot.utils.thenException
+import life.nekos.bot.utils.extensions.thenException
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.Context
 import me.devoxin.flight.models.Cog
@@ -44,12 +45,22 @@ class Bot : Cog {
     @Command(description = "Pong!")
     fun ping(ctx: Context) {
         ctx.send("Hello nya~")
-        // SHARD STATUSES/PINGS
     }
 
     @Command(description = "My statistics~", guildOnly = true)
     fun stats(ctx: Context) {
-        // TODO
+        val content = StringBuilder(String.format("%12s===== NekoBot =====\n", ""))
+        content.append(String.format("%-15s: %s\n", "Uptime", "00:00:00"))
+        content.append(String.format("%-15s: %d\n", "Threads", Thread.activeCount()))
+
+        content.append(String.format("\n%12s===== Shards  =====\n", ""))
+        content.append(String.format("%3s | %-28s | %-3s\n", "ID", "Status", "Latency"))
+
+        for (shard in Loader.bot.shards.reversed()) {
+            content.append(String.format("%3d | %-28s | %-3dms\n", shard.shardInfo.shardId, shard.status.name, shard.gatewayPing))
+        }
+
+        ctx.send("```prolog\n$content```")
     }
 
 }
