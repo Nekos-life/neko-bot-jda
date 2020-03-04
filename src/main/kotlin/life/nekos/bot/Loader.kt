@@ -13,6 +13,8 @@ import life.nekos.bot.utils.NekoPrefixProvider
 
 object Loader {
 
+    val bootTime = System.currentTimeMillis()
+
     var isDebug = false
         private set
 

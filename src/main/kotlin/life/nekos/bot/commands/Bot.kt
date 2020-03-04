@@ -3,6 +3,7 @@ package life.nekos.bot.commands
 import life.nekos.bot.Loader
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
+import life.nekos.bot.utils.TextUtils
 import life.nekos.bot.utils.extensions.thenException
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.Context
@@ -49,8 +50,11 @@ class Bot : Cog {
 
     @Command(description = "My statistics~", guildOnly = true)
     fun stats(ctx: Context) {
+        val uptime = System.currentTimeMillis() - Loader.bootTime
+        val formattedUptime = TextUtils.toTimeString(uptime)
+
         val content = StringBuilder(String.format("%12s===== NekoBot =====\n", ""))
-        content.append(String.format("%-15s: %s\n", "Uptime", "00:00:00"))
+        content.append(String.format("%-15s: %s\n", "Uptime", formattedUptime))
         content.append(String.format("%-15s: %d\n", "Threads", Thread.activeCount()))
 
         content.append(String.format("\n%12s===== Shards  =====\n", ""))
