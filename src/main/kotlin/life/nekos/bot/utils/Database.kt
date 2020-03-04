@@ -29,7 +29,7 @@ object Database {
     //fun getGuild(guildId: String) = getFrom(guilds, guildId) { Guild.fromDocument(this) }
     //    ?: Guild.empty(guildId)
 
-    fun getGuild(guildId: String) = getFrom(guilds, guildId) { Klash.construct(this.toJson()) }
+    fun getGuild(guildId: String) = getFrom(guilds, guildId) { Klash.construct<Guild>(this.toJson()) }
         ?: Guild(guildId)
 
     fun getUser(userId: String) = getFrom(users, userId) { User.fromDocument(this) }
