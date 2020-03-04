@@ -25,10 +25,6 @@ object Loader {
         isDebug = args.any { it == "--debug" }
         val token = Config["token"]
 
-        PokeApi.getPokemon(3).thenAccept {
-            println(it.id.toString() + " - " + it.name)
-        }
-
         commandClient = CommandClientBuilder()
             .setOwnerIds(248294452307689473L, 180093157554388993L)
             .setPrefixProvider(NekoPrefixProvider())
