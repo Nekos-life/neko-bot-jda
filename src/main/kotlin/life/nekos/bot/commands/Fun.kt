@@ -5,6 +5,7 @@ import life.nekos.bot.apis.AlexFlipnote
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.CommandHelp
 import life.nekos.bot.utils.Colors
+import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.Context
@@ -15,6 +16,7 @@ import me.devoxin.flight.parsers.MemberParser
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
+import java.util.concurrent.CompletableFuture
 
 class Fun : Cog {
 
@@ -112,25 +114,7 @@ class Fun : Cog {
 
     @Command(description = "Cuddle someone \\o/", guildOnly = true)
     suspend fun cuddle(ctx: Context, @Greedy who: Member?) {
-        if (who == null) {
-            return ctx.send("Who do you want to cuddle?? ${Formats.NEKO_C_EMOTE}")
-        }
-
-        if (who.idLong == ctx.author.idLong) {
-            return ctx.send("oh? why you want to cuddle yourself? Find a friend nya~")
-        }
-
-        if (who.idLong == ctx.jda.selfUser.idLong) {
-            return ctx.send("Nyaaaaaaaaaa, nu dun touch mee~")
-        }
-
-        val cuddleImage = NekosLife.cuddle().await()
-
-        ctx.send {
-            setColor(Colors.getEffectiveColor(ctx))
-            setDescription("${who.effectiveName}, you got cuddles from ${ctx.author.name} ${Formats.randomCat()}")
-            setImage(cuddleImage)
-        }
+        genericActionCommand(ctx, who, "cuddle", NekosLife.cuddle())
     }
 
     @Command(aliases = ["dym", "did_you_mean"], description = "Did you mean? \"something | else\"")
@@ -143,6 +127,93 @@ class Fun : Cog {
         val result = AlexFlipnote.didYouMean(top, bottom).await()
 
         ctx.send(Attachment.Companion.from(result, "didyoumean.png"))
+    }
+
+    @Command(description = "Flip a coin", guildOnly = true, developerOnly = true)
+    fun flip(ctx: Context, bet: Int) {
+        if (bet < 1) {
+            return ctx.send("You must bet higher than 0 nya~")
+        }
+
+        val data = Database.getUser(ctx.author.id)
+
+        if (data.nekos < 1) {
+            return ctx.send("You don't have enough to bet nya~")
+        }
+
+        if (bet > data.nekos) {
+            return ctx.send("You only have **${data.nekos}** nekos nya~")
+        }
+
+        when ((1..2).random()) {
+            1 -> ctx.send("You flipped heads nya~")
+            2 -> ctx.send("You flipped tails nya~")
+        }
+    }
+
+    @Command(description = "Hug someone \\o/", guildOnly = true)
+    suspend fun hug(ctx: Context, @Greedy who: Member?) {
+        genericActionCommand(ctx, who, "hug", NekosLife.hug())
+    }
+
+    @Command(description = "Kiss someone \\o/", guildOnly = true)
+    suspend fun kiss(ctx: Context, @Greedy who: Member?) {
+        genericActionCommand(ctx, who, "kiss", NekosLife.kiss())
+    }
+
+    @Command(description = "Pat someone \\o/", guildOnly = true)
+    suspend fun pat(ctx: Context, @Greedy who: Member?) {
+        genericActionCommand(ctx, who, "pat", NekosLife.pat())
+    }
+
+    @Command(description = "Pat someone \\o/", guildOnly = true)
+    suspend fun slap(ctx: Context, @Greedy who: Member?) {
+        genericActionCommand(ctx, who, "slap", NekosLife.slap())
+    }
+
+    @Command(aliases = ["huh", "hmmmmm"], description = "random why?")
+    suspend fun why(ctx: Context) {
+        val nekoWhy = NekosLife.why().await()
+
+        ctx.send {
+            setColor(Colors.getEffectiveColor(ctx))
+            setAuthor("Why??", ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
+            setDescription(nekoWhy)
+        }
+    }
+
+    @Command(aliases = ["gecg"], description = "random gecg owO", nsfw = true)
+    suspend fun meme(ctx: Context) {
+        val nekoMeme = NekosLife.meme().await()
+
+        ctx.send {
+            setColor(Colors.getEffectiveColor(ctx))
+            setDescription("owo")
+            setImage(nekoMeme)
+        }
+    }
+
+    private suspend fun genericActionCommand(ctx: Context, who: Member?, action: String,
+                                             img: CompletableFuture<String>) {
+        if (who == null) {
+            return ctx.send("Who do you want to $action?? ${Formats.NEKO_C_EMOTE}")
+        }
+
+        if (who.idLong == ctx.author.idLong) {
+            return ctx.send("oh? why you want to $action yourself? Find a friend nya~")
+        }
+
+        if (who.idLong == ctx.jda.selfUser.idLong) {
+            return ctx.send("Nyaaaaaaaaaa, nu dun $action mee~")
+        }
+
+        val imgUrl = img.await()
+
+        ctx.send {
+            setColor(Colors.getEffectiveColor(ctx))
+            setDescription("${who.effectiveName}, you got a $action from ${ctx.author.name} ${Formats.randomCat()}")
+            setImage(imgUrl)
+        }
     }
 
     companion object {
