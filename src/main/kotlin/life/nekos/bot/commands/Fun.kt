@@ -9,8 +9,11 @@ import life.nekos.bot.utils.Formats
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.Context
 import me.devoxin.flight.arguments.Greedy
+import me.devoxin.flight.models.Attachment
 import me.devoxin.flight.models.Cog
+import me.devoxin.flight.parsers.MemberParser
 import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
 
 class Fun : Cog {
@@ -84,6 +87,66 @@ class Fun : Cog {
             setImage(coffee)
             setFooter("API provided by AlexFlipnote")
         }
+    }
+
+    @Command(aliases = ["colour"], description = "See information about a color")
+    suspend fun color(ctx: Context, @Greedy color: String) {
+        val m = memberConverter.parse(ctx, color)
+        val parsedColor = m.map { it.color }
+            .orElseGet { Colors.parse(color) }
+            ?: return ctx.send("Nu nya, that doesn't look like a color to me. Try a hex `#0000ff`, or a name `Blue`")
+
+        val hex = String.format("%02x%02x%02x", parsedColor.red, parsedColor.green, parsedColor.blue)
+        val info = AlexFlipnote.color(hex).await()
+
+        ctx.send {
+            setColor(parsedColor)
+            setDescription(Formats.info("Color info for $color"))
+            setImage(info.imageUrl)
+            addField("Name", info.name, true)
+            addField("Hex", info.hex, true)
+            addField("RGB", info.rgb, true)
+            setFooter("API provided by AlexFlipnote")
+        }
+    }
+
+    @Command(description = "Cuddle someone \\o/", guildOnly = true)
+    suspend fun cuddle(ctx: Context, @Greedy who: Member?) {
+        if (who == null) {
+            return ctx.send("Who do you want to cuddle?? ${Formats.NEKO_C_EMOTE}")
+        }
+
+        if (who.idLong == ctx.author.idLong) {
+            return ctx.send("oh? why you want to cuddle yourself? Find a friend nya~")
+        }
+
+        if (who.idLong == ctx.jda.selfUser.idLong) {
+            return ctx.send("Nyaaaaaaaaaa, nu dun touch mee~")
+        }
+
+        val cuddleImage = NekosLife.cuddle().await()
+
+        ctx.send {
+            setColor(Colors.getEffectiveColor(ctx))
+            setDescription("${who.effectiveName}, you got cuddles from ${ctx.author.name} ${Formats.randomCat()}")
+            setImage(cuddleImage)
+        }
+    }
+
+    @Command(aliases = ["dym", "did_you_mean"], description = "Did you mean? \"something | else\"")
+    suspend fun didyoumean(ctx: Context, @Greedy dym: String) {
+        if (!dym.contains('|')) {
+            return ctx.send("You need to separate the top and bottom text with `|` nya~")
+        }
+
+        val (top, bottom) = dym.split("|")
+        val result = AlexFlipnote.didYouMean(top, bottom).await()
+
+        ctx.send(Attachment.Companion.from(result, "didyoumean.png"))
+    }
+
+    companion object {
+        private val memberConverter = MemberParser()
     }
 
 }

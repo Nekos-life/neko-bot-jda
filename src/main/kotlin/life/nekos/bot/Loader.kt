@@ -44,10 +44,6 @@ object Loader {
             setShardsTotal(-1)
         }
 
-        bot.retrieveApplicationInfo().queue {
-            println(it.name)
-        }
-
         commandClient.registerCommands(CustomHelpCommand())
         commandClient.registerCommands("life.nekos.bot.commands")
     }
@@ -64,8 +60,6 @@ object Loader {
  * TODO: Finish user category
  * TODO: Finish owner category
  * TODO: Finish stats integration
- * TODO: Neko Spawning
  * TODO: Handlers
- * TODO: Checks (@FlightEventAdapter).
  * TODO: Web server.
  */
