@@ -57,7 +57,6 @@ object Loader {
 /**
  * TODO: Fun category
  *   - SumFuk
- *   - Flip
  *   - Ship
  * TODO: Audio category
  * TODO: Finish user category
