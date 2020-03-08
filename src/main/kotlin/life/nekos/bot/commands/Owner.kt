@@ -2,6 +2,7 @@ package life.nekos.bot.commands
 
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.parsers.stringorbool.StringBool
+import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.RequestUtil
 import life.nekos.bot.utils.WumpDump
 import life.nekos.bot.utils.extensions.thenException
@@ -66,6 +67,14 @@ class Owner : Cog {
             .thenException {
                 ctx.send(it.localizedMessage)
             }
+    }
+
+    @Command(description = "keep this between you and me", developerOnly = true)
+    fun `↑↑↓↓←→←→`(ctx: Context) {
+        Database.getUser(ctx.author.id).update {
+            nekos += 500
+        }
+        ctx.send("Tell no one, nya~")
     }
 
 }

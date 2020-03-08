@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
 import java.util.concurrent.CompletableFuture
+import kotlin.math.roundToInt
 
 class Fun : Cog {
 
@@ -130,7 +131,11 @@ class Fun : Cog {
     }
 
     @Command(description = "Flip a coin", guildOnly = true, developerOnly = true)
-    fun flip(ctx: Context, bet: Int) {
+    fun flip(ctx: Context, side: String?, bet: Int) {
+        if (side == null || !sides.contains(side.toLowerCase())) {
+            return ctx.send("You must pick heads or tails, nya~")
+        }
+
         if (bet < 1) {
             return ctx.send("You must bet higher than 0 nya~")
         }
@@ -145,9 +150,22 @@ class Fun : Cog {
             return ctx.send("You only have **${data.nekos}** nekos nya~")
         }
 
-        when ((1..2).random()) {
-            1 -> ctx.send("You flipped heads nya~")
-            2 -> ctx.send("You flipped tails nya~")
+        val selectedSide = sides.indexOf(side.toLowerCase()) + 1
+        val roll = (1..2).random()
+
+        if (roll == selectedSide) {
+            val betRounded = (bet.toDouble() * 0.4).roundToInt()
+            ctx.send("The coin landed on ${sides[roll - 1]} nya~\nYou won **$betRounded** nekos owo")
+
+            Database.getUser(ctx.author.id).update {
+                nekos += betRounded
+            }
+        } else {
+            ctx.send("The coin landed on ${sides[roll - 1]} nya~\nYou lost **$bet** nekos (=‘ｘ‘=)")
+
+            Database.getUser(ctx.author.id).update {
+                nekos -= bet.toInt()
+            }
         }
     }
 
@@ -218,6 +236,7 @@ class Fun : Cog {
 
     companion object {
         private val memberConverter = MemberParser()
+        private val sides = listOf("heads", "tails")
     }
 
 }
