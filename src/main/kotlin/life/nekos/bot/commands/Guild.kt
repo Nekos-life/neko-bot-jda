@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import kotlin.streams.toList
 
 class Guild : Cog {
@@ -32,10 +33,16 @@ class Guild : Cog {
         botPermissions = [Permission.MANAGE_ROLES], userPermissions = [Permission.MANAGE_ROLES])
     suspend fun recolor(ctx: Context) {
         ctx.sendAsync("This command will change the color of all hoisted roles to something random! Do you want to continue? (yes/no)")
-        ctx.waitFor(
-            GuildMessageReceivedEvent::class.java,
-            { it.author.idLong == ctx.author.idLong && it.message.contentRaw.toLowerCase() == "yes" }, 60000
-        ) ?: return
+
+        try {
+            ctx.waitFor(
+                GuildMessageReceivedEvent::class.java,
+                { it.author.idLong == ctx.author.idLong && it.message.contentRaw.toLowerCase() == "yes" },
+                60000
+            )
+        } catch (ex: TimeoutException) {
+            return
+        }
 
         val modifiableRoles = ctx.guild!!.roleCache.stream()
             .filter(Role::isHoisted)
@@ -54,8 +61,7 @@ class Guild : Cog {
     @Command(aliases = ["r"], description = "Shows server role info", guildOnly = true)
     fun roles(ctx: Context, role: Role?) {
         if (role == null) {
-            ctx.send("You must provide the name of the role whose information you want to see, nya~")
-            return
+            return ctx.send("You must provide the name of the role whose information you want to see, nya~")
         }
 
         val color = role.color

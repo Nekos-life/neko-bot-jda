@@ -34,8 +34,7 @@ class User : Cog {
             "nekos" -> Database.getTopNekos()
             "levels" -> Database.getTopExp()
             else -> {
-                ctx.send(Formats.error("**Use `lb nekos` or `lb levels`**"))
-                return
+                return ctx.send(Formats.error("**Use `lb nekos` or `lb levels`**"))
             }
         }
 
@@ -60,10 +59,9 @@ class User : Cog {
         val targetUser = user.user
 
         if (targetUser.isBot) {
-            ctx.send {
+            return ctx.send {
                 setDescription("Bots don't have profiles ;p")
             }
-            return
         }
 
         val profile = Database.getUser(user.id)
@@ -96,8 +94,7 @@ class User : Cog {
         val data = Database.getUser(ctx.author.id)
 
         if (data.nekos == 0L) {
-            ctx.send("Nya~ You do not have any nekos to release nya~")
-            return
+            return ctx.send("Nya~ You do not have any nekos to release nya~")
         }
 
         data.update {

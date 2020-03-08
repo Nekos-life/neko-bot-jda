@@ -37,7 +37,6 @@ class Owner : Cog {
     fun setAvatarWithUrl(ctx: Context, url: String) {
         RequestUtil.request { url(url) }
             .submit()
-            .thenCompose { RequestUtil.request { url(url) }.submit() }
             .thenCompose {
                 val icon = Icon.from(it.body()!!.byteStream())
                 ctx.jda.selfUser.manager.setAvatar(icon).submit()
@@ -58,7 +57,7 @@ class Owner : Cog {
 
         val stdout = InputStreamReader(proc.inputStream).readText()
         val stderr = InputStreamReader(proc.errorStream).readText()
-        val content = String.format("- - - - - STDOUT - - - - -\n{}\n\n- - - - - STDERR - - - - -\n{}", stdout, stderr)
+        val content = String.format("- - - - - STDOUT - - - - -\n%s\n\n- - - - - STDERR - - - - -\n%s", stdout, stderr)
 
         WumpDump.paste(content)
             .thenAccept {

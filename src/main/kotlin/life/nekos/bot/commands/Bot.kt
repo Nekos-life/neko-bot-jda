@@ -36,7 +36,6 @@ class Bot : Cog {
     @Command(aliases = ["join", "oauth", "link", "links", "support"],
         description = "Bot and support guild links -.o")
     fun invite(ctx: Context) {
-        // Model.statsUp("invite")
         ctx.send {
             setColor(Colors.getRandomColor())
             setAuthor(ctx.jda.selfUser.name, ctx.jda.selfUser.effectiveAvatarUrl, ctx.jda.selfUser.effectiveAvatarUrl)
@@ -82,10 +81,10 @@ class Bot : Cog {
 
         /* Output Builder: Shards */
         content.append(String.format("\n%12s===== Shards  =====\n", ""))
-        content.append(String.format("%3s | %-28s | %-3s\n", "ID", "Status", "Latency"))
+        content.append(String.format("%3s | %-27s | %-3s\n", "ID", "Status", "Latency"))
 
         for (shard in Loader.bot.shards.reversed()) {
-            content.append(String.format("%3d | %-28s | %-3dms\n", shard.shardInfo.shardId, shard.status.name, shard.gatewayPing))
+            content.append(String.format("%3d | %-27s | %-3dms\n", shard.shardInfo.shardId, shard.status.name, shard.gatewayPing))
         }
 
         content.append(String.format("\nAlive: %d | Dead: %d | Avg. Latency: %dms", alive, dead, avgLatency))

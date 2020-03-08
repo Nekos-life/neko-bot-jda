@@ -13,11 +13,6 @@ import net.dv8tion.jda.api.EmbedBuilder
 import java.awt.Color
 
 class Neko : Cog {
-    override fun localCheck(ctx: Context, command: CommandWrapper): Boolean {
-        // Model.statsUp(command.name)
-        return true
-    }
-
     fun embed(ctx: Context, description: String, imageUrl: String,
               embedOptions: EmbedBuilder.() -> Unit = {}) {
         ctx.send {

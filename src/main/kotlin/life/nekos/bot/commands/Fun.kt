@@ -29,8 +29,7 @@ class Fun : Cog {
         if (options.contains("--new")) {
             if (options.contains("--nsfw")) {
                 if (!isDm && (ctx.message.isFromGuild && !ctx.textChannel!!.isNSFW)) {
-                    ctx.send("Nu, nya use this in an nsfw channel or add `--dm`")
-                    return
+                    return ctx.send("Nu, nya use this in an nsfw channel or add `--dm`")
                 }
                 response
                     .setDescription("${Formats.INFO_EMOTE} Hey ${ctx.author.name}! Here is a new nsfw avatar, nya~ ${Formats.randomCat()}")
@@ -60,8 +59,7 @@ class Fun : Cog {
     @Command(aliases = ["8", "8ball", "8b"], description = "random why?")
     suspend fun ball(ctx: Context, @Greedy question: String) {
         if (!question.endsWith('?')) {
-            ctx.send("\uD83D\uDEAB Nuu, nya! That doesn't look like a question? didn't anyone teach you punctuation??")
-            return
+            return ctx.send("\uD83D\uDEAB Nuu, nya! That doesn't look like a question? didn't anyone teach you punctuation??")
         }
 
         val res = NekosLife.eightBall().await()
