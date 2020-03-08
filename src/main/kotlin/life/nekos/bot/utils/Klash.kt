@@ -54,6 +54,7 @@ object Klash {
      * Deconstructs the given object into a JSON string.
      */
     fun <T: Any> deconstruct(obj: T): String {
+        @Suppress("UNCHECKED_CAST")
         val properties = (obj::class as KClass<T>).memberProperties
         val json = JSONObject()
 

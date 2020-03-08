@@ -24,6 +24,11 @@ class Owner : Cog {
 
     }
 
+    @Command(developerOnly = true)
+    fun crash(ctx: Context) {
+        throw UnsupportedOperationException()
+    }
+
     @Command(description = "Sets the bot's avatar. Pass a URL for custom, or `y` for random.", developerOnly = true)
     fun setavatar(ctx: Context, urlOrRandom: StringBool) {
         if (urlOrRandom.isBool && (urlOrRandom.entity as Boolean)) {

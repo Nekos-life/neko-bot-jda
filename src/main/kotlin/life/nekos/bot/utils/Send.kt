@@ -5,6 +5,7 @@ import life.nekos.bot.apis.PokeApi
 import life.nekos.bot.utils.extensions.isNsfw
 import life.nekos.bot.utils.extensions.thenException
 import me.devoxin.flight.api.Context
+import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
@@ -27,11 +28,11 @@ class Send(private val ctx: Context) {
 
         fetchContextualNeko()
             .thenCompose {
-                ctx.send {
+                ctx.messageChannel.sendMessage(EmbedBuilder().apply {
                     setColor(Colors.getEffectiveColor(ctx))
                     setImage(it)
                     setFooter("${Formats.randomCat()} A wild neko has appeared! Use $keyword to catch it before it gets away \\o/")
-                }
+                }.build()).submit()
             }
             .thenAccept { drop ->
                 ctx.commandClient.waitFor(DEFAULT_PREDICATE(drop, dropper, keyword), DEFAULT_TIMEOUT)
@@ -50,11 +51,11 @@ class Send(private val ctx: Context) {
 
         PokeApi.getPokemon(pokeNum)
             .thenCompose {
-                ctx.send {
+                ctx.messageChannel.sendMessage(EmbedBuilder().apply {
                     setColor(Colors.getEffectiveColor(ctx))
                     setImage("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${it.id}.png")
                     setFooter("${Formats.randomCat()} A wild ${it.name.capitalize()} has appeared! Use >catch to catch it before it gets away \\o/")
-                }
+                }.build()).submit()
             }
             .thenAccept { drop ->
                 ctx.commandClient.waitFor(DEFAULT_PREDICATE(drop, dropper, ">catch"), DEFAULT_TIMEOUT)
@@ -74,7 +75,7 @@ class Send(private val ctx: Context) {
 
     private fun handleException(ex: Throwable, type: String) {
         if (ex is TimeoutException) {
-            ctx.send("Time's up! The $type escaped!")
+            ctx.messageChannel.sendMessage("Time's up! The $type escaped!").submit()
                 .thenAccept { it.delete().queueAfter(15, TimeUnit.SECONDS) }
         } else {
             log.error("[$type:Waiter]", ex)

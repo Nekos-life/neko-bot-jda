@@ -7,6 +7,7 @@ import me.devoxin.flight.api.Context
 import me.devoxin.flight.api.DefaultCommandClientAdapter
 import me.devoxin.flight.exceptions.BadArgument
 import net.dv8tion.jda.api.Permission
+import org.slf4j.LoggerFactory
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 
@@ -27,12 +28,15 @@ class FlightEventAdapter : DefaultCommandClientAdapter() {
 
     override fun onCommandError(ctx: Context, command: CommandWrapper, error: Throwable) {
         val cause = rootCauseOf(error)
-        ctx.send("oop\n```\n${cause.message}```")
-        error.printStackTrace()
+        val type = cause::class.java.simpleName
+        log.error("Command {} encountered an error!", command.name, error)
+
+        ctx.send("There was a problem processing the command\n" +
+                "The error has been logged, nya~\n```\n$type: ${cause.message}```")
     }
 
     override fun onCommandPostInvoke(ctx: Context, command: CommandWrapper, failed: Boolean) {
-        println("Command ${command.name} finished execution. Failed: $failed")
+        log.debug("Executed command {}, failed: {}", command.name, failed)
     }
 
     @ExperimentalStdlibApi
@@ -45,16 +49,21 @@ class FlightEventAdapter : DefaultCommandClientAdapter() {
     }
 
     override fun onParseError(ctx: Context, command: CommandWrapper, error: Throwable) {
-        ctx.send("An error occurred during argument parsing.\n```\n$error```")
-        error.printStackTrace()
+        log.error("Failed to parse argument for command {}", command.name, error)
     }
 
     override fun onBotMissingPermissions(ctx: Context, command: CommandWrapper, permissions: List<Permission>) {
-
+        val gimme = permissions.joinToString(prefix = "`", postfix = "`", separator = "`\n`") { it.getName() }
+        ctx.send("You need to give me these permissions, nya~\n$gimme")
     }
 
     override fun onUserMissingPermissions(ctx: Context, command: CommandWrapper, permissions: List<Permission>) {
+        val missing = permissions.joinToString(prefix = "`", postfix = "`", separator = "`\n`") { it.getName() }
+        ctx.send("You need to have these permissions, nya~\n$missing")
+    }
 
+    companion object {
+        private val log = LoggerFactory.getLogger(FlightEventAdapter::class.java)
     }
 
 }
