@@ -33,13 +33,12 @@ class User : Cog {
         val data = when (category) {
             "nekos" -> Database.getTopNekos()
             "levels" -> Database.getTopExp()
-            else -> {
-                return ctx.send(Formats.error("**Use `lb nekos` or `lb levels`**"))
-            }
+            else -> return ctx.send(Formats.error("**Use `lb nekos` or `lb levels`**"))
         }
 
-        val items = data.map { "${Formats.USER_EMOTE} **__Name__**: **${findUserById(ctx, it.id)}**\n" +
-                "**%${Formats.NEKO_V_EMOTE} __Nekos__**: **${it.nekos}**\n\n"
+        val items = data.map {
+            "${Formats.USER_EMOTE} **__Name__**: **${findUserById(ctx, it.id)}**\n" +
+                    "**%${Formats.NEKO_V_EMOTE} __Nekos__**: **${it.nekos}**\n\n"
         }
 
         val paginator = Paginator(items) {
@@ -93,12 +92,12 @@ class User : Cog {
     fun release(ctx: Context) {
         val data = Database.getUser(ctx.author.id)
 
-        if (data.nekos == 0L) {
+        if (data.nekos < 1) {
             return ctx.send("Nya~ You do not have any nekos to release nya~")
         }
 
         data.update {
-            nekos = data.nekos - 1
+            nekos--
         }
 
         // release
