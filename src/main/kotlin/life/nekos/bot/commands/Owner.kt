@@ -69,12 +69,24 @@ class Owner : Cog {
             }
     }
 
-    @Command(description = "keep this between you and me", developerOnly = true)
-    fun `↑↑↓↓←→←→`(ctx: Context) {
+    @Command(developerOnly = true)
+    fun cheat(ctx: Context, code: String) {
+        when (code) {
+            notACheatCommand -> `inaccessible command 1`(ctx)
+        }
+    }
+
+    fun `inaccessible command 1`(ctx: Context) {
         Database.getUser(ctx.author.id).update {
             nekos += 500
         }
         ctx.send("Tell no one, nya~")
+    }
+
+    companion object {
+        private val notACheatCommand = listOf(
+            0x2191, 0x2191, 0x2193, 0x2193, 0x2190, 0x2192, 0x2190, 0x2192
+        ).map(Int::toChar).joinToString("", transform = Char::toString)
     }
 
 }
