@@ -11,7 +11,7 @@ import me.devoxin.flight.utils.TextSplitter
 
 class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
 
-    override fun name(): String = "No Category"
+    override fun name(): String = "Bot"
 
     @Command(aliases = ["commands", "cmds"], description = "Displays bot help.")
     suspend fun help(ctx: Context, @Name("command") command: String?) {
