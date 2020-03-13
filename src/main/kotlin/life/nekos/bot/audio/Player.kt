@@ -14,7 +14,9 @@ class Player(audioPlayer: AudioPlayer) : AudioEventAdapter(), AudioPlayer by aud
     private var audioFrame: AudioFrame? = null
 
     // Player Properties
+    var lastTrack: AudioTrack? = null
     val queue = LinkedList<AudioTrack>()
+    val loopSetting = LoopMode.NONE
 
     init {
         audioPlayer.addListener(this)
@@ -32,11 +34,21 @@ class Player(audioPlayer: AudioPlayer) : AudioEventAdapter(), AudioPlayer by aud
     }
 
     override fun onTrackEnd(player: AudioPlayer, track: AudioTrack, endReason: AudioTrackEndReason) {
+        lastTrack = track
 
+        if (!endReason.mayStartNext) {
+            return
+        }
+
+        when (loopSetting) {
+            LoopMode.NONE -> nextTrack()
+            LoopMode.SINGLE -> playTrack(track.makeClone())
+            LoopMode.ALL -> playOrEnqueue(track.makeClone())
+        }
     }
 
     override fun onTrackStuck(player: AudioPlayer, track: AudioTrack, thresholdMs: Long) {
-
+        nextTrack()
     }
 
     // Send Handler methods
