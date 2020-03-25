@@ -199,6 +199,15 @@ object Formats {
 
     fun randomCat() = cats.random()
 
+    fun getVolEmote(vol: Int): String {
+        return when (vol) {
+            0 -> VOL_OFF_EMOTE
+            in 1..15 -> MUTE_EMOTE
+            in 16..59 -> VOL_D_EMOTE
+            else -> VOL_UP_EMOTE
+        }
+    }
+
     fun codeBox(text: String, lang: String): String {
         return MessageFormat.format("```{0}\n{1}\n```", lang, text)
     }

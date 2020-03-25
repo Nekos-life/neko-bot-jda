@@ -16,10 +16,17 @@ class Player(audioPlayer: AudioPlayer) : AudioEventAdapter(), AudioPlayer by aud
     // Player Properties
     var lastTrack: AudioTrack? = null
     val queue = LinkedList<AudioTrack>()
-    val loopSetting = LoopMode.NONE
+    var loopSetting = LoopMode.NONE
 
     init {
         audioPlayer.addListener(this)
+    }
+
+    fun cleanup() {
+        queue.clear()
+        stopTrack()
+        removeListener(this)
+        destroy()
     }
 
     // Player Methods

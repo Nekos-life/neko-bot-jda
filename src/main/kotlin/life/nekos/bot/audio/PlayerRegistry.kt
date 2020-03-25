@@ -1,6 +1,7 @@
 package life.nekos.bot.audio
 
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers
 import life.nekos.bot.Loader
 import java.util.concurrent.ConcurrentHashMap
 
@@ -9,6 +10,8 @@ object PlayerRegistry {
     private val players = ConcurrentHashMap<Long, Player>()
 
     init {
+        AudioSourceManagers.registerRemoteSources(playerManager)
+        // NicoAudio
 
     }
 
@@ -22,5 +25,13 @@ object PlayerRegistry {
                 guild.audioManager.sendingHandler = this
             }
         }
+    }
+
+    fun destroyPlayer(guildId: Long, disconnect: Boolean = true) {
+        Loader.bot.getGuildById(guildId)?.audioManager?.let {
+            it.sendingHandler = null
+            it.closeAudioConnection()
+        }
+        players[guildId]?.cleanup()
     }
 }
