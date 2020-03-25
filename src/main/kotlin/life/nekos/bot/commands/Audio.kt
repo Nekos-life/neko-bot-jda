@@ -1,5 +1,6 @@
 package life.nekos.bot.commands
 
+import life.nekos.bot.audio.LoopMode
 import life.nekos.bot.audio.PlayerRegistry
 import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Checks
@@ -80,8 +81,56 @@ class Audio : Cog {
     // Play
     // Playlist
     // Queue
-    // Repeat
-    // Shuffle
+
+    @DonorOnly
+    @Command(aliases = ["loop"], description = "Set repeat for a track.",
+        guildOnly = true)
+    fun repeat(ctx: Context, loop: String) {
+        if (!checkVoice(ctx)) {
+            return
+        }
+
+        if (!Checks.audioChecks(ctx)) {
+            return ctx.send("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
+        }
+
+        val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
+
+        if (player.playingTrack == null) {
+            return ctx.send("oh? the queue is empty! play something first nya~")
+        }
+
+        when (loop) {
+            "all", "queue" -> player.loopSetting = LoopMode.ALL
+            "current", "single" -> player.loopSetting = LoopMode.SINGLE
+            "off", "none" -> player.loopSetting = LoopMode.NONE
+            else -> return ctx.send("You need to specify `all`, `current` or `none` nya~")
+        }
+
+        ctx.send("Alright nya, I have set repeat to `${player.loopSetting.name.toLowerCase()}` " +
+                Formats.randomCat())
+    }
+
+    @Command(aliases = ["shuffle", "mix"], description = "Shuffles the current queue.",
+        guildOnly = true)
+    fun shuffle(ctx: Context) {
+        if (!checkVoice(ctx)) {
+            return
+        }
+
+        if (!Checks.audioChecks(ctx)) {
+            return ctx.send("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
+        }
+
+        val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
+
+        if (player.queue.isEmpty()) {
+            return ctx.send("oh? the queue is empty! play something first nya~")
+        }
+
+        player.queue.shuffle()
+        ctx.send("owo I mixed them all up ${Formats.randomCat()}")
+    }
 
     @Command(aliases = ["s", "next"], description = "Skips the current track.",
         guildOnly = true)
@@ -95,6 +144,7 @@ class Audio : Cog {
         }
 
         val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
+
         if (player.playingTrack == null) {
             return ctx.send("oh? the queue is empty! play something first nya~")
         }
