@@ -1,5 +1,6 @@
 package life.nekos.bot.audio
 
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers
 import life.nekos.bot.Loader
@@ -33,5 +34,9 @@ object PlayerRegistry {
             it.closeAudioConnection()
         }
         players[guildId]?.cleanup()
+    }
+
+    fun searchFor(identifier: String, handler: AudioLoadResultHandler) {
+        playerManager.loadItem(identifier, handler)
     }
 }

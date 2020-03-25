@@ -9,7 +9,9 @@ import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.TextUtils
 import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.Context
+import me.devoxin.flight.arguments.Greedy
 import me.devoxin.flight.models.Cog
+import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.User
 
 class Audio : Cog {
@@ -28,6 +30,39 @@ class Audio : Cog {
                 false
             }
             else -> true
+        }
+    }
+
+    private fun connectToVoice(ctx: Context): Boolean {
+        val me = ctx.guild!!.selfMember.voiceState!!
+        val invoker = ctx.member!!.voiceState!!
+
+        if (me.channel != null) {
+            if (invoker.channel != me.channel) {
+                ctx.send("Nu nya~ You need to join my voice channel")
+            }
+            return true
+        }
+
+        return when {
+            invoker.channel == null -> {
+                ctx.send("You need to join a voice channel, nya~")
+                false
+            }
+            invoker.channel!!.userLimit > 0
+                    && invoker.channel!!.members.size >= invoker.channel!!.userLimit
+                    && !ctx.guild!!.selfMember.hasPermission(invoker.channel!!, Permission.VOICE_MOVE_OTHERS) -> {
+                ctx.send("Nu nya~ Your voice channel is full!")
+                false
+            }
+            !ctx.guild!!.selfMember.hasPermission(invoker.channel!!, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK) -> {
+                ctx.send("Nu nya~ I don't have permission to join your voice channel~")
+                false
+            }
+            else -> {
+                ctx.guild!!.audioManager.openAudioConnection(invoker.channel)
+                true
+            }
         }
     }
 
@@ -78,7 +113,22 @@ class Audio : Cog {
         }
     }
 
-    // Play
+    @Command(aliases = ["p"], description = "Play a song from a URL, or search.",
+        guildOnly = true)
+    fun play(ctx: Context, @Greedy query: String) {
+        if (!connectToVoice(ctx)) {
+            return
+        }
+
+        val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
+
+        if ("https://" in query || "http://" in query) {
+            player.load(ctx, query.removePrefix("<").removeSuffix(">"), false)
+        } else {
+            player.load(ctx, query, true)
+        }
+    }
+
     // Playlist
     // Queue
 
