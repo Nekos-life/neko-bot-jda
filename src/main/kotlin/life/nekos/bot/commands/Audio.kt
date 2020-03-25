@@ -129,7 +129,6 @@ class Audio : Cog {
         }
     }
 
-    // Playlist
     // Queue
 
     @DonorOnly
