@@ -4,6 +4,7 @@ import kotlinx.coroutines.future.await
 import life.nekos.bot.apis.AlexFlipnote
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.CommandHelp
+import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats
@@ -16,11 +17,15 @@ import me.devoxin.flight.parsers.MemberParser
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
+import java.awt.Color
+import java.awt.Font
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.concurrent.CompletableFuture
+import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 
 class Fun : Cog {
-
     @Command(aliases = ["ava", "pfp", "avi"], description = "Shows your, or another user's avatar")
     @CommandHelp("""
         options:
@@ -29,8 +34,7 @@ class Fun : Cog {
     """)
     suspend fun avatar(ctx: Context, user: User, @Greedy options: String = "") {
         val isDm = options.contains("--dm")
-        val response = EmbedBuilder()
-            .setColor(Colors.getEffectiveColor(ctx))
+        val response = EmbedBuilder().setColor(Colors.getEffectiveColor(ctx))
 
         if (options.contains("--new")) {
             if (options.contains("--nsfw")) {
@@ -126,7 +130,6 @@ class Fun : Cog {
 
         val (top, bottom) = dym.split("|")
         val result = AlexFlipnote.didYouMean(top, bottom).await()
-
         ctx.send(Attachment.Companion.from(result, "didyoumean.png"))
     }
 
@@ -156,16 +159,10 @@ class Fun : Cog {
         if (roll == selectedSide) {
             val betRounded = (bet.toDouble() * 0.4).roundToInt()
             ctx.send("The coin landed on ${sides[roll - 1]} nya~\nYou won **$betRounded** nekos owo")
-
-            Database.getUser(ctx.author.id).update {
-                nekos += betRounded
-            }
+            data.update { nekos += betRounded }
         } else {
             ctx.send("The coin landed on ${sides[roll - 1]} nya~\nYou lost **$bet** nekos (=‘ｘ‘=)")
-
-            Database.getUser(ctx.author.id).update {
-                nekos -= bet.toInt()
-            }
+            data.update { nekos -= bet }
         }
     }
 
@@ -234,9 +231,36 @@ class Fun : Cog {
         }
     }
 
+    @Command(aliases = ["lf", "sf"], description = "You want sum fuk?")
+    @DonorOnly
+    fun sumfuk(ctx: Context, who: User) {
+        when (who.idLong) {
+            ctx.jda.selfUser.idLong -> return ctx.send("Nu nya, your tail's not big enough for me~ >.<")
+            ctx.author.idLong -> return ctx.send("Nu nya, I don't think you need to ask to fuk yourself~")
+        }
+
+        ctx.typing {
+            val bg = ImageIO.read(File("res/sf.jpg"))
+            val font = Font("Whitney", Font.BOLD, 30)
+            val g = bg.createGraphics().also {
+                it.color = Color.BLACK
+                it.font = font
+            }
+
+            g.drawString(who.name, 228, 116)
+            g.drawString(ctx.author.name, 248, 165)
+            g.dispose()
+
+            ByteArrayOutputStream().use {
+                ImageIO.setUseCache(false)
+                ImageIO.write(bg, "png", it)
+                ctx.send(Attachment.from(it.toByteArray(), "sumfuk.png"))
+            }
+        }
+    }
+
     companion object {
         private val memberConverter = MemberParser()
         private val sides = listOf("heads", "tails")
     }
-
 }

@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.sharding.ShardManager
 import org.slf4j.LoggerFactory
 
 class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm {
-
     init {
         sm.addEventListener(this)
     }
@@ -38,5 +37,4 @@ class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm 
             return NekoBot(shardManager)
         }
     }
-
 }

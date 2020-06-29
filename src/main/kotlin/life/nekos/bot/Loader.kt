@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.entities.Activity
 import life.nekos.bot.utils.NekoPrefixProvider
 
 object Loader {
-
     val bootTime = System.currentTimeMillis()
 
     var isDebug = false
@@ -47,7 +46,6 @@ object Loader {
         commandClient.registerCommands(CustomHelpCommand())
         commandClient.registerCommands("life.nekos.bot.commands")
     }
-
 }
 
 /**
@@ -56,7 +54,6 @@ object Loader {
 
 /**
  * TODO: Fun category
- *   - SumFuk
  *   - Ship
  * TODO: Audio category
  *   - Queue
