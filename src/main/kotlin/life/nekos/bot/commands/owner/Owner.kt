@@ -4,6 +4,7 @@ import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.parsers.stringorbool.StringBool
 import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.RequestUtil
+import life.nekos.bot.utils.Send
 import life.nekos.bot.utils.WumpDump
 import life.nekos.bot.utils.extensions.thenException
 import me.devoxin.flight.annotations.Command
@@ -16,7 +17,8 @@ import java.io.InputStreamReader
 class Owner : Cog {
     @Command(description = "Force-send a neko.", developerOnly = true)
     fun coin(ctx: Context) {
-
+        Send(ctx).poke(ctx.author.idLong)
+        ctx.message.delete().queue()
     }
 
     @Command(description = "Sets the bot's avatar. Pass a URL for custom, or `y` for random.", developerOnly = true)
