@@ -2,6 +2,7 @@ package life.nekos.bot.commands.audio
 
 import life.nekos.bot.audio.LoopMode
 import life.nekos.bot.audio.PlayerRegistry
+import life.nekos.bot.framework.Paginator
 import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Checks
 import life.nekos.bot.utils.Colors
@@ -13,6 +14,7 @@ import me.devoxin.flight.arguments.Greedy
 import me.devoxin.flight.models.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.User
+import org.jetbrains.kotlin.utils.addToStdlib.sumByLong
 
 class Audio : Cog {
 
@@ -129,7 +131,32 @@ class Audio : Cog {
         }
     }
 
-    // Queue
+    @Command(aliases = ["q"], description = "Shows the audio queue")
+    fun queue(ctx: Context, page: Int = 1) {
+        val ah = PlayerRegistry.playerFor(ctx.guild!!.idLong)
+
+        if (ah.queue.isEmpty()) {
+            return ctx.send("The queue is currently empty!")
+        }
+
+        val current = ah.playingTrack
+        val items = ah.queue.map {
+            "${it.info.title} `[${TextUtils.toTimeString(it.duration)}]`\nQueued by: ${(it.userData as User).name}"
+        }
+        val totalDuration = ah.queue.sumByLong { it.duration }
+        val paginator = Paginator(items).apply { page(page) }
+
+        ctx.send {
+            setColor(Colors.getRandomColor())
+            setTitle("Now Playing ${Formats.PLAY_EMOTE}")
+            setDescription(
+                "Track: ${current.info.title} `[${TextUtils.toTimeString(current.duration)}]`\n" +
+                    "Queued by: ${(current.userData as User).name}"
+            )
+            addField("Queue", paginator.display(), false)
+            setFooter("Current Playlist: Total Tracks: ${ah.queue.size}, Total Length: ${TextUtils.toTimeString(totalDuration)}")
+        }
+    }
 
     @DonorOnly
     @Command(aliases = ["loop"], description = "Set repeat for a track.",

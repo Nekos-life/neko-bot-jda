@@ -23,7 +23,7 @@ class Paginator(private val items: Collection<String>, options: PaginationOption
         val indexEnd = min(indexStart + itemsPerPage, items.size) - 1
         // IntRange is end inclusive.
 
-        return (indexStart..indexEnd).joinToString("\n") { items.elementAt(it) }
+        return (indexStart..indexEnd).joinToString("\n", transform = items::elementAt)
     }
 
     inner class PaginationOptions(
