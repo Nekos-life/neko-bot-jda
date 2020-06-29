@@ -1,4 +1,4 @@
-package life.nekos.bot.commands
+package life.nekos.bot.commands.bot
 
 import com.sun.management.OperatingSystemMXBean
 import life.nekos.bot.Loader

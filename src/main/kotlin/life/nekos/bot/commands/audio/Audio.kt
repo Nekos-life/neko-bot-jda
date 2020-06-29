@@ -1,4 +1,4 @@
-package life.nekos.bot.commands
+package life.nekos.bot.commands.audio
 
 import life.nekos.bot.audio.LoopMode
 import life.nekos.bot.audio.PlayerRegistry

@@ -1,4 +1,4 @@
-package life.nekos.bot.commands
+package life.nekos.bot.commands.neko
 
 import kotlinx.coroutines.future.await
 import life.nekos.bot.apis.NekosLife
@@ -6,7 +6,6 @@ import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import me.devoxin.flight.annotations.Command
-import me.devoxin.flight.api.CommandWrapper
 import me.devoxin.flight.api.Context
 import me.devoxin.flight.models.Cog
 import net.dv8tion.jda.api.EmbedBuilder
@@ -57,26 +56,30 @@ class Neko : Cog {
         aliases = ["lewdslideshow", "lss", "mewww", "o.o"],
         nsfw = true
     )
-    suspend fun lewds(ctx: Context) = Shell.slideshow(ctx) { m, cycle, total ->
-        val image = NekosLife.lewd().await()
+    suspend fun lewds(ctx: Context) =
+        Shell.slideshow(ctx) { m, cycle, total ->
+            val image = NekosLife.lewd().await()
 
-        m.editMessage(EmbedBuilder()
-            .setColor(Colors.getEffectiveColor(ctx))
-            .setDescription("$cycle of $total")
-            .setImage(image)
-            .build()
-        ).submit().await()
-    }
+            m.editMessage(
+                EmbedBuilder()
+                    .setColor(Colors.getEffectiveColor(ctx))
+                    .setDescription("$cycle of $total")
+                    .setImage(image)
+                    .build()
+            ).submit().await()
+        }
 
     @Command(description = "Neko slideshow", aliases = ["slideshow", "ss", "mew", "nyaa"])
-    suspend fun nekos(ctx: Context) = Shell.slideshow(ctx) { m, cycle, total ->
-        val image = NekosLife.neko().await()
+    suspend fun nekos(ctx: Context) =
+        Shell.slideshow(ctx) { m, cycle, total ->
+            val image = NekosLife.neko().await()
 
-        m.editMessage(EmbedBuilder()
-            .setColor(Colors.getRandomColor())
-            .setDescription("$cycle of $total")
-            .setImage(image)
-            .build()
-        ).submit().await()
-    }
+            m.editMessage(
+                EmbedBuilder()
+                    .setColor(Colors.getRandomColor())
+                    .setDescription("$cycle of $total")
+                    .setImage(image)
+                    .build()
+            ).submit().await()
+        }
 }

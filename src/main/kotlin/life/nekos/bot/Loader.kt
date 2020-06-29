@@ -62,7 +62,6 @@ object Loader {
  *   - Release
  * TODO: Finish owner category
  *   - Coin
- *   - Eval
  * TODO: Finish stats integration
  * TODO: Handlers
  * TODO: Web server.

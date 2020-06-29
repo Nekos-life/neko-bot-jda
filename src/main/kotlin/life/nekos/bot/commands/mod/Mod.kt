@@ -1,4 +1,4 @@
-package life.nekos.bot.commands
+package life.nekos.bot.commands.mod
 
 import life.nekos.bot.utils.Formats
 import me.devoxin.flight.annotations.Command

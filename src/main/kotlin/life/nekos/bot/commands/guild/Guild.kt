@@ -1,4 +1,4 @@
-package life.nekos.bot.commands
+package life.nekos.bot.commands.guild
 
 import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors

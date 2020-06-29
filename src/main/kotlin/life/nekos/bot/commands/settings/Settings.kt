@@ -1,4 +1,4 @@
-package life.nekos.bot.commands
+package life.nekos.bot.commands.settings
 
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Database

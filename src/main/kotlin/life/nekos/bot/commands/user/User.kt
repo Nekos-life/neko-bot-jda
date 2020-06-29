@@ -1,4 +1,4 @@
-package life.nekos.bot.commands
+package life.nekos.bot.commands.user
 
 import life.nekos.bot.framework.Paginator
 import life.nekos.bot.framework.annotations.CommandHelp

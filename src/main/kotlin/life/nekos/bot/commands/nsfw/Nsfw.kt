@@ -1,4 +1,4 @@
-package life.nekos.bot.commands
+package life.nekos.bot.commands.nsfw
 
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.DonorOnly

@@ -1,4 +1,4 @@
-package life.nekos.bot.commands
+package life.nekos.bot.commands.owner
 
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.parsers.stringorbool.StringBool
@@ -14,14 +14,8 @@ import net.dv8tion.jda.api.entities.Icon
 import java.io.InputStreamReader
 
 class Owner : Cog {
-
     @Command(description = "Force-send a neko.", developerOnly = true)
     fun coin(ctx: Context) {
-
-    }
-
-    @Command(aliases = ["debug"], description = "Eval, duh.", developerOnly = true)
-    fun eval(ctx: Context) {
 
     }
 
@@ -76,7 +70,7 @@ class Owner : Cog {
         }
     }
 
-    fun `inaccessible command 1`(ctx: Context) {
+    private fun `inaccessible command 1`(ctx: Context) {
         Database.getUser(ctx.author.id).update {
             nekos += 500
         }
@@ -88,5 +82,4 @@ class Owner : Cog {
             0x2191, 0x2191, 0x2193, 0x2193, 0x2190, 0x2192, 0x2190, 0x2192
         ).map(Int::toChar).joinToString("", transform = Char::toString)
     }
-
 }

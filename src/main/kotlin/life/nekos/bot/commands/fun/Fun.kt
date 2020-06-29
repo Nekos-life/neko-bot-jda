@@ -1,4 +1,4 @@
-package life.nekos.bot.commands
+package life.nekos.bot.commands.`fun`
 
 import kotlinx.coroutines.future.await
 import life.nekos.bot.apis.AlexFlipnote
