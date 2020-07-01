@@ -50,16 +50,8 @@ object Loader {
 
 /**
  * TODO: Extensively test the Database entity system and port the User entity over.
- */
-
-/**
- * TODO: Fun category
- *   - Ship
  * TODO: Finish user category
  *   - Send
- *   - Release
- * TODO: Finish owner category
- *   - Coin
  * TODO: Finish stats integration
  * TODO: Handlers
  * TODO: Web server.

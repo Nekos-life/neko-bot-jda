@@ -17,26 +17,22 @@ object Klash {
         val params = constructor.parameters
         val args = hashMapOf<KParameter, Any?>()
 
-        for (param in params) {
+        loop@ for (param in params) {
             val name = param.name
 
-            if (!obj.has(name)) {
-                if (param.isOptional) {
-                    continue
+            if (!obj.has(name) || obj.isNull(name)) {
+                when {
+                    param.isOptional -> continue@loop
+                    param.type.isMarkedNullable -> args[param] = null
+                    else -> throw IllegalStateException("Could not specify a value for parameter $name")
                 }
-
-                if (param.type.isMarkedNullable) {
-                    args[param] = null
-                }
-
-                throw IllegalStateException("Could not specify a value for parameter $name")
             } else {
                 if (param.type.jvmErasure.javaObjectType.isAssignableFrom(List::class.java)) {
                     val listType = param.type.arguments.first()
                     val jvmType = listType.type?.jvmErasure?.javaObjectType
 
                     val list = obj.getJSONArray(name)
-                        .filter { jvmType?.let(it::class.java::isAssignableFrom) ?: true }
+                        .filter { jvmType?.let(it::class.java::isAssignableFrom) != false }
 
                     args[param] = list
                 } else {

@@ -100,7 +100,7 @@ class User : Cog {
             nekos--
         }
 
-        // release
+        Send(ctx).neko(ctx.author.idLong)
 
         if (Checks.isMessageRemovable(ctx)) {
             ctx.message.delete().queue()

@@ -12,11 +12,9 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 
 class FlightEventAdapter : DefaultCommandClientAdapter() {
-
-    fun rootCauseOf(ex: Throwable): Throwable {
+    private fun rootCauseOf(ex: Throwable): Throwable {
         return ex.cause?.let(::rootCauseOf) ?: ex
     }
-
 
     override fun onBadArgument(ctx: Context, command: CommandWrapper, error: BadArgument) {
         val extraInfo = command.method.findAnnotation<CommandHelp>()?.let {
@@ -65,5 +63,4 @@ class FlightEventAdapter : DefaultCommandClientAdapter() {
     companion object {
         private val log = LoggerFactory.getLogger(FlightEventAdapter::class.java)
     }
-
 }

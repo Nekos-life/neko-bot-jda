@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 class Send(private val ctx: Context) {
-    fun fetchContextualNeko(): CompletableFuture<String> {
+    private fun fetchContextualNeko(): CompletableFuture<String> {
         return if (ctx.isNsfw()) NekosLife.lewd() else NekosLife.neko()
     }
 
@@ -68,7 +68,9 @@ class Send(private val ctx: Context) {
     private fun handleAccept(drop: Message, event: MessageReceivedEvent) {
         drop.delete().queue()
         event.message.delete().queue()
+        // TODO: isDonor add 2
         Database.getUser(event.author.id).update {
+            nekos += 1
             nekos += 1
         }
     }
