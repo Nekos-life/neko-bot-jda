@@ -1,5 +1,7 @@
 package life.nekos.bot.commands.user
 
+import kotlinx.coroutines.future.await
+import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.Paginator
 import life.nekos.bot.framework.annotations.CommandHelp
 import life.nekos.bot.utils.*
@@ -9,11 +11,12 @@ import me.devoxin.flight.api.CommandWrapper
 import me.devoxin.flight.api.Context
 import me.devoxin.flight.arguments.Greedy
 import me.devoxin.flight.models.Cog
+import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.User
 import java.time.Instant
 
 class User : Cog {
-
     override fun localCheck(ctx: Context, command: CommandWrapper): Boolean {
         // Model.statsUp(command.name)
         return true
@@ -108,8 +111,28 @@ class User : Cog {
     }
 
     @Command(description = "Send someone a neko image.", guildOnly = true)
-    fun send(ctx: Context, @Greedy user: Member = ctx.member!!) {
+    suspend fun send(ctx: Context, type: String, @Greedy user: User = ctx.author) {
+        val image = when (type) {
+            "neko" -> NekosLife.neko().await()
+            "lewd" -> NekosLife.lewd().await()
+            else -> return ctx.send("What do you want to send, nya? You must specify `neko` or `lewd`~")
+        }
 
+        val embed = EmbedBuilder().setColor(Colors.getEffectiveColor(ctx))
+            .setTitle("hey ${user.name}, ${ctx.author.name} has sent you a $type")
+            .setDescription(Formats.NEKO_C_EMOTE)
+            .setImage(image)
+            .build()
+
+        user.openPrivateChannel().submit()
+            .thenCompose { it.sendMessage(embed).submit() }
+            .thenCompose { it.privateChannel.close().submit() }
+            .thenAccept {
+                ctx.send("Good job ${ctx.author.asMention}")
+            }
+            .exceptionally {
+                ctx.send("${user.name} has me blocked or their filter turned on \uD83D\uDD95")
+                return@exceptionally null
+            }
     }
-
 }
