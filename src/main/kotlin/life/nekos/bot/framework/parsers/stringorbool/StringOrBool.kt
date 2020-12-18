@@ -1,13 +1,12 @@
 package life.nekos.bot.framework.parsers.stringorbool
 
 import me.devoxin.flight.api.Context
-import me.devoxin.flight.parsers.BooleanParser
-import me.devoxin.flight.parsers.Parser
-import me.devoxin.flight.parsers.StringParser
+import me.devoxin.flight.internal.parsers.BooleanParser
+import me.devoxin.flight.internal.parsers.Parser
+import me.devoxin.flight.internal.parsers.StringParser
 import java.util.*
 
 class StringOrBool : Parser<StringBool> {
-
     override fun parse(ctx: Context, param: String): Optional<StringBool> {
         val bool = boolParser.parse(ctx, param)
 
@@ -28,5 +27,4 @@ class StringOrBool : Parser<StringBool> {
         private val stringParser = StringParser()
         private val boolParser = BooleanParser()
     }
-
 }

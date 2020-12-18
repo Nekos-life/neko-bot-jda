@@ -8,12 +8,12 @@ import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats
-import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.Context
-import me.devoxin.flight.arguments.Greedy
-import me.devoxin.flight.models.Attachment
-import me.devoxin.flight.models.Cog
-import me.devoxin.flight.parsers.MemberParser
+import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.annotations.Greedy
+import me.devoxin.flight.api.entities.Attachment
+import me.devoxin.flight.api.entities.Cog
+import me.devoxin.flight.internal.parsers.MemberParser
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User

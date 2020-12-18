@@ -6,18 +6,18 @@ import life.nekos.bot.framework.Paginator
 import life.nekos.bot.framework.annotations.CommandHelp
 import life.nekos.bot.utils.*
 import life.nekos.bot.utils.extensions.toReactionString
-import me.devoxin.flight.annotations.Command
-import me.devoxin.flight.api.CommandWrapper
+import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.CommandFunction
 import me.devoxin.flight.api.Context
-import me.devoxin.flight.arguments.Greedy
-import me.devoxin.flight.models.Cog
+import me.devoxin.flight.api.annotations.Greedy
+import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
 import java.time.Instant
 
 class User : Cog {
-    override fun localCheck(ctx: Context, command: CommandWrapper): Boolean {
+    override fun localCheck(ctx: Context, command: CommandFunction): Boolean {
         // Model.statsUp(command.name)
         return true
     }

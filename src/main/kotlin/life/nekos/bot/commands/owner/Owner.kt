@@ -7,10 +7,10 @@ import life.nekos.bot.utils.RequestUtil
 import life.nekos.bot.utils.Send
 import life.nekos.bot.utils.WumpDump
 import life.nekos.bot.utils.extensions.thenException
-import me.devoxin.flight.annotations.Command
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
-import me.devoxin.flight.arguments.Greedy
-import me.devoxin.flight.models.Cog
+import me.devoxin.flight.api.annotations.Greedy
+import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.entities.Icon
 import java.io.InputStreamReader
 

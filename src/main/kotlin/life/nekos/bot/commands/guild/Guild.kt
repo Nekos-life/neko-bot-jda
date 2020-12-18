@@ -4,9 +4,9 @@ import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.WumpDump
-import me.devoxin.flight.annotations.Command
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
-import me.devoxin.flight.models.Cog
+import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
@@ -16,7 +16,6 @@ import java.util.concurrent.TimeoutException
 import kotlin.streams.toList
 
 class Guild : Cog {
-
     @Command(aliases = ["nsfw", "toggle"], description = "Toggles the current channel's NSFW setting", guildOnly = true,
         botPermissions = [Permission.MANAGE_CHANNEL], userPermissions = [Permission.MANAGE_CHANNEL])
     fun nsfwtoggle(ctx: Context) {
@@ -83,5 +82,4 @@ class Guild : Cog {
             addField("Permissions", "[Click to view]($permissionsUrl)", true)
         }
     }
-
 }

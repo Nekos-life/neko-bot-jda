@@ -1,14 +1,13 @@
 package life.nekos.bot.commands.mod
 
 import life.nekos.bot.utils.Formats
-import me.devoxin.flight.annotations.Command
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
-import me.devoxin.flight.models.Cog
+import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Member
 
 class Mod : Cog {
-
     @Command(aliases = ["gtfo"], description = "Bans an asshat", guildOnly = true,
         botPermissions = [Permission.BAN_MEMBERS], userPermissions = [Permission.BAN_MEMBERS])
     fun ban(ctx: Context, member: Member, reason: String = "None specified") {
@@ -24,5 +23,4 @@ class Mod : Cog {
             ctx.send("${Formats.INFO_EMOTE} Kicked `${member.user.asTag}`, nya~")
         }
     }
-
 }

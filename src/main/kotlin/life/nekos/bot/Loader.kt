@@ -43,8 +43,10 @@ object Loader {
             setShardsTotal(-1)
         }
 
-        commandClient.registerCommands(CustomHelpCommand())
-        commandClient.registerCommands("life.nekos.bot.commands")
+        commandClient.commands.apply {
+            register(CustomHelpCommand())
+            register("life.nekos.bot.commands")
+        }
     }
 }
 

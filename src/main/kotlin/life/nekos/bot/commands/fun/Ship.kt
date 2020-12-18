@@ -3,11 +3,9 @@ package life.nekos.bot.commands.`fun`
 import kotlinx.coroutines.future.await
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.RequestUtil
-import me.devoxin.flight.annotations.Command
 import me.devoxin.flight.api.Context
-import me.devoxin.flight.models.Attachment
-import me.devoxin.flight.models.Cog
-import net.dv8tion.jda.api.MessageBuilder
+import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.entities.User
 import java.awt.Color
 import java.awt.Font

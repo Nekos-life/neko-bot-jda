@@ -2,14 +2,13 @@ package life.nekos.bot.commands.settings
 
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Database
-import me.devoxin.flight.annotations.Command
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
-import me.devoxin.flight.models.Cog
+import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.TextChannel
 
 class Settings : Cog {
-
     @Command(description = "Sets the guild prefix owo", guildOnly = true,
         userPermissions = [Permission.MANAGE_SERVER])
     fun prefix(ctx: Context, newPrefix: String) {
@@ -24,7 +23,7 @@ class Settings : Cog {
 
     @Command(description = "Sets the channel where nekos can be caught \\o", guildOnly = true,
         userPermissions = [Permission.MANAGE_SERVER])
-    fun nekos(ctx: Context, channel: TextChannel?) {
+    fun nekospawn(ctx: Context, channel: TextChannel?) {
         val settings = Database.getGuild(ctx.guild!!.id)
 
         settings.update {
@@ -51,5 +50,4 @@ class Settings : Cog {
             addBlankField(true)
         }
     }
-
 }

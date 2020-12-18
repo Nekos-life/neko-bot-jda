@@ -28,7 +28,7 @@ object PlayerRegistry {
         }
     }
 
-    fun destroyPlayer(guildId: Long, disconnect: Boolean = true) {
+    fun destroyPlayer(guildId: Long) {
         Loader.bot.getGuildById(guildId)?.audioManager?.let {
             it.sendingHandler = null
             it.closeAudioConnection()

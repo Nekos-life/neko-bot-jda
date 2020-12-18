@@ -32,15 +32,15 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$kotlin_coroutines"
 
     // Discord
-    implementation ('net.dv8tion:JDA:4.1.1_110') {
+    implementation ('net.dv8tion:JDA:4.2.0_222') {
         exclude module: 'opus-java'
     }
 
     // Command Handler
-    implementation 'com.github.Devoxin:Flight:1.6.0'
+    implementation 'com.github.Devoxin:Flight:2.0.8'
 
     // Audio
-    implementation 'com.sedmelluq:lavaplayer:1.3.50'
+    implementation 'com.sedmelluq:lavaplayer:1.3.64'
     implementation 'com.sedmelluq:jda-nas:1.1.0'
 
     /* Eval */

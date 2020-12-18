@@ -1,20 +1,18 @@
 package life.nekos.bot.framework
 
-import kotlin.reflect.full.findAnnotation
 import life.nekos.bot.framework.annotations.CommandHelp
-import me.devoxin.flight.annotations.Command
-import me.devoxin.flight.api.CommandWrapper
+import me.devoxin.flight.api.CommandFunction
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
-import me.devoxin.flight.arguments.Name
-import me.devoxin.flight.models.Cog
-import me.devoxin.flight.utils.TextSplitter
+import me.devoxin.flight.api.entities.Cog
+import me.devoxin.flight.internal.utils.TextSplitter
+import kotlin.reflect.full.findAnnotation
 
 class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
-
     override fun name(): String = "Bot"
 
     @Command(aliases = ["commands", "cmds"], description = "Displays bot help.")
-    suspend fun help(ctx: Context, @Name("command") command: String?) {
+    suspend fun help(ctx: Context, command: String?) {
         if (command == null) {
             sendHelpMenu(ctx)
             return
@@ -33,7 +31,7 @@ class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
     }
 
     private suspend fun sendHelpMenu(ctx: Context) {
-        val categories = hashMapOf<String, HashSet<CommandWrapper>>()
+        val categories = hashMapOf<String, HashSet<CommandFunction>>()
         val helpMenu = StringBuilder()
 
         for (command in ctx.commandClient.commands.values) {
@@ -67,7 +65,7 @@ class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
         }
     }
 
-    private fun sendCommandHelp(ctx: Context, command: CommandWrapper) {
+    private fun sendCommandHelp(ctx: Context, command: CommandFunction) {
         val builder = StringBuilder("```\n")
 
         if (ctx.trigger.matches("<@!?${ctx.jda.selfUser.id}> ".toRegex())) {
@@ -139,5 +137,4 @@ class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
 
         return s
     }
-
 }

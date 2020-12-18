@@ -4,15 +4,14 @@ import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
-import me.devoxin.flight.annotations.Command
-import me.devoxin.flight.api.CommandWrapper
+import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.CommandFunction
 import me.devoxin.flight.api.Context
-import me.devoxin.flight.models.Cog
+import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.EmbedBuilder
 
 class Nsfw : Cog {
-
-    override fun localCheck(ctx: Context, command: CommandWrapper): Boolean {
+    override fun localCheck(ctx: Context, command: CommandFunction): Boolean {
         // Model.statsUp(command.name)
         return true
     }
@@ -49,5 +48,4 @@ class Nsfw : Cog {
             embed(ctx, "uwu pussy", it)
         }
     }
-
 }

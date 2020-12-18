@@ -6,9 +6,9 @@ import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.TextUtils
 import life.nekos.bot.utils.extensions.thenException
-import me.devoxin.flight.annotations.Command
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
-import me.devoxin.flight.models.Cog
+import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message
 import java.lang.management.ManagementFactory
@@ -17,7 +17,6 @@ import java.time.Instant
 import java.util.concurrent.TimeUnit
 
 class Bot : Cog {
-
     private fun isSpam(m: Message) = m.contentDisplay.startsWith('~')
             || m.author.idLong == m.jda.selfUser.idLong
 
@@ -95,5 +94,4 @@ class Bot : Cog {
     companion object {
         private val dpFormatter = DecimalFormat("0.00")
     }
-
 }
