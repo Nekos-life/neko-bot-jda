@@ -39,7 +39,7 @@ data class User(val id: String, var nekos: Long, var nekosAll: Long,
             val dateRegistered = doc.getString("regdate")
             val optedIn = doc.getBoolean("opted_in")
             val is18 = doc.getBoolean("is_18")
-            val coolDownCount = doc.getInteger("coolDownCount")
+            val coolDownCount = doc.getInteger("coolDownCount", 0)
 
             return User(id, nekos, nekosAll, exp, level, premium, dateRegistered, optedIn, is18, coolDownCount)
         }
