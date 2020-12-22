@@ -8,7 +8,6 @@ import life.nekos.bot.utils.Send
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.ReadyEvent
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.EventListener
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder
@@ -36,8 +35,8 @@ class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm 
             "Logged in as {} on {} ({}/{} guilds available)",
             event.jda.selfUser.asTag, event.jda.shardInfo, event.guildAvailableCount, event.guildTotalCount
         )
-        if (event.jda.shardInfo.shardId + 1 == event.jda.shardInfo.shardTotal){
-            log.info(NEKO_BOOT_BANNER)
+        if (event.jda.shardInfo.shardId + 1 == event.jda.shardInfo.shardTotal) {
+            log.info("Fully Ready\n{}", NEKO_BOOT_BANNER)
         }
     }
 
