@@ -103,7 +103,6 @@ class Send(private val message: Message) {
 
         private val DEFAULT_PREDICATE = { drop: Message, dropper: Long, keyword: String ->
             { it: MessageReceivedEvent ->
-                log.info("yes?")
                 it.channel.idLong == drop.channel.idLong && it.author.idLong != dropper
                         && it.message.contentRaw.toLowerCase() == keyword
             }
