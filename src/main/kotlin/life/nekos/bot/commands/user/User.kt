@@ -23,7 +23,7 @@ class User : Cog {
     }
 
     fun findUserById(ctx: Context, id: String): String {
-        return ctx.jda.shardManager!!.getUserById(id)?.asTag ?: "Unknown User#0000"
+        return ctx.jda.shardManager!!.retrieveUserById(id).submit().get()?.asTag ?: "Unknown User#0000"
     }
 
     @Command(aliases = ["lb", "top", "ranks"], description = "Global leaderboard. Category must be either \"nekos\" or \"levels\"")

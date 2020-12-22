@@ -70,6 +70,7 @@ class Send(private val message: Message) {
 
     private fun handleAccept(drop: Message, event: MessageReceivedEvent) {
         drop.delete().queue()
+        event.message.textChannel.sendMessage("${event.message.author.asMention} Caught it! ${Formats.randomCat()}").queue()
         event.message.delete().queue()
         if (Checks.isDonorPlus(event.message.author.id)) {
             Database.getUser(event.author.id).update {
