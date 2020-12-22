@@ -51,6 +51,7 @@ class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm 
         ) {
             guild.update { msgCnt++ }
             if (guild.msgCnt > (40..150).random()) {
+                guild.update { msgCnt = 0 }
                 Send(message).neko(message.author.idLong)
             }
         }
