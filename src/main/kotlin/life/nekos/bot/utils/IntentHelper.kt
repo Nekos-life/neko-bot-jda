@@ -10,11 +10,11 @@ object IntentHelper {
         GatewayIntent.GUILD_EMOJIS,
         GatewayIntent.GUILD_INVITES,
         GatewayIntent.GUILD_MESSAGE_TYPING,
-        GatewayIntent.GUILD_WEBHOOKS
+        GatewayIntent.GUILD_WEBHOOKS,
 
         // Priviledged.
-        //GatewayIntent.GUILD_MEMBERS,
-        //GatewayIntent.GUILD_PRESENCES
+        GatewayIntent.GUILD_MEMBERS,
+        GatewayIntent.GUILD_PRESENCES
     )
 
     val allIntents = GatewayIntent.ALL_INTENTS

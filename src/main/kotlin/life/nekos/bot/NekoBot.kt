@@ -21,8 +21,8 @@ class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm 
     }
 
     private fun onReadyEvent(event: ReadyEvent) {
-        log.info("Logged in as {} ({}/{} guilds available)",
-            event.jda.selfUser.asTag, event.guildAvailableCount, event.guildTotalCount)
+        log.info("Logged in as {} on {} ({}/{} guilds available)",
+            event.jda.selfUser.asTag,event.jda.shardInfo, event.guildAvailableCount, event.guildTotalCount)
     }
 
     fun home() = sm.getGuildById(333713662739218433L)
