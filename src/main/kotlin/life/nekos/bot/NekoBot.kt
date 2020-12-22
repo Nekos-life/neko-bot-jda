@@ -2,6 +2,7 @@ package life.nekos.bot
 
 import life.nekos.bot.utils.Checks
 import life.nekos.bot.utils.Database
+import life.nekos.bot.utils.Formats.NEKO_BOOT_BANNER
 import life.nekos.bot.utils.IntentHelper
 import life.nekos.bot.utils.Send
 import net.dv8tion.jda.api.entities.Message
@@ -35,6 +36,9 @@ class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm 
             "Logged in as {} on {} ({}/{} guilds available)",
             event.jda.selfUser.asTag, event.jda.shardInfo, event.guildAvailableCount, event.guildTotalCount
         )
+        if (event.jda.shardInfo.shardId + 1 == event.jda.shardInfo.shardTotal){
+            log.info(NEKO_BOOT_BANNER)
+        }
     }
 
     private fun onMessage(message: Message) {
