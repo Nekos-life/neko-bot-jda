@@ -17,7 +17,7 @@ import java.io.InputStreamReader
 class Owner : Cog {
     @Command(description = "Force-send a neko.", developerOnly = true)
     fun coin(ctx: Context) {
-        Send(ctx.message).poke(ctx.author.idLong)
+        Send(ctx.message, false).poke(ctx.author.idLong)
         ctx.message.delete().queue()
     }
 

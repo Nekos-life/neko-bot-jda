@@ -1,13 +1,9 @@
 package life.nekos.bot.utils
 
-import life.nekos.bot.Loader.bot
 import life.nekos.bot.Loader.commandClient
-import life.nekos.bot.NekoBot
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.apis.PokeApi
-import life.nekos.bot.utils.extensions.isNsfw
 import life.nekos.bot.utils.extensions.thenException
-import me.devoxin.flight.api.Context
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message
@@ -17,13 +13,19 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
-class Send(private val message: Message) {
+class Send(private val message: Message, private val organic: Boolean) {
     private fun fetchContextualNeko(): CompletableFuture<String> {
         return if (message.textChannel.isNSFW) NekosLife.lewd() else NekosLife.neko()
     }
 
     fun neko(dropper: Long) {
-        if (!message.guild.selfMember.hasPermission(message.textChannel, Permission.MESSAGE_WRITE, Permission.MESSAGE_EMBED_LINKS)) {
+        if (!message.guild.selfMember.hasPermission(
+                message.textChannel,
+                Permission.MESSAGE_WRITE,
+                Permission.MESSAGE_EMBED_LINKS,
+                Permission.MESSAGE_MANAGE
+            )
+        ) {
             return
         }
 
@@ -38,15 +40,21 @@ class Send(private val message: Message) {
                 }.build()).submit()
             }
             .thenAccept { drop ->
-                commandClient.waitFor(DEFAULT_PREDICATE(drop, dropper, keyword), DEFAULT_TIMEOUT)
+                commandClient.waitFor(DEFAULT_PREDICATE(drop, dropper, keyword, organic), DEFAULT_TIMEOUT)
                     .thenAccept { handleAccept(drop, it) }
-                    .thenException { handleException(it, "Neko") }
+                    .thenException { handleException(drop, it, "Neko") }
             }
             .thenException { log.error("[Neko:Drop]", it) }
     }
 
     fun poke(dropper: Long) {
-        if (!message.guild.selfMember.hasPermission(message.textChannel, Permission.MESSAGE_WRITE, Permission.MESSAGE_EMBED_LINKS)) {
+        if (!message.guild.selfMember.hasPermission(
+                message.textChannel,
+                Permission.MESSAGE_WRITE,
+                Permission.MESSAGE_EMBED_LINKS,
+                Permission.MESSAGE_MANAGE
+            )
+        ) {
             return
         }
 
@@ -61,16 +69,19 @@ class Send(private val message: Message) {
                 }.build()).submit()
             }
             .thenAccept { drop ->
-                commandClient.waitFor(DEFAULT_PREDICATE(drop, dropper, ">catch"), DEFAULT_TIMEOUT)
+                commandClient.waitFor(DEFAULT_PREDICATE(drop, dropper, ">catch", organic), DEFAULT_TIMEOUT)
                     .thenAccept { handleAccept(drop, it) }
-                    .thenException { handleException(it, "Pokemon") }
+                    .thenException { handleException(drop, it, "Pokemon") }
             }
             .thenException { log.error("[Pokemon:Drop]", it) }
     }
 
     private fun handleAccept(drop: Message, event: MessageReceivedEvent) {
         drop.delete().queue()
-        event.message.textChannel.sendMessage("${event.message.author.asMention} Caught it! ${Formats.randomCat()}").queue()
+        event.message.textChannel.sendMessage("${event.message.author.asMention} Caught it! ${Formats.randomCat()}")
+            .queue { message ->
+                message.delete().queueAfter(5, TimeUnit.SECONDS)
+            }
         event.message.delete().queue()
         if (Checks.isDonorPlus(event.message.author.id)) {
             Database.getUser(event.author.id).update {
@@ -85,8 +96,9 @@ class Send(private val message: Message) {
         }
     }
 
-    private fun handleException(ex: Throwable, type: String) {
-        if (ex is TimeoutException) {
+    private fun handleException(drop: Message, ex: Throwable, type: String) {
+        drop.delete().queue()
+        if (ex.cause is TimeoutException) {
             message.textChannel.sendMessage("Time's up! The $type escaped!").submit()
                 .thenAccept { it.delete().queueAfter(15, TimeUnit.SECONDS) }
         } else {
@@ -102,9 +114,29 @@ class Send(private val message: Message) {
 
         private val DEFAULT_TIMEOUT = TimeUnit.MINUTES.toMillis(2)
 
-        private val DEFAULT_PREDICATE = { drop: Message, dropper: Long, keyword: String ->
+        private fun organicCheck(
+            organic: Boolean,
+            drop: Message,
+            dropper: Long,
+            catcher: MessageReceivedEvent
+        ): Boolean {
+            if (commandClient.ownerIds.contains(catcher.author.idLong)) {
+                return true
+            }
+            if (organic) {
+                val messages = drop.channel.iterableHistory.limit(10).submit().get()
+                val userMessageCount = messages.map { it.author }.toSet().count { !it.isBot }
+                if (userMessageCount < 3) {
+                    return true
+                }
+                return false
+            }
+            return catcher.author.idLong != dropper
+        }
+
+        private val DEFAULT_PREDICATE = { drop: Message, dropper: Long, keyword: String, organic: Boolean ->
             { it: MessageReceivedEvent ->
-                it.channel.idLong == drop.channel.idLong && it.author.idLong != dropper
+                it.channel.idLong == drop.channel.idLong && organicCheck(organic, drop, dropper, it)
                         && it.message.contentRaw.toLowerCase() == keyword
             }
         }
