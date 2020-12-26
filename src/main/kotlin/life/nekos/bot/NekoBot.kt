@@ -40,7 +40,6 @@ class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm 
         )
         if (event.jda.shardInfo.shardId + 1 == event.jda.shardInfo.shardTotal) {
             log.info("Fully Ready\n{}", NEKO_BOOT_BANNER)
-            log.info(metrics.render().get())
             
         }
     }

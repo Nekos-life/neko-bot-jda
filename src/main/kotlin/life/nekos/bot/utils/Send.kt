@@ -126,10 +126,7 @@ class Send(private val message: Message, private val organic: Boolean) {
             if (organic) {
                 val messages = drop.channel.iterableHistory.limit(10).submit().get()
                 val userMessageCount = messages.map { it.author }.toSet().count { !it.isBot }
-                if (userMessageCount < 3) {
-                    return true
-                }
-                return false
+                return userMessageCount >= 3
             }
             return catcher.author.idLong != dropper
         }
