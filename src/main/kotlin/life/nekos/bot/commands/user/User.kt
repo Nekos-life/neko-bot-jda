@@ -1,6 +1,7 @@
 package life.nekos.bot.commands.user
 
 import kotlinx.coroutines.future.await
+import life.nekos.bot.NekoBot
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.Paginator
 import life.nekos.bot.framework.annotations.CommandHelp
@@ -22,8 +23,14 @@ class User : Cog {
         return true
     }
 
-    fun findUserById(ctx: Context, id: String): String {
-        return ctx.jda.shardManager!!.retrieveUserById(id).submit().get()?.asTag ?: "Unknown User#0000"
+    private fun findUserById(ctx: Context, id: String): String {
+        if(NekoBot.simpleLbCache.containsKey(id)){
+            return NekoBot.simpleLbCache[id]!!
+        }
+        val tag = ctx.jda.shardManager!!.retrieveUserById(id).submit().get()?.asTag ?: "Unknown User#0000"
+        NekoBot.simpleLbCache[id] = tag
+        return tag
+
     }
 
     @Command(aliases = ["lb", "top", "ranks"], description = "Global leaderboard. Category must be either \"nekos\" or \"levels\"")

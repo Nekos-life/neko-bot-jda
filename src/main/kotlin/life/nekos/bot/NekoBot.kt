@@ -1,11 +1,8 @@
 package life.nekos.bot
 
 import de.mxro.metrics.jre.Metrics
-import life.nekos.bot.utils.Checks
-import life.nekos.bot.utils.Database
+import life.nekos.bot.utils.*
 import life.nekos.bot.utils.Formats.NEKO_BOOT_BANNER
-import life.nekos.bot.utils.IntentHelper
-import life.nekos.bot.utils.Send
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.ReadyEvent
@@ -85,6 +82,7 @@ class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm 
     companion object {
         val log: Logger = LoggerFactory.getLogger(NekoBot::class.java)
         val metrics = Metrics.create()!!
+        val simpleLbCache: HashMap<String,String> = HashMap()
 
         fun new(options: DefaultShardManagerBuilder.() -> Unit): NekoBot {
             val shardManager = DefaultShardManagerBuilder.create(IntentHelper.enabledIntents)
