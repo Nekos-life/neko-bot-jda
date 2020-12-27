@@ -1,11 +1,16 @@
 package life.nekos.bot.framework
 
+import kotlinx.coroutines.future.await
 import life.nekos.bot.framework.annotations.CommandHelp
+import life.nekos.bot.utils.Colors
+import life.nekos.bot.utils.Database
+import life.nekos.bot.utils.Formats
 import me.devoxin.flight.api.CommandFunction
-import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.entities.Cog
-import me.devoxin.flight.internal.utils.TextSplitter
+import net.dv8tion.jda.api.EmbedBuilder
+import java.time.Instant
 import kotlin.reflect.full.findAnnotation
 
 class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
@@ -32,37 +37,43 @@ class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
 
     private suspend fun sendHelpMenu(ctx: Context) {
         val categories = hashMapOf<String, HashSet<CommandFunction>>()
-        val helpMenu = StringBuilder()
-
+        val helpEmbed = EmbedBuilder()
+        val botPrefix = if (ctx.message.isFromGuild ) Database.getPrefix(ctx.guild!!.id) ?: "~" else "~"
         for (command in ctx.commandClient.commands.values) {
             val category = command.category.toLowerCase()
-
+            if (command.properties.nsfw && ctx.message.isFromGuild && !ctx.textChannel!!.isNSFW) {
+                continue
+            }
             val list = categories.computeIfAbsent(category) {
                 hashSetOf()
             }
-
             list.add(command)
         }
 
         for (entry in categories.entries.sortedBy { it.key }) {
-            helpMenu.append(toTitleCase(entry.key)).append("\n")
-
+            val helpMenu = StringBuilder()
             for (cmd in entry.value.sortedBy { it.name }) {
                 val description = cmd.properties.description
 
-                helpMenu.append("  ")
-                    .append(cmd.name.padEnd(15, ' '))
-                    .append(" ")
+                helpMenu.append("`")
+                    .append("${botPrefix}${cmd.name.padEnd(25, '​')}:")
+                    .append("`")
                     .append(truncate(description, 100))
                     .append("\n")
             }
+            helpEmbed.addField(toTitleCase(entry.key) + " Commands", helpMenu.toString(), false)
         }
 
-        val pages = TextSplitter.split(helpMenu.toString().trim(), 1990)
+        helpEmbed.setColor(Colors.getEffectiveColor(ctx))
+        helpEmbed.setAuthor("${Formats.MAGIC_EMOTE} Command Help", null, ctx.jda.selfUser.avatarUrl)
+        helpEmbed.setFooter(
+            "Help requested by ${ctx.author.name}",
+            ctx.author.avatarUrl
 
-        for (page in pages) {
-            ctx.sendAsync("```\n$page```")
-        }
+        )
+        helpEmbed.setTimestamp(Instant.now())
+        helpEmbed.setDescription(Formats.LING_MSG)
+        ctx.message.channel.sendMessage(helpEmbed.build()).submit().await()
     }
 
     private fun sendCommandHelp(ctx: Context, command: CommandFunction) {
