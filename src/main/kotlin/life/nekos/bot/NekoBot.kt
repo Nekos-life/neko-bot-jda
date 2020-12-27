@@ -1,8 +1,11 @@
 package life.nekos.bot
 
 import de.mxro.metrics.jre.Metrics
-import life.nekos.bot.utils.*
+import life.nekos.bot.utils.Checks
+import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats.NEKO_BOOT_BANNER
+import life.nekos.bot.utils.IntentHelper
+import life.nekos.bot.utils.Send
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.ReadyEvent
@@ -37,7 +40,7 @@ class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm 
         )
         if (event.jda.shardInfo.shardId + 1 == event.jda.shardInfo.shardTotal) {
             log.info("Fully Ready\n{}", NEKO_BOOT_BANNER)
-            
+
         }
     }
 
@@ -54,9 +57,10 @@ class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm 
             if (guild.msgCnt > (40..150).random()) {
                 val messages = message.channel.iterableHistory.limit(10).submit().get()
                 val userMessageCount = messages.map { it.author }.toSet().count { !it.isBot }
-                userMessageCount >= 3
-                guild.update { msgCnt = 0 }
-                Send(message, true).neko(message.author.idLong)
+                if (userMessageCount >= 3) {
+                    guild.update { msgCnt = 0 }
+                    Send(message, true).neko(message.author.idLong)
+                }
             }
         }
 
@@ -85,7 +89,7 @@ class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm 
     companion object {
         val log: Logger = LoggerFactory.getLogger(NekoBot::class.java)
         val metrics = Metrics.create()!!
-        val simpleLbCache: HashMap<String,String> = HashMap()
+        val simpleLbCache: HashMap<String, String> = HashMap()
 
         fun new(options: DefaultShardManagerBuilder.() -> Unit): NekoBot {
             val shardManager = DefaultShardManagerBuilder.create(IntentHelper.enabledIntents)
