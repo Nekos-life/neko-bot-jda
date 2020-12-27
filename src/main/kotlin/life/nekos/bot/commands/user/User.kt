@@ -24,7 +24,7 @@ class User : Cog {
     }
 
     private fun findUserById(ctx: Context, id: String): String {
-        if(NekoBot.simpleLbCache.containsKey(id)){
+        if (NekoBot.simpleLbCache.containsKey(id)) {
             return NekoBot.simpleLbCache[id]!!
         }
         val tag = ctx.jda.shardManager!!.retrieveUserById(id).submit().get()?.asTag ?: "Unknown User#0000"
@@ -33,23 +33,42 @@ class User : Cog {
 
     }
 
-    @Command(aliases = ["lb", "top", "ranks"], description = "Global leaderboard. Category must be either \"nekos\" or \"levels\"")
-    @CommandHelp("""
+    @Command(
+        aliases = ["lb", "top", "ranks"],
+        description = "Global leaderboard. Category must be either \"nekos\" or \"levels\""
+    )
+    @CommandHelp(
+        """
         category:
           nekos
           levels
-    """)
+    """
+    )
     fun leaderboard(ctx: Context, category: String, page: Int = 1) {
-        val data = when (category) {
-            "nekos" -> Database.getTopNekos()
-            "levels" -> Database.getTopExp()
+        val items = when (category) {
+            "nekos" -> Database.getTopNekos().map {
+                "\n${Formats.USER_EMOTE} **__Name__**: **${
+                    findUserById(
+                        ctx,
+                        it.id
+                    )
+                }" +
+                        "**\n**${Formats.NEKO_V_EMOTE} __Nekos__**: **${it.nekos}**\n"
+            }
+            "levels" -> Database.getTopExp().map {
+                "\n${Formats.USER_EMOTE} **__Name__**: **${
+                    findUserById(
+                        ctx,
+                        it.id
+                    )
+                }" +
+                        "**\n${Formats.MAGIC_EMOTE} **__Level__**: **${it.level}** \n" +
+                        "${Formats.LEVEL_EMOTE} **__Experience__**: **${it.exp}**\n"
+
+            }
             else -> return ctx.send(Formats.error("**Use `lb nekos` or `lb levels`**"))
         }
 
-        val items = data.map {
-            "${Formats.USER_EMOTE} **__Name__**: **${findUserById(ctx, it.id)}**\n" +
-                    "**%${Formats.NEKO_V_EMOTE} __Nekos__**: **${it.nekos}**\n\n"
-        }
 
         val paginator = Paginator(items) {
             selectedPage = page
@@ -80,7 +99,10 @@ class User : Cog {
             setColor(Colors.getEffectiveColor(ctx))
             setAuthor("Profile for ${targetUser.name}", targetUser.effectiveAvatarUrl, targetUser.effectiveAvatarUrl)
             setThumbnail(targetUser.effectiveAvatarUrl)
-            setFooter("Profile for ${targetUser.name}", "https://media.discordapp.net/attachments/333742928218554368/374966699524620289/profile.png")
+            setFooter(
+                "Profile for ${targetUser.name}",
+                "https://media.discordapp.net/attachments/333742928218554368/374966699524620289/profile.png"
+            )
             setTimestamp(Instant.now())
             addField("${Formats.LEVEL_EMOTE} Level", "**${profile.level}**", false)
             addField("${Formats.MAGIC_EMOTE} Total Experience", "**${profile.exp}**", false)
@@ -98,7 +120,10 @@ class User : Cog {
         }
     }
 
-    @Command(aliases = ["free", "catch"], description = "Releases one of your nekos for others to catch >.< (You cannot catch a neko you released)")
+    @Command(
+        aliases = ["free", "catch"],
+        description = "Releases one of your nekos for others to catch >.< (You cannot catch a neko you released)"
+    )
     fun release(ctx: Context) {
         val data = Database.getUser(ctx.author.id)
 
