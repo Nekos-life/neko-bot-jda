@@ -116,24 +116,20 @@ class Send(private val message: Message, private val organic: Boolean) {
 
         private fun organicCheck(
             organic: Boolean,
-            drop: Message,
             dropper: Long,
             catcher: MessageReceivedEvent
         ): Boolean {
             if (commandClient.ownerIds.contains(catcher.author.idLong)) {
                 return true
             }
-            if (organic) {
-                val messages = drop.channel.iterableHistory.limit(10).submit().get()
-                val userMessageCount = messages.map { it.author }.toSet().count { !it.isBot }
-                return userMessageCount >= 3
-            }
-            return catcher.author.idLong != dropper
+            return if (!organic) {
+                catcher.author.idLong != dropper
+            } else organic
         }
 
         private val DEFAULT_PREDICATE = { drop: Message, dropper: Long, keyword: String, organic: Boolean ->
             { it: MessageReceivedEvent ->
-                it.channel.idLong == drop.channel.idLong && organicCheck(organic, drop, dropper, it)
+                it.channel.idLong == drop.channel.idLong && organicCheck(organic, dropper, it)
                         && it.message.contentRaw.toLowerCase() == keyword
             }
         }
