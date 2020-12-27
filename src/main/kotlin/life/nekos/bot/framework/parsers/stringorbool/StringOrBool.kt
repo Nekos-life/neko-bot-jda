@@ -10,10 +10,10 @@ class StringOrBool : Parser<StringBool> {
     override fun parse(ctx: Context, param: String): Optional<StringBool> {
         val bool = boolParser.parse(ctx, param)
 
-        if (!bool.isPresent) {
+        if (bool.isEmpty) {
             val str = stringParser.parse(ctx, param)
 
-            if (!str.isPresent) {
+            if (str.isEmpty) {
                 return Optional.empty()
             }
 

@@ -1,14 +1,10 @@
 package life.nekos.bot.commands.owner
 
 import life.nekos.bot.apis.NekosLife
-import life.nekos.bot.framework.parsers.stringorbool.StringBool
-import life.nekos.bot.utils.Database
-import life.nekos.bot.utils.RequestUtil
-import life.nekos.bot.utils.Send
-import life.nekos.bot.utils.WumpDump
+import life.nekos.bot.utils.*
 import life.nekos.bot.utils.extensions.thenException
-import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.annotations.Greedy
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.entities.Icon
@@ -21,17 +17,13 @@ class Owner : Cog {
         ctx.message.delete().queue()
     }
 
-    @Command(description = "Sets the bot's avatar. Pass a URL for custom, or `y` for random.", developerOnly = true)
-    fun setavatar(ctx: Context, urlOrRandom: StringBool) {
-        if (urlOrRandom.isBool && (urlOrRandom.entity as Boolean)) {
-            NekosLife.avatar()
-                .thenAccept { setAvatarWithUrl(ctx, it) }
-        } else {
-            setAvatarWithUrl(ctx, urlOrRandom.entity as String)
-        }
+    @Command(description = "Sets the bot's avatar.", developerOnly = true)
+    fun setavatar(ctx: Context) {
+        NekosLife.avatar().thenAccept { setAvatarWithUrl(ctx, it) }
+        ctx.send(Formats.info("Set Avatar"))
     }
 
-    fun setAvatarWithUrl(ctx: Context, url: String) {
+    private fun setAvatarWithUrl(ctx: Context, url: String) {
         RequestUtil.request { url(url) }
             .submit()
             .thenCompose {
