@@ -65,10 +65,7 @@ class Guild : Cog {
 
         val color = role.color
         val hexStr = color?.let { String.format("%02x%02x%02x", it.red, it.green, it.blue) } ?: "000000"
-        val members = ctx.guild!!.memberCache.getElementsWithRoles(role).joinToString("\n") { it.user.asTag }
         val permissions = role.permissionsExplicit.joinToString("\n") { it.getName() }
-
-        val membersUrl = WumpDump.paste(members).get(5, TimeUnit.SECONDS)
         val permissionsUrl = WumpDump.paste(permissions).get(5, TimeUnit.SECONDS)
 
         ctx.send {
@@ -78,7 +75,6 @@ class Guild : Cog {
             addField("Hoisted", role.isHoisted.toString(), true)
             addField("Managed", role.isManaged.toString(), true)
             addField("Mentionable", role.isMentionable.toString(), true)
-            addField("Members", "[Click to view]($membersUrl)", true)
             addField("Permissions", "[Click to view]($permissionsUrl)", true)
         }
     }

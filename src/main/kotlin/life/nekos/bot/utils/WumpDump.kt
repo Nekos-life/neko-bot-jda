@@ -13,7 +13,7 @@ object WumpDump {
             post(RequestBody.create(MediaType.parse("text/plain"), doc))
         }.submit()
             .thenApply { JSONObject(it.body()!!.string()) }
-            .thenApply { it.getString("key") }
+            .thenApply { "https://feed-the-wump.us/${it.getString("key")}" }
     }
 
 }
