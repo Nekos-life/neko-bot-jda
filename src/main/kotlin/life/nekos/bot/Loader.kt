@@ -10,6 +10,7 @@ import me.devoxin.flight.api.CommandClient
 import me.devoxin.flight.api.CommandClientBuilder
 import net.dv8tion.jda.api.entities.Activity
 import life.nekos.bot.utils.NekoPrefixProvider
+import life.nekos.bot.utils.extensions.UserParser
 
 object Loader {
     val bootTime = System.currentTimeMillis()
@@ -24,7 +25,7 @@ object Loader {
     @JvmStatic
     fun main(args: Array<String>) {
         isDebug = args.any { it == "--debug" }
-        val token = Config["token"]
+        val token = if (isDebug) Config["debug_token"] else Config["token"]
 
         commandClient = CommandClientBuilder()
             .setOwnerIds(248294452307689473L, 180093157554388993L)
@@ -32,6 +33,7 @@ object Loader {
             .registerDefaultParsers()
             .addCustomParser(StringBool::class.java, StringOrBool())
             .addEventListeners(FlightEventAdapter())
+            .addCustomParser(UserParser())
             .configureDefaultHelpCommand { enabled = false }
             .build()
 

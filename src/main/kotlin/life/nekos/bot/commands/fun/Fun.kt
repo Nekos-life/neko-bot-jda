@@ -21,6 +21,7 @@ import java.awt.Color
 import java.awt.Font
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.net.URL
 import java.util.concurrent.CompletableFuture
 import javax.imageio.ImageIO
 import kotlin.math.roundToInt
@@ -118,7 +119,7 @@ class Fun : Cog {
     }
 
     @Command(description = "Cuddle someone \\o/", guildOnly = true)
-    suspend fun cuddle(ctx: Context, @Greedy who: Member?) {
+    suspend fun cuddle(ctx: Context, @Greedy who: User?) {
         genericActionCommand(ctx, who, "cuddle", NekosLife.cuddle())
     }
 
@@ -167,22 +168,22 @@ class Fun : Cog {
     }
 
     @Command(description = "Hug someone \\o/", guildOnly = true)
-    suspend fun hug(ctx: Context, @Greedy who: Member?) {
+    suspend fun hug(ctx: Context, @Greedy who: User?) {
         genericActionCommand(ctx, who, "hug", NekosLife.hug())
     }
 
     @Command(description = "Kiss someone \\o/", guildOnly = true)
-    suspend fun kiss(ctx: Context, @Greedy who: Member?) {
+    suspend fun kiss(ctx: Context, @Greedy who: User?) {
         genericActionCommand(ctx, who, "kiss", NekosLife.kiss())
     }
 
     @Command(description = "Pat someone \\o/", guildOnly = true)
-    suspend fun pat(ctx: Context, @Greedy who: Member?) {
+    suspend fun pat(ctx: Context, @Greedy who: User?) {
         genericActionCommand(ctx, who, "pat", NekosLife.pat())
     }
 
     @Command(description = "Pat someone \\o/", guildOnly = true)
-    suspend fun slap(ctx: Context, @Greedy who: Member?) {
+    suspend fun slap(ctx: Context, @Greedy who: User?) {
         genericActionCommand(ctx, who, "slap", NekosLife.slap())
     }
 
@@ -208,8 +209,9 @@ class Fun : Cog {
         }
     }
 
-    private suspend fun genericActionCommand(ctx: Context, who: Member?, action: String,
-                                             img: CompletableFuture<String>) {
+    private suspend fun genericActionCommand(
+        ctx: Context, who: User?, action: String,
+        img: CompletableFuture<String>) {
         if (who == null) {
             return ctx.send("Who do you want to $action?? ${Formats.NEKO_C_EMOTE}")
         }
@@ -226,7 +228,7 @@ class Fun : Cog {
 
         ctx.send {
             setColor(Colors.getEffectiveColor(ctx))
-            setDescription("${who.effectiveName}, you got a $action from ${ctx.author.name} ${Formats.randomCat()}")
+            setDescription("${who.asMention}, you got a $action from ${ctx.author.name} ${Formats.randomCat()}")
             setImage(imgUrl)
         }
     }
@@ -240,7 +242,7 @@ class Fun : Cog {
         }
 
         ctx.typing {
-            val bg = ImageIO.read(File("res/sf.jpg"))
+            val bg = ImageIO.read(this.javaClass.getResource("/sf.jpg"))
             val font = Font("Whitney", Font.BOLD, 30)
             val g = bg.createGraphics().also {
                 it.color = Color.BLACK

@@ -11,7 +11,6 @@ import java.awt.Color
 import java.awt.Font
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
-import java.io.File
 import java.util.*
 import javax.imageio.ImageIO
 
@@ -57,7 +56,7 @@ class Ship : Cog {
             val av2 = loadAvatar(user2)
             val randResult = r.nextInt(99 - 10) + 10
 
-            val template = ImageIO.read(File("res/catLove.png"))
+            val template = ImageIO.read(this.javaClass.getResource("/catLove.png"))
             val image = template.createGraphics().apply {
                 color = Color(51, 232, 211)
                 font = Font("Whitney", Font.BOLD, 36)

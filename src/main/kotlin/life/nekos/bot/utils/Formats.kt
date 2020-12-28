@@ -1,12 +1,18 @@
 package life.nekos.bot.utils
 
-import java.text.MessageFormat;
+import life.nekos.bot.Loader.bot
+import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.JDAInfo
+import net.dv8tion.jda.api.entities.Guild
+import java.text.MessageFormat
+
 
 /**
  * Created by Tom on 10/5/2017.
  */
 object Formats {
-    val httpRx = "(https?:\\/\\/)?(www\\.)?(([a-zA-Z0-9-]){2,}\\.){1,4}([a-zA-Z]){2,6}(\\/([a-zA-Z-_\\/\\.0-9#:?=&;,]*)?)?)"
+    val httpRx =
+        "(https?:\\/\\/)?(www\\.)?(([a-zA-Z0-9-]){2,}\\.){1,4}([a-zA-Z]){2,6}(\\/([a-zA-Z-_\\/\\.0-9#:?=&;,]*)?)?)"
     val cats = listOf(
         "｡＾･ｪ･＾｡",
         "( ͒ ु- •̫̮ – ू ͒)",
@@ -196,6 +202,39 @@ object Formats {
                 + "\n{4} **Patreon**: [https://www.patreon.com/Nekos_life](https://www.patreon.com/Nekos_life)",
         DISCORD_EMOTE, BOT_EMOTE, LINK_EMOTE, PAYPAL_EMOTE, PATRON_EMOTE
     )
+
+
+    fun getReadyFormat(jda: JDA, HOME: Guild): String? {
+        return MessageFormat.format(
+            """
+            Logging in Neko
+            {0}
+            Oauth link:
+            {1}
+            JDA Version:
+            {7}
+            Docs halp:
+            http://home.dv8tion.net:8080/job/JDA/javadoc/
+            Logged in as:
+            {2}({3})
+            Guilds:
+            {4}
+            Shards:
+            {5}
+            Home Guild:
+            {6}
+            """.trimIndent(),
+            NEKO_BOOT_BANNER,
+            "https://discordapp.com/oauth2/authorize?permissions=8&client_id=${jda.selfUser.id}&scope=bot",
+            jda.selfUser.name,
+            jda.selfUser.id,
+            bot.guilds.size,
+            bot.shardsTotal,
+            HOME.name,
+            JDAInfo.VERSION
+        )
+    }
+
 
     fun randomCat() = cats.random()
 
