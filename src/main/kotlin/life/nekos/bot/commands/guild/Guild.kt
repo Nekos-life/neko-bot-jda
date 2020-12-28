@@ -4,8 +4,8 @@ import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.WumpDump
-import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Role
@@ -16,8 +16,10 @@ import java.util.concurrent.TimeoutException
 import kotlin.streams.toList
 
 class Guild : Cog {
-    @Command(aliases = ["nsfw", "toggle"], description = "Toggles the current channel's NSFW setting", guildOnly = true,
-        botPermissions = [Permission.MANAGE_CHANNEL], userPermissions = [Permission.MANAGE_CHANNEL])
+    @Command(
+        aliases = ["nsfw", "toggle"], description = "Toggles the current channel's NSFW setting", guildOnly = true,
+        botPermissions = [Permission.MANAGE_CHANNEL], userPermissions = [Permission.MANAGE_CHANNEL]
+    )
     fun nsfwtoggle(ctx: Context) {
         val tc = ctx.textChannel!!
         val newSetting = !tc.isNSFW
@@ -28,8 +30,10 @@ class Guild : Cog {
     }
 
     @DonorOnly
-    @Command(aliases = ["rc"], description = "Changes all hoisted roles to a random color", guildOnly = true,
-        botPermissions = [Permission.MANAGE_ROLES], userPermissions = [Permission.MANAGE_ROLES])
+    @Command(
+        aliases = ["rc"], description = "Changes all hoisted roles to a random color", guildOnly = true,
+        botPermissions = [Permission.MANAGE_ROLES], userPermissions = [Permission.MANAGE_ROLES]
+    )
     suspend fun recolor(ctx: Context) {
         ctx.sendAsync("This command will change the color of all hoisted roles to something random! Do you want to continue? (yes/no)")
 

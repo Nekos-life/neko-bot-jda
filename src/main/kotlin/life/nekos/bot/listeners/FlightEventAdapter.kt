@@ -29,8 +29,10 @@ class FlightEventAdapter : DefaultCommandEventAdapter() {
         val type = cause::class.java.simpleName
         log.error("Command {} encountered an error!", command.name, error)
 
-        ctx.send("There was a problem processing the command\n" +
-                "The error has been logged, nya~\n```\n$type: ${cause.message}```")
+        ctx.send(
+            "There was a problem processing the command\n" +
+                    "The error has been logged, nya~\n```\n$type: ${cause.message}```"
+        )
     }
 
     override fun onCommandPostInvoke(ctx: Context, command: CommandFunction, failed: Boolean) {

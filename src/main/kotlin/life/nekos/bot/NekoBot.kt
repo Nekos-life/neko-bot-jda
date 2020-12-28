@@ -28,7 +28,6 @@ class NekoBot(private val sm: ShardManager) : EventListener, ShardManager by sm 
         val log: Logger = LoggerFactory.getLogger(NekoBot::class.java)
         val metrics = Metrics.create()!!
         val simpleLbCache: HashMap<String, String> = HashMap()
-
         fun new(options: DefaultShardManagerBuilder.() -> Unit): NekoBot {
             val shardManager = DefaultShardManagerBuilder.create(IntentHelper.enabledIntents)
                 .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS, CacheFlag.EMOTE, CacheFlag.ROLE_TAGS)

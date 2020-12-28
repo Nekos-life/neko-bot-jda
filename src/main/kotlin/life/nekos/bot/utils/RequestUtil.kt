@@ -21,7 +21,9 @@ object RequestUtil {
 
                 override fun onResponse(call: Call, response: Response) {
                     if (!response.isSuccessful) {
-                        val message = "Request to ${call.request().url()} yielded code: ${response.code()}, message: ${response.message()}"
+                        val message = "Request to ${
+                            call.request().url()
+                        } yielded code: ${response.code()}, message: ${response.message()}"
                         fut.completeExceptionally(IllegalStateException(message))
                         response.close()
                         return

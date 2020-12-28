@@ -6,9 +6,11 @@ import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*
 
-data class User(val id: String, var nekos: Long, var nekosAll: Long,
-                var exp: Long, var level: Long, var premium: Int,
-                var registerDate: String, var optedIn: Boolean, var is18: Boolean, var coolDownCount: Int ) {
+data class User(
+    val id: String, var nekos: Long, var nekosAll: Long,
+    var exp: Long, var level: Long, var premium: Int,
+    var registerDate: String, var optedIn: Boolean, var is18: Boolean, var coolDownCount: Int
+) {
 
     fun update(changes: User.() -> Unit) {
         changes(this)

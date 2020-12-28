@@ -56,7 +56,11 @@ class Audio : Cog {
                 ctx.send("Nu nya~ Your voice channel is full!")
                 false
             }
-            !ctx.guild!!.selfMember.hasPermission(invoker.channel!!, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK) -> {
+            !ctx.guild!!.selfMember.hasPermission(
+                invoker.channel!!,
+                Permission.VOICE_CONNECT,
+                Permission.VOICE_SPEAK
+            ) -> {
                 ctx.send("Nu nya~ I don't have permission to join your voice channel~")
                 false
             }
@@ -67,8 +71,10 @@ class Audio : Cog {
         }
     }
 
-    @Command(aliases = ["previous", "b"], description = "Play previous song, or restarts current",
-        guildOnly = true)
+    @Command(
+        aliases = ["previous", "b"], description = "Play previous song, or restarts current",
+        guildOnly = true
+    )
     fun back(ctx: Context) {
         if (!checkVoice(ctx)) {
             return
@@ -95,8 +101,10 @@ class Audio : Cog {
         }
     }
 
-    @Command(aliases = ["np", "playing", "now_playing", "song"], description = "Shows info on the playing track",
-        guildOnly = true)
+    @Command(
+        aliases = ["np", "playing", "now_playing", "song"], description = "Shows info on the playing track",
+        guildOnly = true
+    )
     fun nowplaying(ctx: Context) {
         val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
         val track = player.playingTrack
@@ -114,8 +122,10 @@ class Audio : Cog {
         }
     }
 
-    @Command(aliases = ["p"], description = "Play a song from a URL, or search.",
-        guildOnly = true)
+    @Command(
+        aliases = ["p"], description = "Play a song from a URL, or search.",
+        guildOnly = true
+    )
     fun play(ctx: Context, @Greedy query: String) {
         if (!connectToVoice(ctx)) {
             return
@@ -150,16 +160,24 @@ class Audio : Cog {
             setTitle("Now Playing ${Formats.PLAY_EMOTE}")
             setDescription(
                 "Track: ${current.info.title} `[${TextUtils.toTimeString(current.duration)}]`\n" +
-                    "Queued by: ${(current.userData as User).name}"
+                        "Queued by: ${(current.userData as User).name}"
             )
             addField("Queue", paginator.display(), false)
-            setFooter("Current Playlist: Total Tracks: ${ah.queue.size}, Total Length: ${TextUtils.toTimeString(totalDuration)}")
+            setFooter(
+                "Current Playlist: Total Tracks: ${ah.queue.size}, Total Length: ${
+                    TextUtils.toTimeString(
+                        totalDuration
+                    )
+                }"
+            )
         }
     }
 
     @DonorOnly
-    @Command(aliases = ["loop"], description = "Set repeat for a track.",
-        guildOnly = true)
+    @Command(
+        aliases = ["loop"], description = "Set repeat for a track.",
+        guildOnly = true
+    )
     fun repeat(ctx: Context, loop: String) {
         if (!checkVoice(ctx)) {
             return
@@ -182,12 +200,16 @@ class Audio : Cog {
             else -> return ctx.send("You need to specify `all`, `current` or `none` nya~")
         }
 
-        ctx.send("Alright nya, I have set repeat to `${player.loopSetting.name.toLowerCase()}` " +
-                Formats.randomCat())
+        ctx.send(
+            "Alright nya, I have set repeat to `${player.loopSetting.name.toLowerCase()}` " +
+                    Formats.randomCat()
+        )
     }
 
-    @Command(aliases = ["shuffle", "mix"], description = "Shuffles the current queue.",
-        guildOnly = true)
+    @Command(
+        aliases = ["shuffle", "mix"], description = "Shuffles the current queue.",
+        guildOnly = true
+    )
     fun shuffle(ctx: Context) {
         if (!checkVoice(ctx)) {
             return
@@ -207,8 +229,10 @@ class Audio : Cog {
         ctx.send("owo I mixed them all up ${Formats.randomCat()}")
     }
 
-    @Command(aliases = ["s", "next"], description = "Skips the current track.",
-        guildOnly = true)
+    @Command(
+        aliases = ["s", "next"], description = "Skips the current track.",
+        guildOnly = true
+    )
     fun skip(ctx: Context) {
         if (!checkVoice(ctx)) {
             return
@@ -241,8 +265,10 @@ class Audio : Cog {
         }
     }
 
-    @Command(aliases = ["quit", "disconnect"], description = "Stops playback, clears queue and disconnects.",
-        guildOnly = true)
+    @Command(
+        aliases = ["quit", "disconnect"], description = "Stops playback, clears queue and disconnects.",
+        guildOnly = true
+    )
     fun stop(ctx: Context) {
         if (!Checks.audioChecks(ctx)) {
             return ctx.send("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
@@ -266,13 +292,17 @@ class Audio : Cog {
         val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
 
         if (vol == null) {
-            return ctx.send("My volume is currently " +
-                    "${Formats.getVolEmote(player.volume)}**${player.volume}** nya~ ${Formats.randomCat()}")
+            return ctx.send(
+                "My volume is currently " +
+                        "${Formats.getVolEmote(player.volume)}**${player.volume}** nya~ ${Formats.randomCat()}"
+            )
         }
 
         player.volume = vol.coerceIn(0, 100)
-        ctx.send("I set the volume to " +
-                "${Formats.getVolEmote(player.volume)}**${player.volume}**, nya~ ${Formats.randomCat()}")
+        ctx.send(
+            "I set the volume to " +
+                    "${Formats.getVolEmote(player.volume)}**${player.volume}**, nya~ ${Formats.randomCat()}"
+        )
     }
 
 }

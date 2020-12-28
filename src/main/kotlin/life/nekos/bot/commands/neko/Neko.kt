@@ -5,15 +5,17 @@ import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
-import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.EmbedBuilder
 import java.awt.Color
 
 class Neko : Cog {
-    fun embed(ctx: Context, description: String, imageUrl: String,
-              embedOptions: EmbedBuilder.() -> Unit = {}) {
+    fun embed(
+        ctx: Context, description: String, imageUrl: String,
+        embedOptions: EmbedBuilder.() -> Unit = {}
+    ) {
         ctx.send {
             setColor(Colors.getEffectiveColor(ctx))
             setDescription(description)

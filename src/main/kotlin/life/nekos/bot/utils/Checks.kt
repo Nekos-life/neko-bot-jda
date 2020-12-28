@@ -1,11 +1,9 @@
 package life.nekos.bot.utils
 
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack
 import life.nekos.bot.Loader
 import me.devoxin.flight.api.Context
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Member
-import net.dv8tion.jda.api.entities.User
 
 object Checks {
     fun hasRole(userId: String, roleId: Long) = Loader.bot.home()?.getMemberById(userId)

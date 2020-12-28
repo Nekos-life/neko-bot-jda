@@ -15,24 +15,23 @@ import me.devoxin.flight.api.entities.Attachment
 import me.devoxin.flight.api.entities.Cog
 import me.devoxin.flight.internal.parsers.MemberParser
 import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
 import java.awt.Color
 import java.awt.Font
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.net.URL
 import java.util.concurrent.CompletableFuture
 import javax.imageio.ImageIO
 import kotlin.math.roundToInt
 
 class Fun : Cog {
     @Command(aliases = ["ava", "pfp", "avi"], description = "Shows your, or another user's avatar")
-    @CommandHelp("""
+    @CommandHelp(
+        """
         options:
           --dm : Sends the image to you privately.
           --new: Sends you a new avatar. You can specify "--nsfw" for a new NSFW avatar.
-    """)
+    """
+    )
     suspend fun avatar(ctx: Context, user: User, @Greedy options: String = "") {
         val isDm = options.contains("--dm")
         val response = EmbedBuilder().setColor(Colors.getEffectiveColor(ctx))
@@ -53,8 +52,10 @@ class Fun : Cog {
         } else {
             val fsAvatarUrl = user.effectiveAvatarUrl + "?size=2048"
             response
-                .setDescription("${Formats.INFO_EMOTE} Here is ${user.name}'s avatar, nya~ ${Formats.randomCat()}\n\n" +
-                        "[**Link**]($fsAvatarUrl)")
+                .setDescription(
+                    "${Formats.INFO_EMOTE} Here is ${user.name}'s avatar, nya~ ${Formats.randomCat()}\n\n" +
+                            "[**Link**]($fsAvatarUrl)"
+                )
                 .setImage(fsAvatarUrl)
         }
 
@@ -211,7 +212,8 @@ class Fun : Cog {
 
     private suspend fun genericActionCommand(
         ctx: Context, who: User?, action: String,
-        img: CompletableFuture<String>) {
+        img: CompletableFuture<String>
+    ) {
         if (who == null) {
             return ctx.send("Who do you want to $action?? ${Formats.NEKO_C_EMOTE}")
         }

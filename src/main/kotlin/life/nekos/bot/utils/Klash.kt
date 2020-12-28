@@ -11,7 +11,7 @@ object Klash {
     /**
      * Constructs the JSON string into an object of the given type.
      */
-    inline fun <reified T: Any> construct(json: String): T {
+    inline fun <reified T : Any> construct(json: String): T {
         val obj = JSONObject(json)
         val constructor = T::class.primaryConstructor!!
         val params = constructor.parameters
@@ -49,7 +49,7 @@ object Klash {
     /**
      * Deconstructs the given object into a JSON string.
      */
-    fun <T: Any> deconstruct(obj: T): String {
+    fun <T : Any> deconstruct(obj: T): String {
         @Suppress("UNCHECKED_CAST")
         val properties = (obj::class as KClass<T>).memberProperties
         val json = JSONObject()

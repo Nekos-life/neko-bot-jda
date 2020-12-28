@@ -7,9 +7,9 @@ import life.nekos.bot.framework.Paginator
 import life.nekos.bot.framework.annotations.CommandHelp
 import life.nekos.bot.utils.*
 import life.nekos.bot.utils.extensions.toReactionString
-import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.CommandFunction
 import me.devoxin.flight.api.Context
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.annotations.Greedy
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.EmbedBuilder

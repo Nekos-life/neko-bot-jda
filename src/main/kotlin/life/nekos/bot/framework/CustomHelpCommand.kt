@@ -38,7 +38,7 @@ class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
     private suspend fun sendHelpMenu(ctx: Context) {
         val categories = hashMapOf<String, HashSet<CommandFunction>>()
         val helpEmbed = EmbedBuilder()
-        val botPrefix = if (ctx.message.isFromGuild ) Database.getPrefix(ctx.guild!!.id) ?: "~" else "~"
+        val botPrefix = if (ctx.message.isFromGuild) Database.getPrefix(ctx.guild!!.id) ?: "~" else "~"
         for (command in ctx.commandClient.commands.values) {
             val category = command.category.toLowerCase()
             if (command.properties.nsfw && ctx.message.isFromGuild && !ctx.textChannel!!.isNSFW) {

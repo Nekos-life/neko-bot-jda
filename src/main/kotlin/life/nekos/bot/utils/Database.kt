@@ -9,11 +9,7 @@ import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.UpdateOptions
 import life.nekos.bot.entities.Guild
 import life.nekos.bot.entities.User
-import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import org.bson.Document
-import java.util.*
-import java.util.concurrent.ThreadLocalRandom
 
 
 object Database {

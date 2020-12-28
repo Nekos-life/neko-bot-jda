@@ -6,8 +6,8 @@ import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.TextUtils
 import life.nekos.bot.utils.extensions.thenException
-import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message
@@ -20,8 +20,10 @@ class Bot : Cog {
     private fun isSpam(m: Message) = m.contentDisplay.startsWith('~')
             || m.author.idLong == m.jda.selfUser.idLong
 
-    @Command(aliases = ["cleanup", "purge", "del"], description = "Cleans up all the bot and command messages.",
-        botPermissions = [Permission.MESSAGE_MANAGE])
+    @Command(
+        aliases = ["cleanup", "purge", "del"], description = "Cleans up all the bot and command messages.",
+        botPermissions = [Permission.MESSAGE_MANAGE]
+    )
     fun clean(ctx: Context, amount: Int = 100) {
         ctx.messageChannel.iterableHistory
             .takeAsync(amount)
@@ -32,8 +34,10 @@ class Bot : Cog {
             .thenException { ctx.send("Some error sry nya~") }
     }
 
-    @Command(aliases = ["join", "oauth", "link", "links", "support"],
-        description = "Bot and support guild links -.o")
+    @Command(
+        aliases = ["join", "oauth", "link", "links", "support"],
+        description = "Bot and support guild links -.o"
+    )
     fun invite(ctx: Context) {
         ctx.send {
             setColor(Colors.getRandomColor())
@@ -83,7 +87,14 @@ class Bot : Cog {
         content.append(String.format("%3s | %-27s | %-3s\n", "ID", "Status", "Latency"))
 
         for (shard in Loader.bot.shards.reversed()) {
-            content.append(String.format("%3d | %-27s | %-3dms\n", shard.shardInfo.shardId, shard.status.name, shard.gatewayPing))
+            content.append(
+                String.format(
+                    "%3d | %-27s | %-3dms\n",
+                    shard.shardInfo.shardId,
+                    shard.status.name,
+                    shard.gatewayPing
+                )
+            )
         }
 
         content.append(String.format("\nAlive: %d | Dead: %d | Avg. Latency: %dms", alive, dead, avgLatency))

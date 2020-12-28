@@ -2,7 +2,6 @@ package life.nekos.bot.apis
 
 import life.nekos.bot.utils.RequestUtil
 import okhttp3.*
-import java.io.IOException
 import java.util.concurrent.CompletableFuture
 
 open class Api {
@@ -45,7 +44,11 @@ open class Api {
         return RequestUtil.request(request).submit()
             .thenApply {
                 return@thenApply it.body()
-                    ?: throw IllegalStateException("ResponseBody for request ${it.request().url().encodedPath()} is null!")
+                    ?: throw IllegalStateException(
+                        "ResponseBody for request ${
+                            it.request().url().encodedPath()
+                        } is null!"
+                    )
             }
     }
 }

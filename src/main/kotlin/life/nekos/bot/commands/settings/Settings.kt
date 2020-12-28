@@ -2,15 +2,17 @@ package life.nekos.bot.commands.settings
 
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Database
-import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.Context
+import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.TextChannel
 
 class Settings : Cog {
-    @Command(description = "Sets the guild prefix owo", guildOnly = true,
-        userPermissions = [Permission.MANAGE_SERVER])
+    @Command(
+        description = "Sets the guild prefix owo", guildOnly = true,
+        userPermissions = [Permission.MANAGE_SERVER]
+    )
     fun prefix(ctx: Context, newPrefix: String) {
         val settings = Database.getGuild(ctx.guild!!.id)
 
@@ -21,8 +23,10 @@ class Settings : Cog {
         ctx.send("Prefix set to `${ctx.cleanContent(newPrefix)}`, nya~")
     }
 
-    @Command(description = "Sets the channel where nekos can be caught \\o", guildOnly = true,
-        userPermissions = [Permission.MANAGE_SERVER])
+    @Command(
+        description = "Sets the channel where nekos can be caught \\o", guildOnly = true,
+        userPermissions = [Permission.MANAGE_SERVER]
+    )
     fun nekospawn(ctx: Context, channel: TextChannel?) {
         val settings = Database.getGuild(ctx.guild!!.id)
 
@@ -35,8 +39,10 @@ class Settings : Cog {
         ctx.send("Nekos $msg, nya~")
     }
 
-    @Command(description = "Shows the guild config info", guildOnly = true,
-        userPermissions = [Permission.MANAGE_SERVER])
+    @Command(
+        description = "Shows the guild config info", guildOnly = true,
+        userPermissions = [Permission.MANAGE_SERVER]
+    )
     fun status(ctx: Context) {
         val settings = Database.getGuild(ctx.guild!!.id)
         val nekoChannel = settings.nekoChannel?.let { ctx.guild!!.getTextChannelById(it)?.asMention }

@@ -11,15 +11,17 @@ class UserParser : Parser<User> {
         val snowflake = snowflakeParser.parse(ctx, param)
         val user =
             if (snowflake.isPresent) {
-                ctx.message.mentionedUsers.firstOrNull { it.idLong == snowflake.get().resolved } ?: ctx.jda.retrieveUserById(
-                    snowflake.get().resolved
-                ).submit().get()
+                ctx.message.mentionedUsers.firstOrNull { it.idLong == snowflake.get().resolved }
+                    ?: ctx.jda.retrieveUserById(
+                        snowflake.get().resolved
+                    ).submit().get()
             } else {
                 if (param.length > 5 && param[param.length - 5].toString() == "#") {
                     val tag = param.split("#")
-                    ctx.guild!!.findMembers { it.user.name == tag[0] && it.user.discriminator == tag[1]  }.get().first().user
+                    ctx.guild!!.findMembers { it.user.name == tag[0] && it.user.discriminator == tag[1] }.get()
+                        .first().user
                 } else {
-                    ctx.guild!!.findMembers{ it.user.name == param }.get().first().user
+                    ctx.guild!!.findMembers { it.user.name == param }.get().first().user
                 }
             }
 

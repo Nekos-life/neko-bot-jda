@@ -1,16 +1,16 @@
 package life.nekos.bot
 
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory
-import life.nekos.bot.apis.PokeApi
 import life.nekos.bot.framework.CustomHelpCommand
 import life.nekos.bot.framework.parsers.stringorbool.StringBool
 import life.nekos.bot.framework.parsers.stringorbool.StringOrBool
 import life.nekos.bot.listeners.FlightEventAdapter
+import life.nekos.bot.utils.NekoPrefixProvider
+import life.nekos.bot.utils.Server
+import life.nekos.bot.utils.extensions.UserParser
 import me.devoxin.flight.api.CommandClient
 import me.devoxin.flight.api.CommandClientBuilder
 import net.dv8tion.jda.api.entities.Activity
-import life.nekos.bot.utils.NekoPrefixProvider
-import life.nekos.bot.utils.extensions.UserParser
 
 object Loader {
     val bootTime = System.currentTimeMillis()
@@ -24,6 +24,7 @@ object Loader {
     @ExperimentalStdlibApi
     @JvmStatic
     fun main(args: Array<String>) {
+        Server().server(7000)
         isDebug = args.any { it == "--debug" }
         val token = if (isDebug) Config["debug_token"] else Config["token"]
 
