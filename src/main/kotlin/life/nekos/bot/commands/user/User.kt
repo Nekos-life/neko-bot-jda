@@ -52,8 +52,7 @@ class User : Cog {
                         ctx,
                         it.id
                     )
-                }" +
-                        "**\n**${Formats.NEKO_V_EMOTE} __Nekos__**: **${it.nekos}**\n"
+                }" + "**\n**${Formats.NEKO_V_EMOTE} __Nekos__**: **${it.nekos}**\n"
             }
             "levels" -> Database.getTopExp().map {
                 "\n${Formats.USER_EMOTE} **__Name__**: **${
@@ -69,16 +68,25 @@ class User : Cog {
             else -> return ctx.send(Formats.error("**Use `lb nekos` or `lb levels`**"))
         }
 
-
         val paginator = Paginator(items) {
             selectedPage = page
         }
+        val link = WumpDump.paste(
+            items.toString()
+                .replace(Formats.NEKO_V_EMOTE, "")
+                .replace(Formats.USER_EMOTE, "")
+                .replace(Formats.LEVEL_EMOTE, "")
+                .replace(Formats.MAGIC_EMOTE, "")
+                .replace("_", "")
+                .replace("*", "")
+        ).get()
 
         ctx.send {
             setColor(Colors.getEffectiveColor(ctx))
-            setTitle("${Formats.MAGIC_EMOTE} **Global leaderboard for Nekos** ${Formats.NEKO_C_EMOTE}")
+            setTitle("${Formats.MAGIC_EMOTE} **Global leaderboard for Nekos** ${Formats.NEKO_C_EMOTE}", link)
             setDescription(paginator.display())
             setFooter("Page ${paginator.page()}/${paginator.maxPages}")
+            setTimestamp(Instant.now())
         }
     }
 
