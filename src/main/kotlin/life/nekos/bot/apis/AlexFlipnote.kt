@@ -9,7 +9,7 @@ import java.io.InputStream
 import java.util.concurrent.CompletableFuture
 
 object AlexFlipnote : Api() {
-    private val baseUrl = HttpUrl.get("https://api.alexflipnote.xyz")
+    private val baseUrl = HttpUrl.get("https://api.alexflipnote.dev")
 
     fun didYouMean(topText: String, bottomText: String): CompletableFuture<InputStream> {
         val endpoint = Endpoint("didyoumean") {
