@@ -25,7 +25,7 @@ object AlexFlipnote : Api() {
 
     fun color(hex: String): CompletableFuture<Color> {
         val request = Request.Builder()
-            .url("https://api.alexflipnote.xyz/colour/$hex")
+            .url("https://api.alexflipnote.dev/colour/$hex")
             .build()
 
         return performRequest(request)
@@ -36,7 +36,7 @@ object AlexFlipnote : Api() {
 
     fun coffee(): CompletableFuture<String> {
         val request = Request.Builder()
-            .url("https://coffee.alexflipnote.xyz/random.json")
+            .url("https://coffee.alexflipnote.dev/random.json")
             .build()
 
         return performRequest(request)
