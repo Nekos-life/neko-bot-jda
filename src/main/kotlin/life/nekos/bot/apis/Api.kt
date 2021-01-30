@@ -1,5 +1,6 @@
 package life.nekos.bot.apis
 
+import life.nekos.bot.Config
 import life.nekos.bot.utils.RequestUtil
 import okhttp3.*
 import java.util.concurrent.CompletableFuture
@@ -37,6 +38,7 @@ open class Api {
     fun HttpUrl.toRequest(): Request {
         return Request.Builder()
             .url(this)
+            .header("Authorization", Config["alex_token"])
             .build()
     }
 

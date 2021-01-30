@@ -1,5 +1,6 @@
 package life.nekos.bot.apis
 
+import life.nekos.bot.Config
 import life.nekos.bot.apis.entities.Color
 import okhttp3.HttpUrl
 import okhttp3.Request
@@ -26,6 +27,7 @@ object AlexFlipnote : Api() {
     fun color(hex: String): CompletableFuture<Color> {
         val request = Request.Builder()
             .url("https://api.alexflipnote.dev/colour/$hex")
+            .header("Authorization", Config["alex_token"])
             .build()
 
         return performRequest(request)
@@ -37,6 +39,7 @@ object AlexFlipnote : Api() {
     fun coffee(): CompletableFuture<String> {
         val request = Request.Builder()
             .url("https://coffee.alexflipnote.dev/random.json")
+            .header("Authorization", Config["alex_token"])
             .build()
 
         return performRequest(request)
