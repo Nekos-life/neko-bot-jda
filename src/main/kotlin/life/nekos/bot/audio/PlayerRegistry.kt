@@ -30,7 +30,6 @@ object PlayerRegistry {
 
     fun destroyPlayer(guildId: Long) {
         Loader.bot.getGuildById(guildId)?.audioManager?.let {
-            it.sendingHandler = null
             it.closeAudioConnection()
         }
         players[guildId]?.cleanup()

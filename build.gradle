@@ -26,7 +26,7 @@ dependencies {
     implementation "io.ktor:ktor-server-netty:$ktor_version"
 
     // Discord
-    implementation('net.dv8tion:JDA:4.2.0_222') {
+    implementation('net.dv8tion:JDA:4.2.0_229') {
         exclude module: 'opus-java'
     }
     implementation "club.minnced:discord-webhooks:0.2.0"
@@ -35,7 +35,7 @@ dependencies {
     implementation 'com.github.Devoxin:Flight:2.0.8'
 
     // Audio
-    implementation 'com.sedmelluq:lavaplayer:1.3.64'
+    implementation 'com.sedmelluq:lavaplayer:1.3.71'
     implementation 'com.sedmelluq:jda-nas:1.1.0'
 
     /* Eval */
