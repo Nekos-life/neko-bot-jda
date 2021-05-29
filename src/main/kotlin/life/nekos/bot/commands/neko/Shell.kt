@@ -8,8 +8,8 @@ object Shell {
     suspend fun slideshow(ctx: Context, cycles: Int = 20, nextImage: suspend (Message, Int, Int) -> Unit) {
         val m = ctx.sendAsync("\u200b")
 
-        for (i in 1 until cycles) {
-            nextImage(m, i, cycles)
+        for (i in 0 until cycles) {
+            nextImage(m, (i+1).toString(), cycles)
             delay(5000)
         }
     }
