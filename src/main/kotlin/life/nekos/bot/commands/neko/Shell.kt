@@ -9,7 +9,7 @@ object Shell {
         val m = ctx.sendAsync("\u200b")
 
         for (i in 0 until cycles) {
-            nextImage(m, (i+1).toString(), cycles)
+            nextImage(m, i+1, cycles)
             delay(5000)
         }
     }
