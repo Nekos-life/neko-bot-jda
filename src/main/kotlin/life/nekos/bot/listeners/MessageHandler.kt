@@ -49,12 +49,12 @@ class MessageHandler : ListenerAdapter() {
         ) {
             guild.update { msgCnt++ }
             if (guild.msgCnt > (40..150).random()) {
-                val messages = event.message.channel.iterableHistory.limit(10).submit().get()
-                val userMessageCount = messages.map { it.author }.toSet().count { !it.isBot }
-                if (userMessageCount >= 3) {
-                    guild.update { msgCnt = 0 }
-                    Send(event.message, true).neko(event.message.author.idLong)
-                }
+                //val messages = event.message.channel.iterableHistory.limit(10).submit().get()
+                // val userMessageCount = messages.map { it.author }.toSet().count { !it.isBot }
+                // if (userMessageCount >= 3) {
+                guild.update { msgCnt = 0 }
+                Send(event.message, true).neko(event.message.author.idLong)
+                //}
             }
         }
     }
