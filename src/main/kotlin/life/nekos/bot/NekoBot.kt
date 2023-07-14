@@ -13,10 +13,6 @@ class NekoBot(private val sm: ShardManager) : ShardManager by sm {
     val home: Guild?
         get() = sm.getGuildById(333713662739218433L)
 
-    init {
-        sm.addEventListener(this)
-    }
-
     companion object {
         val metrics = Metrics.create()!!
         val simpleLbCache: HashMap<String, String> = HashMap()
