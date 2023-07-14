@@ -2,7 +2,10 @@ package life.nekos.bot.apis
 
 import life.nekos.bot.Config
 import life.nekos.bot.utils.RequestUtil
-import okhttp3.*
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.ResponseBody
 import java.util.concurrent.CompletableFuture
 
 open class Api {
@@ -45,12 +48,7 @@ open class Api {
     fun performRequest(request: Request): CompletableFuture<ResponseBody> {
         return RequestUtil.request(request).submit()
             .thenApply {
-                return@thenApply it.body()
-                    ?: throw IllegalStateException(
-                        "ResponseBody for request ${
-                            it.request().url().encodedPath()
-                        } is null!"
-                    )
+                it.body ?: throw IllegalStateException("ResponseBody for request ${it.request.url.encodedPath} is null!")
             }
     }
 }

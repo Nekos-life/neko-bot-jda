@@ -1,17 +1,17 @@
 package life.nekos.bot.utils.extensions
 
-import me.devoxin.flight.api.Context
+import me.devoxin.flight.api.context.MessageContext
 import me.devoxin.flight.internal.parsers.Parser
 import me.devoxin.flight.internal.parsers.SnowflakeParser
 import net.dv8tion.jda.api.entities.User
 import java.util.*
 
 class UserParser : Parser<User> {
-    override fun parse(ctx: Context, param: String): Optional<User> {
+    override fun parse(ctx: MessageContext, param: String): Optional<User> {
         val snowflake = snowflakeParser.parse(ctx, param)
         val user =
             if (snowflake.isPresent) {
-                ctx.message.mentionedUsers.firstOrNull { it.idLong == snowflake.get().resolved }
+                ctx.message.mentions.users.firstOrNull { it.idLong == snowflake.get().resolved }
                     ?: ctx.jda.retrieveUserById(
                         snowflake.get().resolved
                     ).submit().get()

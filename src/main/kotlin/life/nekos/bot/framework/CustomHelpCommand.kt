@@ -1,15 +1,15 @@
 package life.nekos.bot.framework
 
-import kotlinx.coroutines.future.await
 import life.nekos.bot.framework.annotations.CommandHelp
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats
 import me.devoxin.flight.api.CommandFunction
-import me.devoxin.flight.api.Context
 import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.context.MessageContext
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.EmbedBuilder
+import net.dv8tion.jda.api.utils.messages.MessageCreateData
 import java.time.Instant
 import kotlin.reflect.full.findAnnotation
 
@@ -17,10 +17,9 @@ class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
     override fun name(): String = "Bot"
 
     @Command(aliases = ["commands", "cmds"], description = "Displays bot help.")
-    suspend fun help(ctx: Context, command: String?) {
+    suspend fun help(ctx: MessageContext, command: String?) {
         if (command == null) {
-            sendHelpMenu(ctx)
-            return
+            return sendHelpMenu(ctx)
         }
 
         val commands = ctx.commandClient.commands
@@ -35,18 +34,21 @@ class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
         sendCommandHelp(ctx, cmd)
     }
 
-    private suspend fun sendHelpMenu(ctx: Context) {
+    private suspend fun sendHelpMenu(ctx: MessageContext) {
         val categories = hashMapOf<String, HashSet<CommandFunction>>()
         val helpEmbed = EmbedBuilder()
         val botPrefix = if (ctx.message.isFromGuild) Database.getPrefix(ctx.guild!!.id) ?: "~" else "~"
         for (command in ctx.commandClient.commands.values) {
-            val category = command.category.toLowerCase()
-            if (command.properties.nsfw && ctx.message.isFromGuild && !ctx.textChannel!!.isNSFW) {
+            if (command.properties.nsfw && ctx.message.isFromGuild && ctx.textChannel?.isNSFW != true) {
                 continue
             }
+
+            val category = command.category.lowercase()
+
             val list = categories.computeIfAbsent(category) {
                 hashSetOf()
             }
+
             list.add(command)
         }
 
@@ -73,10 +75,10 @@ class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
         )
         helpEmbed.setTimestamp(Instant.now())
         helpEmbed.setDescription(Formats.LING_MSG)
-        ctx.message.channel.sendMessage(helpEmbed.build()).submit().await()
+        ctx.send(MessageCreateData.fromEmbeds(helpEmbed.build()))
     }
 
-    private fun sendCommandHelp(ctx: Context, command: CommandFunction) {
+    private fun sendCommandHelp(ctx: MessageContext, command: CommandFunction) {
         val builder = StringBuilder("```\n")
 
         if (ctx.trigger.matches("<@!?${ctx.jda.selfUser.id}> ".toRegex())) {
@@ -138,7 +140,7 @@ class CustomHelpCommand(private val showParameterTypes: Boolean = true) : Cog {
 
     private fun toTitleCase(s: String): String {
         return s.split(" +".toRegex())
-            .joinToString(" ") { it[0].toUpperCase() + it.substring(1).toLowerCase() }
+            .joinToString(" ") { it[0].uppercase() + it.substring(1).lowercase() }
     }
 
     private fun truncate(s: String, maxLength: Int): String {

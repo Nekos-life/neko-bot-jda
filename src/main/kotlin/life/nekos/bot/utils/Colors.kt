@@ -1,6 +1,6 @@
 package life.nekos.bot.utils
 
-import me.devoxin.flight.api.Context
+import me.devoxin.flight.api.context.Context
 import java.awt.Color
 import java.util.*
 
@@ -44,7 +44,7 @@ object Colors {
     }
 
     fun parse(color: String): Color? {
-        val lowered = color.toLowerCase()
+        val lowered = color.lowercase()
 
         if (lowered == "random") {
             return Color(getRandomColor())

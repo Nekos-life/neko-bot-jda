@@ -4,12 +4,15 @@ import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.WumpDump
-import me.devoxin.flight.api.Context
+import life.nekos.bot.utils.extensions.send
 import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.context.Context
+import me.devoxin.flight.api.context.MessageContext
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Role
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -21,7 +24,9 @@ class Guild : Cog {
         botPermissions = [Permission.MANAGE_CHANNEL], userPermissions = [Permission.MANAGE_CHANNEL]
     )
     fun nsfwtoggle(ctx: Context) {
-        val tc = ctx.textChannel!!
+        val tc = ctx.messageChannel as? TextChannel
+            ?: return ctx.send("Nya, I can't toggle the NSFW status of this channel!")
+
         val newSetting = !tc.isNSFW
         tc.manager.setNSFW(newSetting).queue {
             val str = if (newSetting) "enabled" else "disabled"
@@ -34,13 +39,13 @@ class Guild : Cog {
         aliases = ["rc"], description = "Changes all hoisted roles to a random color", guildOnly = true,
         botPermissions = [Permission.MANAGE_ROLES], userPermissions = [Permission.MANAGE_ROLES]
     )
-    suspend fun recolor(ctx: Context) {
+    suspend fun recolor(ctx: MessageContext) {
         ctx.sendAsync("This command will change the color of all hoisted roles to something random! Do you want to continue? (yes/no)")
 
         try {
             ctx.waitFor(
-                GuildMessageReceivedEvent::class.java,
-                { it.author.idLong == ctx.author.idLong && it.message.contentRaw.toLowerCase() == "yes" },
+                MessageReceivedEvent::class.java,
+                { it.author.idLong == ctx.author.idLong && it.channel.idLong == ctx.messageChannel.idLong && it.message.contentRaw.lowercase() == "yes" },
                 60000
             )
         } catch (ex: TimeoutException) {
@@ -49,7 +54,7 @@ class Guild : Cog {
 
         val modifiableRoles = ctx.guild!!.roleCache.stream()
             .filter(Role::isHoisted)
-            .filter { ctx.guild!!.selfMember.canInteract(it) }
+            .filter(ctx.guild!!.selfMember::canInteract)
             .toList()
 
         val msg = ctx.sendAsync("This may take a while, nya~")
@@ -68,7 +73,7 @@ class Guild : Cog {
         }
 
         val color = role.color
-        val hexStr = color?.let { String.format("%02x%02x%02x", it.red, it.green, it.blue) } ?: "000000"
+        val hexStr = color?.let { String.format("%02x%02x%02x", it.red, it.green, it.blue) } ?: "1FFFFF"
         val permissions = role.permissionsExplicit.joinToString("\n") { it.getName() }
         val permissionsUrl = WumpDump.paste(permissions).get(5, TimeUnit.SECONDS)
 

@@ -3,23 +3,24 @@ package life.nekos.bot.commands.owner
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.utils.*
 import life.nekos.bot.utils.extensions.thenException
-import me.devoxin.flight.api.Context
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.annotations.Greedy
+import me.devoxin.flight.api.context.Context
+import me.devoxin.flight.api.context.MessageContext
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.entities.Icon
 import java.io.InputStreamReader
 
 class Owner : Cog {
     @Command(description = "Force-send a neko.", developerOnly = true)
-    fun coin(ctx: Context) {
+    fun coin(ctx: MessageContext) {
         Send(ctx.message, false).poke(ctx.author.idLong)
         ctx.message.delete().queue()
     }
 
     @Command(description = "Sets the bot's avatar.", developerOnly = true)
     fun setavatar(ctx: Context) {
-        NekosLife.avatar().thenAccept { setAvatarWithUrl(ctx, it) }
+        NekosLife.avatar.thenAccept { setAvatarWithUrl(ctx, it) }
         ctx.send(Formats.info("Set Avatar"))
     }
 
@@ -27,7 +28,7 @@ class Owner : Cog {
         RequestUtil.request { url(url) }
             .submit()
             .thenCompose {
-                val icon = Icon.from(it.body()!!.byteStream())
+                val icon = Icon.from(it.body!!.byteStream())
                 ctx.jda.selfUser.manager.setAvatar(icon).submit()
             }
             .exceptionally {

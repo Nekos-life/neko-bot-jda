@@ -8,14 +8,18 @@ import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats
-import me.devoxin.flight.api.Context
+import life.nekos.bot.utils.extensions.isNsfw
+import life.nekos.bot.utils.extensions.send
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.annotations.Greedy
-import me.devoxin.flight.api.entities.Attachment
+import me.devoxin.flight.api.context.Context
+import me.devoxin.flight.api.context.MessageContext
 import me.devoxin.flight.api.entities.Cog
 import me.devoxin.flight.internal.parsers.MemberParser
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.utils.FileUpload
+import net.dv8tion.jda.api.utils.messages.MessageCreateData
 import java.awt.Color
 import java.awt.Font
 import java.io.ByteArrayOutputStream
@@ -38,33 +42,30 @@ class Fun : Cog {
 
         if (options.contains("--new")) {
             if (options.contains("--nsfw")) {
-                if (!isDm && (ctx.message.isFromGuild && !ctx.textChannel!!.isNSFW)) {
+                if (!isDm && (ctx.isFromGuild && !ctx.isNsfw)) {
                     return ctx.send("Nu, nya use this in an nsfw channel or add `--dm`")
                 }
                 response
                     .setDescription("${Formats.INFO_EMOTE} Hey ${ctx.author.name}! Here is a new nsfw avatar, nya~ ${Formats.randomCat()}")
-                    .setImage(NekosLife.nsfwAvatar().await())
+                    .setImage(NekosLife.nsfwAvatar.await())
             } else {
                 response
                     .setDescription("${Formats.INFO_EMOTE} Hey ${ctx.author.name}! Here is a new avatar, nya~ ${Formats.randomCat()}")
-                    .setImage(NekosLife.avatar().await())
+                    .setImage(NekosLife.avatar.await())
             }
         } else {
             val fsAvatarUrl = user.effectiveAvatarUrl + "?size=2048"
-            response
-                .setDescription(
-                    "${Formats.INFO_EMOTE} Here is ${user.name}'s avatar, nya~ ${Formats.randomCat()}\n\n" +
-                            "[**Link**]($fsAvatarUrl)"
-                )
+            response.setDescription("${Formats.INFO_EMOTE} Here is ${user.name}'s avatar, nya~ ${Formats.randomCat()}\n\n[**Link**]($fsAvatarUrl)")
                 .setImage(fsAvatarUrl)
         }
 
         if (isDm) {
-            val channel = ctx.author.openPrivateChannel().submit().await()
-            channel.sendMessage(response.build()).submit().await()
-            channel.close().queue()
+            ctx.author.openPrivateChannel()
+                .flatMap { it.sendMessage(MessageCreateData.fromEmbeds(response.build())) }
+                .flatMap { it.channel.delete() }
+                .queue()
         } else {
-            ctx.messageChannel.sendMessage(response.build()).queue()
+            ctx.respond(MessageCreateData.fromEmbeds(response.build()))
         }
     }
 
@@ -74,7 +75,7 @@ class Fun : Cog {
             return ctx.send("\uD83D\uDEAB Nuu, nya! That doesn't look like a question? didn't anyone teach you punctuation??")
         }
 
-        val res = NekosLife.eightBall().await()
+        val res = NekosLife.eightBall.await()
         val answer = res.getString("response")
         val imageUrl = res.getString("url")
 
@@ -99,7 +100,7 @@ class Fun : Cog {
     }
 
     @Command(aliases = ["colour"], description = "See information about a color")
-    suspend fun color(ctx: Context, @Greedy color: String) {
+    suspend fun color(ctx: MessageContext, @Greedy color: String) {
         val m = memberConverter.parse(ctx, color)
         val parsedColor = m.map { it.color }
             .orElseGet { Colors.parse(color) }
@@ -121,23 +122,23 @@ class Fun : Cog {
 
     @Command(description = "Cuddle someone \\o/", guildOnly = true)
     suspend fun cuddle(ctx: Context, @Greedy who: User?) {
-        genericActionCommand(ctx, who, "cuddle", NekosLife.cuddle())
+        genericActionCommand(ctx, who, "cuddle", NekosLife.cuddle)
     }
 
     @Command(aliases = ["dym", "did_you_mean"], description = "Did you mean? \"something | else\"")
-    suspend fun didyoumean(ctx: Context, @Greedy dym: String) {
+    suspend fun didyoumean(ctx: MessageContext, @Greedy dym: String) {
         if (!dym.contains('|')) {
             return ctx.send("You need to separate the top and bottom text with `|` nya~")
         }
 
         val (top, bottom) = dym.split("|")
         val result = AlexFlipnote.didYouMean(top, bottom).await()
-        ctx.send(Attachment.Companion.from(result, "didyoumean.png"))
+        ctx.send(FileUpload.fromData(result, "didyoumean.png"))
     }
 
     @Command(description = "Flip a coin", guildOnly = true, developerOnly = true)
     fun flip(ctx: Context, side: String?, bet: Int) {
-        if (side == null || !sides.contains(side.toLowerCase())) {
+        if (side == null || !sides.contains(side.lowercase())) {
             return ctx.send("You must pick heads or tails, nya~")
         }
 
@@ -155,7 +156,7 @@ class Fun : Cog {
             return ctx.send("You only have **${data.nekos}** nekos nya~")
         }
 
-        val selectedSide = sides.indexOf(side.toLowerCase()) + 1
+        val selectedSide = sides.indexOf(side.lowercase()) + 1
         val roll = (1..2).random()
 
         if (roll == selectedSide) {
@@ -170,27 +171,27 @@ class Fun : Cog {
 
     @Command(description = "Hug someone \\o/", guildOnly = true)
     suspend fun hug(ctx: Context, @Greedy who: User?) {
-        genericActionCommand(ctx, who, "hug", NekosLife.hug())
+        genericActionCommand(ctx, who, "hug", NekosLife.hug)
     }
 
     @Command(description = "Kiss someone \\o/", guildOnly = true)
     suspend fun kiss(ctx: Context, @Greedy who: User?) {
-        genericActionCommand(ctx, who, "kiss", NekosLife.kiss())
+        genericActionCommand(ctx, who, "kiss", NekosLife.kiss)
     }
 
     @Command(description = "Pat someone \\o/", guildOnly = true)
     suspend fun pat(ctx: Context, @Greedy who: User?) {
-        genericActionCommand(ctx, who, "pat", NekosLife.pat())
+        genericActionCommand(ctx, who, "pat", NekosLife.pat)
     }
 
     @Command(description = "Pat someone \\o/", guildOnly = true)
     suspend fun slap(ctx: Context, @Greedy who: User?) {
-        genericActionCommand(ctx, who, "slap", NekosLife.slap())
+        genericActionCommand(ctx, who, "slap", NekosLife.slap)
     }
 
     @Command(aliases = ["huh", "hmmmmm"], description = "random why?")
     suspend fun why(ctx: Context) {
-        val nekoWhy = NekosLife.why().await()
+        val nekoWhy = NekosLife.why.await()
 
         ctx.send {
             setColor(Colors.getEffectiveColor(ctx))
@@ -201,7 +202,7 @@ class Fun : Cog {
 
     @Command(aliases = ["gecg"], description = "random gecg owO", nsfw = true)
     suspend fun meme(ctx: Context) {
-        val nekoMeme = NekosLife.meme().await()
+        val nekoMeme = NekosLife.meme.await()
 
         ctx.send {
             setColor(Colors.getEffectiveColor(ctx))
@@ -235,9 +236,9 @@ class Fun : Cog {
         }
     }
 
-    @Command(aliases = ["lf", "sf"], description = "You want sum fuk?")
     @DonorOnly
-    fun sumfuk(ctx: Context, who: User) {
+    @Command(aliases = ["lf", "sf"], description = "You want sum fuk?")
+    fun sumfuk(ctx: MessageContext, who: User) {
         when (who.idLong) {
             ctx.jda.selfUser.idLong -> return ctx.send("Nu nya, your tail's not big enough for me~ >.<")
             ctx.author.idLong -> return ctx.send("Nu nya, I don't think you need to ask to fuk yourself~")
@@ -258,7 +259,7 @@ class Fun : Cog {
             ByteArrayOutputStream().use {
                 ImageIO.setUseCache(false)
                 ImageIO.write(bg, "png", it)
-                ctx.send(Attachment.from(it.toByteArray(), "sumfuk.png"))
+                ctx.send(FileUpload.fromData(it.toByteArray(), "sumfuk.png"))
             }
         }
     }

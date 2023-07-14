@@ -2,8 +2,10 @@ package life.nekos.bot.listeners
 
 import life.nekos.bot.framework.annotations.CommandHelp
 import life.nekos.bot.framework.annotations.DonorOnly
+import life.nekos.bot.utils.Checks
 import me.devoxin.flight.api.CommandFunction
-import me.devoxin.flight.api.Context
+import me.devoxin.flight.api.context.Context
+import me.devoxin.flight.api.context.MessageContext
 import me.devoxin.flight.api.exceptions.BadArgument
 import me.devoxin.flight.api.hooks.DefaultCommandEventAdapter
 import net.dv8tion.jda.api.Permission
@@ -39,9 +41,12 @@ class FlightEventAdapter : DefaultCommandEventAdapter() {
         log.debug("Executed command {}, failed: {}", command.name, failed)
     }
 
-    @ExperimentalStdlibApi
     override fun onCommandPreInvoke(ctx: Context, command: CommandFunction): Boolean {
         if (command.method.hasAnnotation<DonorOnly>()) {
+            if (!Checks.isDonor(ctx.author.idLong)) {
+                ctx.send("Nya~ This command is restricted to donors only~\nBecome a donor here~ <https://www.patreon.com/Nekos_life>")
+                return false
+            }
             // check donor, send error otherwise with emote 475801484282429450
         }
 
@@ -52,12 +57,12 @@ class FlightEventAdapter : DefaultCommandEventAdapter() {
         log.error("Failed to parse argument for command {}", command.name, error)
     }
 
-    override fun onBotMissingPermissions(ctx: Context, command: CommandFunction, permissions: List<Permission>) {
+    override fun onBotMissingPermissions(ctx: MessageContext, command: CommandFunction, permissions: List<Permission>) {
         val gimme = permissions.joinToString(prefix = "`", postfix = "`", separator = "`\n`") { it.getName() }
         ctx.send("You need to give me these permissions, nya~\n$gimme")
     }
 
-    override fun onUserMissingPermissions(ctx: Context, command: CommandFunction, permissions: List<Permission>) {
+    override fun onUserMissingPermissions(ctx: MessageContext, command: CommandFunction, permissions: List<Permission>) {
         val missing = permissions.joinToString(prefix = "`", postfix = "`", separator = "`\n`") { it.getName() }
         ctx.send("You need to have these permissions, nya~\n$missing")
     }

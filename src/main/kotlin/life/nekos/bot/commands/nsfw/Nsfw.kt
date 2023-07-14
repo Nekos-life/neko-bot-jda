@@ -4,9 +4,10 @@ import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
+import life.nekos.bot.utils.extensions.send
 import me.devoxin.flight.api.CommandFunction
-import me.devoxin.flight.api.Context
 import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.context.Context
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.EmbedBuilder
 
@@ -30,7 +31,7 @@ class Nsfw : Cog {
 
     @Command(description = "Random anal", nsfw = true)
     fun anal(ctx: Context) {
-        NekosLife.anal().thenAccept {
+        NekosLife.anal.thenAccept {
             embed(ctx, Formats.LEWD_EMOTE, it)
         }
     }
@@ -38,7 +39,7 @@ class Nsfw : Cog {
     @DonorOnly
     @Command(description = "Random kuni owO", nsfw = true)
     fun kuni(ctx: Context) {
-        NekosLife.kuni().thenAccept {
+        NekosLife.kuni.thenAccept {
             embed(ctx, "kuni owo", it)
         }
     }
@@ -46,7 +47,7 @@ class Nsfw : Cog {
     @DonorOnly
     @Command(description = "Random pussy uwu", nsfw = true)
     fun pussy(ctx: Context) {
-        NekosLife.pussy().thenAccept {
+        NekosLife.pussy.thenAccept {
             embed(ctx, "uwu pussy", it)
         }
     }

@@ -7,12 +7,12 @@ object IntentHelper {
         GatewayIntent.DIRECT_MESSAGE_REACTIONS,
         GatewayIntent.DIRECT_MESSAGE_TYPING,
         GatewayIntent.GUILD_BANS,
-        GatewayIntent.GUILD_EMOJIS,
+        GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
         GatewayIntent.GUILD_INVITES,
         GatewayIntent.GUILD_MESSAGE_TYPING,
         GatewayIntent.GUILD_WEBHOOKS,
 
-        // Priviledged.
+        // Privileged.
         GatewayIntent.GUILD_MEMBERS,
         GatewayIntent.GUILD_PRESENCES
     )

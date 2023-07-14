@@ -7,9 +7,10 @@ import club.minnced.discord.webhook.exception.HttpException
 import club.minnced.discord.webhook.send.WebhookEmbed
 import club.minnced.discord.webhook.send.WebhookMessageBuilder
 import life.nekos.bot.Config
-import life.nekos.bot.NekoBot
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.MessageEmbed
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.time.Instant
 
@@ -32,6 +33,8 @@ fun MessageEmbed.toWebhookEmbed(): WebhookEmbed {
 }
 
 object WebhookManager {
+    private val log: Logger = LoggerFactory.getLogger(WebhookManager::class.java)
+
     private val shardHook = WebhookClientBuilder(Config["ready_wh"]).build()
     private val leaveHook = WebhookClientBuilder(Config["guilds_wh"]).build()
     private val joinHook = WebhookClientBuilder(Config["guilds_wh"]).build()
@@ -58,27 +61,14 @@ object WebhookManager {
 
         } catch (e: HttpException) {
             if (!e.localizedMessage.contains("Unknown Webhook")) {
-                NekoBot.log.error("Failed to send message to webhook", e)
+                log.error("Failed to send message to webhook", e)
             }
         }
     }
 
-    fun sendShard(avatar: String?, builder: EmbedBuilder.() -> Unit) =
-        safeSend(
-            shardHook,
-            avatar,
-            builder
-        )
+    fun sendShard(avatar: String?, builder: EmbedBuilder.() -> Unit) = safeSend(shardHook, avatar, builder)
 
-    fun sendLeave(builder: EmbedBuilder.() -> Unit) = safeSend(
-        leaveHook,
-        null,
-        builder
-    )
+    fun sendLeave(builder: EmbedBuilder.() -> Unit) = safeSend(leaveHook, null, builder)
 
-    fun sendJoin(builder: EmbedBuilder.() -> Unit) = safeSend(
-        joinHook,
-        null,
-        builder
-    )
+    fun sendJoin(builder: EmbedBuilder.() -> Unit) = safeSend(joinHook, null, builder)
 }

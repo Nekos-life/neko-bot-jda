@@ -6,15 +6,18 @@ import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.Paginator
 import life.nekos.bot.framework.annotations.CommandHelp
 import life.nekos.bot.utils.*
-import life.nekos.bot.utils.extensions.toReactionString
+import life.nekos.bot.utils.extensions.send
+import life.nekos.bot.utils.extensions.toEmoji
 import me.devoxin.flight.api.CommandFunction
-import me.devoxin.flight.api.Context
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.annotations.Greedy
+import me.devoxin.flight.api.context.Context
+import me.devoxin.flight.api.context.MessageContext
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.utils.messages.MessageCreateData
 import java.time.Instant
 
 class User : Cog {
@@ -27,10 +30,10 @@ class User : Cog {
         if (NekoBot.simpleLbCache.containsKey(id)) {
             return NekoBot.simpleLbCache[id]!!
         }
+
         val tag = ctx.jda.shardManager!!.retrieveUserById(id).submit().get()?.asTag ?: "Unknown User#0000"
         NekoBot.simpleLbCache[id] = tag
         return tag
-
     }
 
     @Command(
@@ -91,7 +94,7 @@ class User : Cog {
     }
 
     @Command(aliases = ["rank", "exp"], description = "Shows your, or another user's profile.")
-    fun profile(ctx: Context, @Greedy user: Member = ctx.member!!) {
+    fun profile(ctx: MessageContext, @Greedy user: Member = ctx.member!!) {
         val targetUser = user.user
 
         if (targetUser.isBot) {
@@ -101,7 +104,7 @@ class User : Cog {
         }
 
         val profile = Database.getUser(user.id)
-        ctx.message.addReaction(Formats.USER_EMOTE.toReactionString()).queue()
+        ctx.message.addReaction(Formats.USER_EMOTE.toEmoji()).queue()
 
         ctx.send {
             setColor(Colors.getEffectiveColor(ctx))
@@ -118,11 +121,11 @@ class User : Cog {
             addField("${Formats.NEKO_C_EMOTE} Current Nekos", "**${profile.nekos}**", false)
             addField("${Formats.DATE_EMOTE} Date Registered", "**${profile.registerDate}**", false)
 
-            if (Checks.isDonor(user.id)) {
+            if (Checks.isDonor(user.idLong)) {
                 addField("${Formats.PATRON_EMOTE} Donor", "**Commands unlocked**", false)
             }
 
-            if (Checks.isDonorPlus(user.id)) {
+            if (Checks.isDonorPlus(user.idLong)) {
                 addField("${Formats.PATRON_EMOTE} Donor+", "**Commands, 2x exp and nekos unlocked**", false)
             }
         }
@@ -132,7 +135,7 @@ class User : Cog {
         aliases = ["free", "catch"],
         description = "Releases one of your nekos for others to catch >.< (You cannot catch a neko you released)"
     )
-    fun release(ctx: Context) {
+    fun release(ctx: MessageContext) {
         val data = Database.getUser(ctx.author.id)
 
         if (data.nekos < 1) {
@@ -153,8 +156,8 @@ class User : Cog {
     @Command(description = "Send someone a neko image.", guildOnly = true)
     suspend fun send(ctx: Context, type: String, @Greedy user: User = ctx.author) {
         val image = when (type) {
-            "neko" -> NekosLife.neko().await()
-            "lewd" -> NekosLife.lewd().await()
+            "neko" -> NekosLife.neko.await()
+            "lewd" -> NekosLife.lewd.await()
             else -> return ctx.send("What do you want to send, nya? You must specify `neko` or `lewd`~")
         }
 
@@ -164,15 +167,12 @@ class User : Cog {
             .setImage(image)
             .build()
 
-        user.openPrivateChannel().submit()
-            .thenCompose { it.sendMessage(embed).submit() }
-            .thenCompose { it.privateChannel.close().submit() }
-            .thenAccept {
-                ctx.send("Good job ${ctx.author.asMention}")
-            }
-            .exceptionally {
-                ctx.send("${user.name} has me blocked or their filter turned on \uD83D\uDD95")
-                return@exceptionally null
-            }
+        user.openPrivateChannel()
+            .flatMap { it.sendMessage(MessageCreateData.fromEmbeds(embed)) }
+            .flatMap { it.delete() }
+            .queue(
+                { ctx.send("Good job ${ctx.author.asMention}") },
+                { ctx.send("${user.name} has me blocked or their filter turned on \uD83D\uDD95") }
+            )
     }
 }

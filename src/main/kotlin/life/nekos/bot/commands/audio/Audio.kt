@@ -8,25 +8,27 @@ import life.nekos.bot.utils.Checks
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.TextUtils
-import me.devoxin.flight.api.Context
+import life.nekos.bot.utils.extensions.send
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.annotations.Greedy
+import me.devoxin.flight.api.context.Context
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel
 import org.jetbrains.kotlin.utils.addToStdlib.sumByLong
 
 class Audio : Cog {
     private fun checkVoice(ctx: Context): Boolean {
-        val me = ctx.guild!!.selfMember
-        val invoker = ctx.member!!
+        val selfChannel = ctx.guild!!.selfMember.voiceState!!.channel
+        val targetChannel = ctx.member!!.voiceState!!.channel
 
         return when {
-            me.voiceState!!.channel == null -> {
+            selfChannel == null -> {
                 ctx.send("nu nya!~ I'm not playing anything.")
                 false
             }
-            invoker.voiceState!!.channel != me.voiceState!!.channel -> {
+            targetChannel != selfChannel -> {
                 ctx.send("nu nya!~ You must be in my voice channel to use this command.")
                 false
             }
@@ -36,45 +38,39 @@ class Audio : Cog {
 
     private fun connectToVoice(ctx: Context): Boolean {
         val me = ctx.guild!!.selfMember.voiceState!!
-        val invoker = ctx.member!!.voiceState!!
+        val targetChannel = ctx.member!!.voiceState!!.channel
+        val userLimit = (targetChannel as? VoiceChannel)?.userLimit ?: -1
 
         if (me.channel != null) {
-            if (invoker.channel != me.channel) {
+            if (targetChannel != me.channel) {
                 ctx.send("Nu nya~ You need to join my voice channel")
             }
+
             return true
         }
 
         return when {
-            invoker.channel == null -> {
+            targetChannel == null -> {
                 ctx.send("You need to join a voice channel, nya~")
                 false
             }
-            invoker.channel!!.userLimit > 0
-                    && invoker.channel!!.members.size >= invoker.channel!!.userLimit
-                    && !ctx.guild!!.selfMember.hasPermission(invoker.channel!!, Permission.VOICE_MOVE_OTHERS) -> {
-                ctx.send("Nu nya~ Your voice channel is full!")
+            userLimit > 0 && targetChannel.members.size >= userLimit
+                && !ctx.guild!!.selfMember.hasPermission(targetChannel, Permission.VOICE_MOVE_OTHERS) -> {
+                    ctx.send("Nu nya~ Your voice channel is full!")
                 false
             }
-            !ctx.guild!!.selfMember.hasPermission(
-                invoker.channel!!,
-                Permission.VOICE_CONNECT,
-                Permission.VOICE_SPEAK
-            ) -> {
+            !ctx.guild!!.selfMember.hasPermission(targetChannel, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK) -> {
                 ctx.send("Nu nya~ I don't have permission to join your voice channel~")
                 false
             }
             else -> {
-                ctx.guild!!.audioManager.openAudioConnection(invoker.channel)
+                ctx.guild!!.audioManager.openAudioConnection(targetChannel)
                 true
             }
         }
     }
 
-    @Command(
-        aliases = ["previous", "b"], description = "Play previous song, or restarts current",
-        guildOnly = true
-    )
+    @Command(aliases = ["previous", "b"], description = "Play previous song, or restarts current", guildOnly = true)
     fun back(ctx: Context) {
         if (!checkVoice(ctx)) {
             return
@@ -101,10 +97,7 @@ class Audio : Cog {
         }
     }
 
-    @Command(
-        aliases = ["np", "playing", "now_playing", "song"], description = "Shows info on the playing track",
-        guildOnly = true
-    )
+    @Command(aliases = ["np", "playing", "now_playing", "song"], description = "Shows info on the playing track", guildOnly = true)
     fun nowplaying(ctx: Context) {
         val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
         val track = player.playingTrack
@@ -122,10 +115,7 @@ class Audio : Cog {
         }
     }
 
-    @Command(
-        aliases = ["p"], description = "Play a song from a URL, or search.",
-        guildOnly = true
-    )
+    @Command(aliases = ["p"], description = "Play a song from a URL, or search.", guildOnly = true)
     fun play(ctx: Context, @Greedy query: String) {
         if (!connectToVoice(ctx)) {
             return
@@ -163,21 +153,12 @@ class Audio : Cog {
                         "Queued by: ${(current.userData as User).name}"
             )
             addField("Queue", paginator.display(), false)
-            setFooter(
-                "Current Playlist: Total Tracks: ${ah.queue.size}, Total Length: ${
-                    TextUtils.toTimeString(
-                        totalDuration
-                    )
-                }"
-            )
+            setFooter("Current Playlist: Total Tracks: ${ah.queue.size}, Total Length: ${TextUtils.toTimeString(totalDuration)}")
         }
     }
 
     @DonorOnly
-    @Command(
-        aliases = ["loop"], description = "Set repeat for a track.",
-        guildOnly = true
-    )
+    @Command(aliases = ["loop"], description = "Set repeat for a track.", guildOnly = true)
     fun repeat(ctx: Context, loop: String) {
         if (!checkVoice(ctx)) {
             return
@@ -200,16 +181,10 @@ class Audio : Cog {
             else -> return ctx.send("You need to specify `all`, `current` or `none` nya~")
         }
 
-        ctx.send(
-            "Alright nya, I have set repeat to `${player.loopSetting.name.toLowerCase()}` " +
-                    Formats.randomCat()
-        )
+        ctx.send("Alright nya, I have set repeat to `${player.loopSetting.name.lowercase()}` ${Formats.randomCat()}")
     }
 
-    @Command(
-        aliases = ["shuffle", "mix"], description = "Shuffles the current queue.",
-        guildOnly = true
-    )
+    @Command(aliases = ["shuffle", "mix"], description = "Shuffles the current queue.", guildOnly = true)
     fun shuffle(ctx: Context) {
         if (!checkVoice(ctx)) {
             return
@@ -229,10 +204,7 @@ class Audio : Cog {
         ctx.send("owo I mixed them all up ${Formats.randomCat()}")
     }
 
-    @Command(
-        aliases = ["s", "next"], description = "Skips the current track.",
-        guildOnly = true
-    )
+    @Command(aliases = ["s", "next"], description = "Skips the current track.", guildOnly = true)
     fun skip(ctx: Context) {
         if (!checkVoice(ctx)) {
             return
@@ -265,10 +237,7 @@ class Audio : Cog {
         }
     }
 
-    @Command(
-        aliases = ["quit", "disconnect"], description = "Stops playback, clears queue and disconnects.",
-        guildOnly = true
-    )
+    @Command(aliases = ["quit", "disconnect"], description = "Stops playback, clears queue and disconnects.", guildOnly = true)
     fun stop(ctx: Context) {
         if (!Checks.audioChecks(ctx)) {
             return ctx.send("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
@@ -292,17 +261,11 @@ class Audio : Cog {
         val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
 
         if (vol == null) {
-            return ctx.send(
-                "My volume is currently " +
-                        "${Formats.getVolEmote(player.volume)}**${player.volume}** nya~ ${Formats.randomCat()}"
-            )
+            return ctx.send("My volume is currently ${Formats.getVolEmote(player.volume)}**${player.volume}** nya~ ${Formats.randomCat()}")
         }
 
         player.volume = vol.coerceIn(0, 100)
-        ctx.send(
-            "I set the volume to " +
-                    "${Formats.getVolEmote(player.volume)}**${player.volume}**, nya~ ${Formats.randomCat()}"
-        )
+        ctx.send("I set the volume to ${Formats.getVolEmote(player.volume)}**${player.volume}**, nya~ ${Formats.randomCat()}")
     }
 
 }

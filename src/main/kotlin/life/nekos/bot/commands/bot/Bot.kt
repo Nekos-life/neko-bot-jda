@@ -5,9 +5,10 @@ import life.nekos.bot.Loader
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.TextUtils
+import life.nekos.bot.utils.extensions.send
 import life.nekos.bot.utils.extensions.thenException
-import me.devoxin.flight.api.Context
 import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.context.Context
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message

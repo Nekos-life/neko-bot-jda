@@ -33,20 +33,17 @@ class MessageHandler : ListenerAdapter() {
     }
 
     private fun processMessageEvent(event: MessageReceivedEvent) {
-
-        if (event.message.mentionsEveryone()) {
+        if (event.message.mentions.mentionsEveryone()) {
             NekoBot.metrics.record(Metrics.happened("atEveryoneSeen"))
         }
 
-        if (!event.textChannel.canTalk()) {
+        if (!event.channel.canTalk()) {
             return
         }
 
         val guild = Database.getGuild(event.message.guild.id)
 
-        if (guild.nekoChannel != null
-            && guild.nekoChannel.equals(event.message.channel.id, ignoreCase = true)
-        ) {
+        if (guild.nekoChannel?.equals(event.message.channel.id) == true) {
             guild.update { msgCnt++ }
             if (guild.msgCnt > (40..150).random()) {
                 //val messages = event.message.channel.iterableHistory.limit(10).submit().get()
@@ -65,7 +62,7 @@ class MessageHandler : ListenerAdapter() {
 
         if (user.coolDownCount >= (0..10).random()) {
             val curLevel = floor(0.1 * sqrt(user.exp.toDouble()))
-            if (Checks.isDonorPlus(event.message.author.id)) {
+            if (Checks.isDonorPlus(event.message.author.idLong)) {
                 user.update {
                     exp += 2
                     level = curLevel.toLong()

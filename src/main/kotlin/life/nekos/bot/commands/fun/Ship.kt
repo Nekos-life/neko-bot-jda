@@ -3,10 +3,12 @@ package life.nekos.bot.commands.`fun`
 import kotlinx.coroutines.future.await
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.RequestUtil
-import me.devoxin.flight.api.Context
 import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.context.MessageContext
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.utils.FileUpload
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder
 import java.awt.Color
 import java.awt.Font
 import java.awt.image.BufferedImage
@@ -22,7 +24,7 @@ class Ship : Cog {
                     throw IllegalStateException("Unable to load avatar")
                 }
 
-                val bs = it.body()?.byteStream()
+                val bs = it.body?.byteStream()
                     ?: throw IllegalStateException("No image data")
 
                 ImageIO.read(bs)
@@ -38,7 +40,7 @@ class Ship : Cog {
     }
 
     @Command(aliases = ["love"], description = "Ships user/users")
-    suspend fun ship(ctx: Context, user1: User, user2: User = ctx.author) {
+    suspend fun ship(ctx: MessageContext, user1: User, user2: User = ctx.author) {
         if (user1.idLong == ctx.jda.selfUser.idLong) {
             return ctx.send("Nu nya, your tail's not big enough for me~ >.<")
         }
@@ -71,14 +73,16 @@ class Ship : Cog {
                 ImageIO.setUseCache(false)
                 ImageIO.write(template, "png", it)
 
-                ctx.messageChannel.sendMessage("${mixString(user1.name, user2.name)} ${Formats.NEKO_C_EMOTE}")
-                    .addFile(it.toByteArray(), "shipped.png")
-                    .queue()
+                val createData = MessageCreateBuilder().setContent("${mixString(user1.name, user2.name)} ${Formats.NEKO_C_EMOTE}")
+                    .addFiles(FileUpload.fromData(it.toByteArray(), "shipped.png"))
+                    .build()
+
+                ctx.send(createData)
             }
         }
     }
 
     companion object {
-        val r = Random()
+        private val r = Random()
     }
 }

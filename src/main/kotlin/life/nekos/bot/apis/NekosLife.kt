@@ -1,33 +1,36 @@
 package life.nekos.bot.apis
 
-import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.ResponseBody
 import org.json.JSONObject
 import java.util.concurrent.CompletableFuture
 
+typealias StringResponse = CompletableFuture<String>
+typealias ObjectResponse = CompletableFuture<JSONObject>
+
 object NekosLife : Api() {
-    private val baseUrl = HttpUrl.get("https://nekos.life/api/v2")
+    private val baseUrl = "https://nekos.life/api/v2".toHttpUrl()
 
-    fun meme() = jsonEndpoint("/img/gecg", "url")
-    fun avatar() = jsonEndpoint("/img/avatar", "url")
-    fun slap() = jsonEndpoint("/img/slap", "url")
-    fun nsfwAvatar() = jsonEndpoint("/img/nsfw_avatar", "url")
-    fun poke() = jsonEndpoint("/img/poke", "url")
-    fun anal() = jsonEndpoint("/img/anal", "url")
-    fun pussy() = jsonEndpoint("/img/pussy", "url")
-    fun neko() = jsonEndpoint("/img/neko", "url")
-    fun lewd() = jsonEndpoint("/img/lewd", "url")
-    fun fox() = jsonEndpoint("/img/fox_girl", "url")
-    fun kuni() = jsonEndpoint("/img/kuni", "url")
-    fun hug() = jsonEndpoint("/img/hug", "url")
-    fun cuddle() = jsonEndpoint("/img/cuddle", "url")
-    fun pat() = jsonEndpoint("/img/pat", "url")
-    fun kiss() = jsonEndpoint("/img/kiss", "url")
+    val meme: StringResponse get() = jsonEndpoint("/img/gecg", "url")
+    val avatar: StringResponse get() = jsonEndpoint("/img/avatar", "url")
+    val slap: StringResponse get() = jsonEndpoint("/img/slap", "url")
+    val nsfwAvatar: StringResponse get() = jsonEndpoint("/img/nsfw_avatar", "url")
+    val poke: StringResponse get() = jsonEndpoint("/img/poke", "url")
+    val anal: StringResponse get() = jsonEndpoint("/img/anal", "url")
+    val pussy: StringResponse get() = jsonEndpoint("/img/pussy", "url")
+    val neko: StringResponse get() = jsonEndpoint("/img/neko", "url")
+    val lewd: StringResponse get() = jsonEndpoint("/img/lewd", "url")
+    val fox: StringResponse get() = jsonEndpoint("/img/fox_girl", "url")
+    val kuni: StringResponse get() = jsonEndpoint("/img/kuni", "url")
+    val hug: StringResponse get() = jsonEndpoint("/img/hug", "url")
+    val cuddle: StringResponse get() = jsonEndpoint("/img/cuddle", "url")
+    val pat: StringResponse get() = jsonEndpoint("/img/pat", "url")
+    val kiss: StringResponse get() = jsonEndpoint("/img/kiss", "url")
 
-    fun cat() = jsonEndpoint("/cat", "cat")
-    fun why() = jsonEndpoint("/why", "why")
+    val cat: StringResponse get() = jsonEndpoint("/cat", "cat")
+    val why: StringResponse get() = jsonEndpoint("/why", "why")
 
-    fun eightBall() = request { path = "/8ball" }
+    val eightBall: ObjectResponse get() = request { path = "/8ball" }
         .thenApply(ResponseBody::string)
         .thenApply(::JSONObject)
 
@@ -35,21 +38,18 @@ object NekosLife : Api() {
         path = "/chat"
         queryParams = {
             "text" eq text
-
-            if (owo) {
-                "owo" eq "true"
-            }
+            if (owo) { "owo" eq "true" }
         }
     }.thenApply(ResponseBody::string)
         .thenApply(::JSONObject)
         .thenApply { it.getString("response") }
 
-    fun jsonEndpoint(endpoint: String, jsonKey: String) = request { path = endpoint }
+    private fun jsonEndpoint(endpoint: String, jsonKey: String) = request { path = endpoint }
         .thenApply(ResponseBody::string)
         .thenApply(::JSONObject)
         .thenApply { it.getString(jsonKey) }
 
-    fun request(builder: Endpoint.() -> Unit): CompletableFuture<ResponseBody> {
+    private fun request(builder: Endpoint.() -> Unit): CompletableFuture<ResponseBody> {
         val endpoint = Endpoint().apply(builder)
             .apply(baseUrl.newBuilder())
             .build()

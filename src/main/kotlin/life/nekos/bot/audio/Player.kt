@@ -11,7 +11,8 @@ import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.TextUtils
-import me.devoxin.flight.api.Context
+import life.nekos.bot.utils.extensions.send
+import me.devoxin.flight.api.context.Context
 import net.dv8tion.jda.api.audio.AudioSendHandler
 import java.nio.ByteBuffer
 import java.util.*
@@ -41,6 +42,8 @@ class Player(audioPlayer: AudioPlayer) : AudioEventAdapter(), AudioPlayer by aud
     }
 
     fun load(ctx: Context, identifier: String, search: Boolean) {
+        ctx.asSlashContext?.defer()
+
         PlayerRegistry.searchFor(if (search) "ytsearch:$identifier" else identifier, object : AudioLoadResultHandler {
             override fun trackLoaded(track: AudioTrack) {
                 playOrEnqueue(track.apply { userData = ctx.author })
