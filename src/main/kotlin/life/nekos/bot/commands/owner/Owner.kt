@@ -1,5 +1,6 @@
 package life.nekos.bot.commands.owner
 
+import kotlinx.coroutines.future.await
 import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.utils.*
 import life.nekos.bot.utils.extensions.thenException
@@ -12,6 +13,15 @@ import net.dv8tion.jda.api.entities.Icon
 import java.io.InputStreamReader
 
 class Owner : Cog {
+    @Command(description = "Sync slash commands.", developerOnly = true)
+    suspend fun syncSlash(ctx: Context) {
+        val slashCmds = ctx.commandClient.commands.toDiscordCommands()
+        ctx.respond("Syncing ${slashCmds.size} slash commands.").await()
+        ctx.jda.updateCommands().addCommands(slashCmds)
+            .onSuccess { ctx.respond("Synced.") }
+            .queue()
+    }
+
     @Command(description = "Force-send a neko.", developerOnly = true)
     fun coin(ctx: MessageContext) {
         Send(ctx.message, false).poke(ctx.author.idLong)
