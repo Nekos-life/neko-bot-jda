@@ -137,8 +137,8 @@ class Fun : Cog {
     }
 
     @Command(description = "Flip a coin", guildOnly = true, developerOnly = true)
-    fun flip(ctx: Context, side: String?, bet: Int) {
-        if (side == null || !sides.contains(side.lowercase())) {
+    fun flip(ctx: Context, side: String, bet: Int) {
+        if (!sides.contains(side.lowercase())) {
             return ctx.send("You must pick heads or tails, nya~")
         }
 
