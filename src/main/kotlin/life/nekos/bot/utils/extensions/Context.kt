@@ -13,3 +13,7 @@ fun Context.send(embedBuilder: EmbedBuilder.() -> Unit) {
     val embed = EmbedBuilder().apply(embedBuilder).build()
     respond(MessageCreateData.fromEmbeds(embed))
 }
+
+fun Context.respondUnit(content: String) {
+    respond(content)
+}

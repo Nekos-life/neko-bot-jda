@@ -9,6 +9,7 @@ import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.extensions.isNsfw
+import life.nekos.bot.utils.extensions.respondUnit
 import life.nekos.bot.utils.extensions.send
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.annotations.Greedy
@@ -43,7 +44,7 @@ class Fun : Cog {
         if (options.contains("--new")) {
             if (options.contains("--nsfw")) {
                 if (!isDm && (ctx.isFromGuild && !ctx.isNsfw)) {
-                    return ctx.send("Nu, nya use this in an nsfw channel or add `--dm`")
+                    return ctx.respondUnit("Nu, nya use this in an nsfw channel or add `--dm`")
                 }
                 response
                     .setDescription("${Formats.INFO_EMOTE} Hey ${ctx.author.name}! Here is a new nsfw avatar, nya~ ${Formats.randomCat()}")
@@ -60,6 +61,8 @@ class Fun : Cog {
         }
 
         if (isDm) {
+            ctx.asSlashContext?.deferAsync(ephemeral = false)
+
             ctx.author.openPrivateChannel()
                 .flatMap { it.sendMessage(MessageCreateData.fromEmbeds(response.build())) }
                 .flatMap { it.channel.delete() }
@@ -72,9 +75,10 @@ class Fun : Cog {
     @Command(aliases = ["8", "8ball", "8b"], description = "random why?")
     suspend fun ball(ctx: Context, @Greedy question: String) {
         if (!question.endsWith('?')) {
-            return ctx.send("\uD83D\uDEAB Nuu, nya! That doesn't look like a question? didn't anyone teach you punctuation??")
+            return ctx.respondUnit("\uD83D\uDEAB Nuu, nya! That doesn't look like a question? didn't anyone teach you punctuation??")
         }
 
+        ctx.asSlashContext?.deferAsync(ephemeral = false)
         val res = NekosLife.eightBall.await()
         val answer = res.getString("response")
         val imageUrl = res.getString("url")
@@ -89,6 +93,8 @@ class Fun : Cog {
 
     @Command(description = "random coffee ^^")
     suspend fun coffee(ctx: Context) {
+        ctx.asSlashContext?.deferAsync(ephemeral = false)
+
         val coffee = AlexFlipnote.coffee().await()
 
         ctx.send {
@@ -104,8 +110,9 @@ class Fun : Cog {
         val m = memberConverter.parse(ctx, color)
         val parsedColor = m.map { it.color }
             .orElseGet { Colors.parse(color) }
-            ?: return ctx.send("Nu nya, that doesn't look like a color to me. Try a hex `#0000ff`, or a name `Blue`")
+            ?: return ctx.respondUnit("Nu nya, that doesn't look like a color to me. Try a hex `#0000ff`, or a name `Blue`")
 
+        ctx.asSlashContext?.deferAsync(ephemeral = false)
         val hex = String.format("%02x%02x%02x", parsedColor.red, parsedColor.green, parsedColor.blue)
         val info = AlexFlipnote.color(hex).await()
 
@@ -126,14 +133,15 @@ class Fun : Cog {
     }
 
     @Command(aliases = ["dym", "did_you_mean"], description = "Did you mean? \"something | else\"")
-    suspend fun didyoumean(ctx: MessageContext, @Greedy dym: String) {
+    suspend fun didyoumean(ctx: Context, @Greedy dym: String) {
         if (!dym.contains('|')) {
             return ctx.send("You need to separate the top and bottom text with `|` nya~")
         }
 
+        ctx.asSlashContext?.deferAsync(ephemeral = false)
         val (top, bottom) = dym.split("|")
         val result = AlexFlipnote.didYouMean(top, bottom).await()
-        ctx.send(FileUpload.fromData(result, "didyoumean.png"))
+        ctx.respond(MessageCreateData.fromFiles(FileUpload.fromData(result, "didyoumean.png")))
     }
 
     @Command(description = "Flip a coin", guildOnly = true, developerOnly = true)
@@ -191,6 +199,8 @@ class Fun : Cog {
 
     @Command(aliases = ["huh", "hmmmmm"], description = "random why?")
     suspend fun why(ctx: Context) {
+        ctx.asSlashContext?.deferAsync(ephemeral = false)
+
         val nekoWhy = NekosLife.why.await()
 
         ctx.send {
@@ -202,6 +212,8 @@ class Fun : Cog {
 
     @Command(aliases = ["gecg"], description = "random gecg owO", nsfw = true)
     suspend fun meme(ctx: Context) {
+        ctx.asSlashContext?.deferAsync(ephemeral = false)
+
         val nekoMeme = NekosLife.meme.await()
 
         ctx.send {
@@ -216,16 +228,18 @@ class Fun : Cog {
         img: CompletableFuture<String>
     ) {
         if (who == null) {
-            return ctx.send("Who do you want to $action?? ${Formats.NEKO_C_EMOTE}")
+            return ctx.respondUnit("Who do you want to $action?? ${Formats.NEKO_C_EMOTE}")
         }
 
         if (who.idLong == ctx.author.idLong) {
-            return ctx.send("oh? why you want to $action yourself? Find a friend nya~")
+            return ctx.respondUnit("oh? why you want to $action yourself? Find a friend nya~")
         }
 
         if (who.idLong == ctx.jda.selfUser.idLong) {
-            return ctx.send("Nyaaaaaaaaaa, nu dun $action mee~")
+            return ctx.respondUnit("Nyaaaaaaaaaa, nu dun $action mee~")
         }
+
+        ctx.asSlashContext?.deferAsync(ephemeral = false)
 
         val imgUrl = img.await()
 
