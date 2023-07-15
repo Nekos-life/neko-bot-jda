@@ -1,5 +1,6 @@
 package life.nekos.bot.commands.mod
 
+import kotlinx.coroutines.future.await
 import life.nekos.bot.utils.Formats
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.context.Context
@@ -13,19 +14,17 @@ class Mod : Cog {
         aliases = ["gtfo"], description = "Bans an asshat", guildOnly = true,
         botPermissions = [Permission.BAN_MEMBERS], userPermissions = [Permission.BAN_MEMBERS]
     )
-    fun ban(ctx: Context, member: Member, reason: String = "None specified") {
-        member.ban(7, TimeUnit.DAYS).reason(reason).queue {
-            ctx.send("${Formats.INFO_EMOTE} Banned `${member.user.asTag}`, nya~")
-        }
+    suspend fun ban(ctx: Context, member: Member, reason: String = "None specified") {
+        member.ban(7, TimeUnit.DAYS).reason(reason).submit().await()
+        ctx.respond("${Formats.INFO_EMOTE} Banned `${member.user.asTag}`, nya~")
     }
 
     @Command(
         description = "Kicks an asshat", guildOnly = true, botPermissions = [Permission.KICK_MEMBERS],
         userPermissions = [Permission.KICK_MEMBERS]
     )
-    fun kick(ctx: Context, member: Member, reason: String = "None specified") {
-        member.kick().reason(reason).queue {
-            ctx.send("${Formats.INFO_EMOTE} Kicked `${member.user.asTag}`, nya~")
-        }
+    suspend fun kick(ctx: Context, member: Member, reason: String = "None specified") {
+        member.kick().reason(reason).submit().await()
+        ctx.respond("${Formats.INFO_EMOTE} Kicked `${member.user.asTag}`, nya~")
     }
 }

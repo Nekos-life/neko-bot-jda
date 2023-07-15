@@ -2,6 +2,7 @@ package life.nekos.bot.commands.owner
 
 import life.nekos.bot.Loader
 import life.nekos.bot.utils.Colors
+import life.nekos.bot.utils.extensions.thenException
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.annotations.Greedy
 import me.devoxin.flight.api.context.Context
@@ -35,13 +36,13 @@ class Eval : Cog {
         evalThread.run {
             try {
                 val result = engine.eval("$bindString\n$code", bind)
-                ctx.messageChannel.sendMessage("```\n$result```").queue(null) {
-                    ctx.messageChannel.sendMessage("Response Error\n```\n$it```").queue()
+                ctx.respond("```\n$result```").thenException {
+                    ctx.respond("Response Error\n```\n$it```")
                 }
             } catch (e: Exception) {
                 val error = e.localizedMessage.split("\n").first()
-                ctx.messageChannel.sendMessage("Engine Error\n```\n$error```").queue(null) { eng ->
-                    ctx.messageChannel.sendMessage("Response Error\n```\n$eng```").queue(null) { res ->
+                ctx.respond("Engine Error\n```\n$error```").thenException { eng ->
+                    ctx.respond("Response Error\n```\n$eng```").thenException { res ->
                         eng.printStackTrace()
                         res.printStackTrace()
                     }

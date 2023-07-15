@@ -2,7 +2,6 @@ package life.nekos.bot.commands.settings
 
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Database
-import life.nekos.bot.utils.extensions.send
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.context.Context
 import me.devoxin.flight.api.context.MessageContext
@@ -19,7 +18,7 @@ class Settings : Cog {
             prefix = newPrefix
         }
 
-        ctx.send("Prefix set to `${ctx.cleanContent(newPrefix)}`, nya~")
+        ctx.respond("Prefix set to `${ctx.cleanContent(newPrefix)}`, nya~")
     }
 
     @Command(description = "Sets the channel where nekos can be caught \\o", guildOnly = true, userPermissions = [Permission.MANAGE_SERVER])
@@ -32,7 +31,7 @@ class Settings : Cog {
 
         val msg = channel?.let { "will now spawn in ${it.asMention}. I heard they're attracted to active channels" }
             ?: "will no longer spawn"
-        ctx.send("Nekos $msg, nya~")
+        ctx.respond("Nekos $msg, nya~")
     }
 
     @Command(
@@ -44,7 +43,7 @@ class Settings : Cog {
         val nekoChannel = settings.nekoChannel?.let { ctx.guild!!.getTextChannelById(it)?.asMention }
             ?: "None"
 
-        ctx.send {
+        ctx.respond {
             setColor(Colors.getEffectiveColor(ctx))
             setTitle("Guild Settings for ${ctx.guild!!.name}")
             addField("Prefix", settings.prefix ?: "Default", true)

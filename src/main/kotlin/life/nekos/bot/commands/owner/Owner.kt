@@ -29,9 +29,10 @@ class Owner : Cog {
     }
 
     @Command(description = "Sets the bot's avatar.", developerOnly = true)
-    fun setavatar(ctx: Context) {
-        NekosLife.avatar.thenAccept { setAvatarWithUrl(ctx, it) }
-        ctx.send(Formats.info("Set Avatar"))
+    suspend fun setavatar(ctx: Context) {
+        ctx.asSlashContext?.deferAsync()
+        setAvatarWithUrl(ctx, NekosLife.avatar.await())
+        ctx.respond(Formats.info("Set Avatar"))
     }
 
     private fun setAvatarWithUrl(ctx: Context, url: String) {
@@ -42,13 +43,15 @@ class Owner : Cog {
                 ctx.jda.selfUser.manager.setAvatar(icon).submit()
             }
             .exceptionally {
-                ctx.send("Failed to set avatar:\n```${it.localizedMessage}```")
+                ctx.respond("Failed to set avatar:\n```${it.localizedMessage}```")
                 return@exceptionally null
             }
     }
 
     @Command(aliases = ["exec"], description = "Runs a shell command.", developerOnly = true)
-    fun ssh(ctx: Context, command: String, @Greedy args: String?) {
+    suspend fun ssh(ctx: Context, command: String, @Greedy args: String?) {
+        ctx.asSlashContext?.deferAsync()
+
         val commandArgs = args?.split(" ")?.toTypedArray() ?: arrayOf()
 
         val proc = ProcessBuilder()
@@ -61,10 +64,10 @@ class Owner : Cog {
 
         WumpDump.paste(content)
             .thenAccept {
-                ctx.send("**Shell output:** <$it>")
+                ctx.respond("**Shell output:** <$it>")
             }
             .thenException {
-                ctx.send(it.localizedMessage)
+                ctx.respond(it.localizedMessage)
             }
     }
 
@@ -79,7 +82,7 @@ class Owner : Cog {
         Database.getUser(ctx.author.id).update {
             nekos += 500
         }
-        ctx.send("Tell no one, nya~")
+        ctx.respond("Tell no one, nya~")
     }
 
     companion object {

@@ -10,7 +10,6 @@ import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.extensions.isNsfw
 import life.nekos.bot.utils.extensions.respondUnit
-import life.nekos.bot.utils.extensions.send
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.annotations.Greedy
 import me.devoxin.flight.api.context.Context
@@ -43,15 +42,13 @@ class Fun : Cog {
 
         if (options.contains("--new")) {
             if (options.contains("--nsfw")) {
-                if (!isDm && (ctx.isFromGuild && !ctx.isNsfw)) {
+                if (!ctx.isNsfw) {
                     return ctx.respondUnit("Nu, nya use this in an nsfw channel or add `--dm`")
                 }
-                response
-                    .setDescription("${Formats.INFO_EMOTE} Hey ${ctx.author.name}! Here is a new nsfw avatar, nya~ ${Formats.randomCat()}")
+                response.setDescription("${Formats.INFO_EMOTE} Hey ${ctx.author.name}! Here is a new nsfw avatar, nya~ ${Formats.randomCat()}")
                     .setImage(NekosLife.nsfwAvatar.await())
             } else {
-                response
-                    .setDescription("${Formats.INFO_EMOTE} Hey ${ctx.author.name}! Here is a new avatar, nya~ ${Formats.randomCat()}")
+                response.setDescription("${Formats.INFO_EMOTE} Hey ${ctx.author.name}! Here is a new avatar, nya~ ${Formats.randomCat()}")
                     .setImage(NekosLife.avatar.await())
             }
         } else {
@@ -61,7 +58,7 @@ class Fun : Cog {
         }
 
         if (isDm) {
-            ctx.asSlashContext?.deferAsync(ephemeral = false)
+            ctx.asSlashContext?.deferAsync()
 
             ctx.author.openPrivateChannel()
                 .flatMap { it.sendMessage(MessageCreateData.fromEmbeds(response.build())) }
@@ -78,12 +75,12 @@ class Fun : Cog {
             return ctx.respondUnit("\uD83D\uDEAB Nuu, nya! That doesn't look like a question? didn't anyone teach you punctuation??")
         }
 
-        ctx.asSlashContext?.deferAsync(ephemeral = false)
+        ctx.asSlashContext?.deferAsync()
         val res = NekosLife.eightBall.await()
         val answer = res.getString("response")
         val imageUrl = res.getString("url")
 
-        ctx.send {
+        ctx.respond {
             Colors.getEffectiveColor(ctx)
             setAuthor("Magic \uD83C\uDFB1", ctx.jda.getInviteUrl(), ctx.author.effectiveAvatarUrl)
             setDescription("❓: $question\nℹ: $answer")
@@ -93,11 +90,11 @@ class Fun : Cog {
 
     @Command(description = "random coffee ^^")
     suspend fun coffee(ctx: Context) {
-        ctx.asSlashContext?.deferAsync(ephemeral = false)
+        ctx.asSlashContext?.deferAsync()
 
         val coffee = AlexFlipnote.coffee().await()
 
-        ctx.send {
+        ctx.respond {
             setColor(Colors.getEffectiveColor(ctx))
             setDescription("coffee \\o/")
             setImage(coffee)
@@ -112,11 +109,11 @@ class Fun : Cog {
             .orElseGet { Colors.parse(color) }
             ?: return ctx.respondUnit("Nu nya, that doesn't look like a color to me. Try a hex `#0000ff`, or a name `Blue`")
 
-        ctx.asSlashContext?.deferAsync(ephemeral = false)
+        ctx.asSlashContext?.deferAsync()
         val hex = String.format("%02x%02x%02x", parsedColor.red, parsedColor.green, parsedColor.blue)
         val info = AlexFlipnote.color(hex).await()
 
-        ctx.send {
+        ctx.respond {
             setColor(parsedColor)
             setDescription(Formats.info("Color info for $color"))
             setImage(info.imageUrl)
@@ -135,10 +132,10 @@ class Fun : Cog {
     @Command(aliases = ["dym", "did_you_mean"], description = "Did you mean? \"something | else\"")
     suspend fun didyoumean(ctx: Context, @Greedy dym: String) {
         if (!dym.contains('|')) {
-            return ctx.send("You need to separate the top and bottom text with `|` nya~")
+            return ctx.respondUnit("You need to separate the top and bottom text with `|` nya~")
         }
 
-        ctx.asSlashContext?.deferAsync(ephemeral = false)
+        ctx.asSlashContext?.deferAsync()
         val (top, bottom) = dym.split("|")
         val result = AlexFlipnote.didYouMean(top, bottom).await()
         ctx.respond(MessageCreateData.fromFiles(FileUpload.fromData(result, "didyoumean.png")))
@@ -147,21 +144,21 @@ class Fun : Cog {
     @Command(description = "Flip a coin", guildOnly = true, developerOnly = true)
     fun flip(ctx: Context, side: String, bet: Int) {
         if (!sides.contains(side.lowercase())) {
-            return ctx.send("You must pick heads or tails, nya~")
+            return ctx.respondUnit("You must pick heads or tails, nya~")
         }
 
         if (bet < 1) {
-            return ctx.send("You must bet higher than 0 nya~")
+            return ctx.respondUnit("You must bet higher than 0 nya~")
         }
 
         val data = Database.getUser(ctx.author.id)
 
         if (data.nekos < 1) {
-            return ctx.send("You don't have enough to bet nya~")
+            return ctx.respondUnit("You don't have enough to bet nya~")
         }
 
         if (bet > data.nekos) {
-            return ctx.send("You only have **${data.nekos}** nekos nya~")
+            return ctx.respondUnit("You only have **${data.nekos}** nekos nya~")
         }
 
         val selectedSide = sides.indexOf(side.lowercase()) + 1
@@ -169,10 +166,10 @@ class Fun : Cog {
 
         if (roll == selectedSide) {
             val betRounded = (bet.toDouble() * 0.4).roundToInt()
-            ctx.send("The coin landed on ${sides[roll - 1]} nya~\nYou won **$betRounded** nekos owo")
+            ctx.respond("The coin landed on ${sides[roll - 1]} nya~\nYou won **$betRounded** nekos owo")
             data.update { nekos += betRounded }
         } else {
-            ctx.send("The coin landed on ${sides[roll - 1]} nya~\nYou lost **$bet** nekos (=‘ｘ‘=)")
+            ctx.respond("The coin landed on ${sides[roll - 1]} nya~\nYou lost **$bet** nekos (=‘ｘ‘=)")
             data.update { nekos -= bet }
         }
     }
@@ -199,11 +196,11 @@ class Fun : Cog {
 
     @Command(aliases = ["huh", "hmmmmm"], description = "random why?")
     suspend fun why(ctx: Context) {
-        ctx.asSlashContext?.deferAsync(ephemeral = false)
+        ctx.asSlashContext?.deferAsync()
 
         val nekoWhy = NekosLife.why.await()
 
-        ctx.send {
+        ctx.respond {
             setColor(Colors.getEffectiveColor(ctx))
             setAuthor("Why??", ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
             setDescription(nekoWhy)
@@ -212,11 +209,11 @@ class Fun : Cog {
 
     @Command(aliases = ["gecg"], description = "random gecg owO", nsfw = true)
     suspend fun meme(ctx: Context) {
-        ctx.asSlashContext?.deferAsync(ephemeral = false)
+        ctx.asSlashContext?.deferAsync()
 
         val nekoMeme = NekosLife.meme.await()
 
-        ctx.send {
+        ctx.respond {
             setColor(Colors.getEffectiveColor(ctx))
             setDescription("owo")
             setImage(nekoMeme)
@@ -239,11 +236,11 @@ class Fun : Cog {
             return ctx.respondUnit("Nyaaaaaaaaaa, nu dun $action mee~")
         }
 
-        ctx.asSlashContext?.deferAsync(ephemeral = false)
+        ctx.asSlashContext?.deferAsync()
 
         val imgUrl = img.await()
 
-        ctx.send {
+        ctx.respond {
             setColor(Colors.getEffectiveColor(ctx))
             setDescription("${who.asMention}, you got a $action from ${ctx.author.name} ${Formats.randomCat()}")
             setImage(imgUrl)
@@ -254,8 +251,8 @@ class Fun : Cog {
     @Command(aliases = ["lf", "sf"], description = "You want sum fuk?")
     fun sumfuk(ctx: MessageContext, who: User) {
         when (who.idLong) {
-            ctx.jda.selfUser.idLong -> return ctx.send("Nu nya, your tail's not big enough for me~ >.<")
-            ctx.author.idLong -> return ctx.send("Nu nya, I don't think you need to ask to fuk yourself~")
+            ctx.jda.selfUser.idLong -> return ctx.respondUnit("Nu nya, your tail's not big enough for me~ >.<")
+            ctx.author.idLong -> return ctx.respondUnit("Nu nya, I don't think you need to ask to fuk yourself~")
         }
 
         ctx.typing {

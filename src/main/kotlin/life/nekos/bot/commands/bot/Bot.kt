@@ -5,7 +5,6 @@ import life.nekos.bot.Loader
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.TextUtils
-import life.nekos.bot.utils.extensions.send
 import life.nekos.bot.utils.extensions.thenException
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.context.Context
@@ -15,7 +14,6 @@ import net.dv8tion.jda.api.entities.Message
 import java.lang.management.ManagementFactory
 import java.text.DecimalFormat
 import java.time.Instant
-import java.util.concurrent.TimeUnit
 
 class Bot : Cog {
     private fun isSpam(m: Message) = m.contentDisplay.startsWith('~')
@@ -26,13 +24,14 @@ class Bot : Cog {
         botPermissions = [Permission.MESSAGE_MANAGE]
     )
     fun clean(ctx: Context, amount: Int = 100) {
+        ctx.asSlashContext?.defer(ephemeral = true)
+
         ctx.messageChannel.iterableHistory
             .takeAsync(amount)
             .thenApply { it.filter(::isSpam) }
             .thenApply(ctx.messageChannel::purgeMessages)
-            .thenCompose { ctx.messageChannel.sendMessage("I deleted $amount messages \\o/").submit() }
-            .thenAccept { it.delete().queueAfter(5, TimeUnit.SECONDS) }
-            .thenException { ctx.send("Some error sry nya~") }
+            .thenAccept { ctx.respond("I deleted $amount messages \\o/") }
+            .thenException { ctx.respond("Some error sry nya~") }
     }
 
     @Command(
@@ -40,7 +39,7 @@ class Bot : Cog {
         description = "Bot and support guild links -.o"
     )
     fun invite(ctx: Context) {
-        ctx.send {
+        ctx.respond {
             setColor(Colors.getRandomColor())
             setAuthor(ctx.jda.selfUser.name, ctx.jda.selfUser.effectiveAvatarUrl, ctx.jda.selfUser.effectiveAvatarUrl)
             setDescription(Formats.LING_MSG)
@@ -51,7 +50,7 @@ class Bot : Cog {
 
     @Command(description = "Pong!")
     fun ping(ctx: Context) {
-        ctx.send("Hello nya~")
+        ctx.respond("Hello nya~")
     }
 
     @Command(description = "My statistics~", guildOnly = true)
@@ -100,7 +99,7 @@ class Bot : Cog {
 
         content.append(String.format("\nAlive: %d | Dead: %d | Avg. Latency: %dms", alive, dead, avgLatency))
 
-        ctx.send("```prolog\n$content```")
+        ctx.respond("```prolog\n$content```")
     }
 
     companion object {

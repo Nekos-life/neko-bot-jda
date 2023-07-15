@@ -6,7 +6,7 @@ import life.nekos.bot.apis.NekosLife
 import life.nekos.bot.framework.Paginator
 import life.nekos.bot.framework.annotations.CommandHelp
 import life.nekos.bot.utils.*
-import life.nekos.bot.utils.extensions.send
+import life.nekos.bot.utils.extensions.respondUnit
 import life.nekos.bot.utils.extensions.toEmoji
 import me.devoxin.flight.api.CommandFunction
 import me.devoxin.flight.api.annotations.Command
@@ -47,7 +47,7 @@ class User : Cog {
           levels
     """
     )
-    fun leaderboard(ctx: Context, category: String, page: Int = 1) {
+    suspend fun leaderboard(ctx: Context, category: String, page: Int = 1) {
         val items = when (category) {
             "nekos" -> Database.getTopNekos().map {
                 "\n${Formats.USER_EMOTE} **__Name__**: **${
@@ -68,12 +68,15 @@ class User : Cog {
                         "${Formats.LEVEL_EMOTE} **__Experience__**: **${it.exp}**\n"
 
             }
-            else -> return ctx.send(Formats.error("**Use `lb nekos` or `lb levels`**"))
+            else -> return ctx.respondUnit(Formats.error("**Use `lb nekos` or `lb levels`**"))
         }
 
         val paginator = Paginator(items) {
             selectedPage = page
         }
+
+        ctx.asSlashContext?.deferAsync()
+
         val link = WumpDump.paste(
             items.toString()
                 .replace(Formats.NEKO_V_EMOTE, "")
@@ -82,9 +85,9 @@ class User : Cog {
                 .replace(Formats.MAGIC_EMOTE, "")
                 .replace("_", "")
                 .replace("*", "")
-        ).get()
+        ).await()
 
-        ctx.send {
+        ctx.respond {
             setColor(Colors.getEffectiveColor(ctx))
             setTitle("${Formats.MAGIC_EMOTE} **Global leaderboard for Nekos** ${Formats.NEKO_C_EMOTE}", link)
             setDescription(paginator.display())
@@ -106,7 +109,7 @@ class User : Cog {
         val profile = Database.getUser(user.id)
         ctx.message.addReaction(Formats.USER_EMOTE.toEmoji()).queue()
 
-        ctx.send {
+        ctx.respond {
             setColor(Colors.getEffectiveColor(ctx))
             setAuthor("Profile for ${targetUser.name}", targetUser.effectiveAvatarUrl, targetUser.effectiveAvatarUrl)
             setThumbnail(targetUser.effectiveAvatarUrl)
@@ -139,7 +142,7 @@ class User : Cog {
         val data = Database.getUser(ctx.author.id)
 
         if (data.nekos < 1) {
-            return ctx.send("Nya~ You do not have any nekos to release nya~")
+            return ctx.respondUnit("Nya~ You do not have any nekos to release nya~")
         }
 
         data.update {
@@ -155,6 +158,7 @@ class User : Cog {
 
     @Command(description = "Send someone a neko image.", guildOnly = true)
     suspend fun sendNeko(ctx: Context, type: String, @Greedy user: User = ctx.author) {
+        ctx.asSlashContext?.deferAsync()
         val image = NekosLife.neko.await()
 
         val embed = EmbedBuilder().setColor(Colors.getEffectiveColor(ctx))
@@ -167,8 +171,8 @@ class User : Cog {
             .flatMap { it.sendMessage(MessageCreateData.fromEmbeds(embed)) }
             .flatMap { it.delete() }
             .queue(
-                { ctx.send("Good job ${ctx.author.asMention}") },
-                { ctx.send("${user.name} has me blocked or their filter turned on \uD83D\uDD95") }
+                { ctx.respond("Good job ${ctx.author.asMention}") },
+                { ctx.respond("${user.name} has me blocked or their filter turned on \uD83D\uDD95") }
             )
     }
 }

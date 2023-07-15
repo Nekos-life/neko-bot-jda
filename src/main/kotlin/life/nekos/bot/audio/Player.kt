@@ -11,7 +11,6 @@ import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.TextUtils
-import life.nekos.bot.utils.extensions.send
 import me.devoxin.flight.api.context.Context
 import net.dv8tion.jda.api.audio.AudioSendHandler
 import java.nio.ByteBuffer
@@ -48,7 +47,7 @@ class Player(audioPlayer: AudioPlayer) : AudioEventAdapter(), AudioPlayer by aud
             override fun trackLoaded(track: AudioTrack) {
                 playOrEnqueue(track.apply { userData = ctx.author })
 
-                ctx.send {
+                ctx.respond {
                     setColor(Colors.getEffectiveColor(ctx))
                     setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
                     addField(
@@ -68,7 +67,7 @@ class Player(audioPlayer: AudioPlayer) : AudioEventAdapter(), AudioPlayer by aud
                     }
                 }
 
-                ctx.send {
+                ctx.respond {
                     setColor(Colors.getEffectiveColor(ctx))
                     setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
                     addField(

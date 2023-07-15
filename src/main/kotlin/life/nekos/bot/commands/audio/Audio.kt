@@ -8,7 +8,7 @@ import life.nekos.bot.utils.Checks
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.TextUtils
-import life.nekos.bot.utils.extensions.send
+import life.nekos.bot.utils.extensions.respondUnit
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.annotations.Greedy
 import me.devoxin.flight.api.context.Context
@@ -25,11 +25,11 @@ class Audio : Cog {
 
         return when {
             selfChannel == null -> {
-                ctx.send("nu nya!~ I'm not playing anything.")
+                ctx.respond("nu nya!~ I'm not playing anything...")
                 false
             }
             targetChannel != selfChannel -> {
-                ctx.send("nu nya!~ You must be in my voice channel to use this command.")
+                ctx.respond("nu nya!~ You must be in my voice channel to use this command~")
                 false
             }
             else -> true
@@ -43,7 +43,7 @@ class Audio : Cog {
 
         if (me.channel != null) {
             if (targetChannel != me.channel) {
-                ctx.send("Nu nya~ You need to join my voice channel")
+                ctx.respond("Nu nya~ You need to join my voice channel")
             }
 
             return true
@@ -51,16 +51,16 @@ class Audio : Cog {
 
         return when {
             targetChannel == null -> {
-                ctx.send("You need to join a voice channel, nya~")
+                ctx.respond("You need to join a voice channel, nya~")
                 false
             }
             userLimit > 0 && targetChannel.members.size >= userLimit
                 && !ctx.guild!!.selfMember.hasPermission(targetChannel, Permission.VOICE_MOVE_OTHERS) -> {
-                    ctx.send("Nu nya~ Your voice channel is full!")
+                    ctx.respondUnit("Nu nya~ Your voice channel is full!")
                 false
             }
             !ctx.guild!!.selfMember.hasPermission(targetChannel, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK) -> {
-                ctx.send("Nu nya~ I don't have permission to join your voice channel~")
+                ctx.respondUnit("Nu nya~ I don't have permission to join your voice channel~")
                 false
             }
             else -> {
@@ -77,16 +77,16 @@ class Audio : Cog {
         }
 
         if (!Checks.audioChecks(ctx)) {
-            return ctx.send("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
+            return ctx.respondUnit("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
         }
 
         val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
         val track = player.playingTrack
             ?: player.lastTrack
-            ?: return ctx.send("nu! nya~ I wasn't playing anything before")
+            ?: return ctx.respondUnit("nu! nya~ I wasn't playing anything before")
 
         player.playTrack(track.makeClone())
-        ctx.send {
+        ctx.respond {
             setColor(Colors.getEffectiveColor(ctx))
             setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
             addField(
@@ -101,9 +101,9 @@ class Audio : Cog {
     fun nowplaying(ctx: Context) {
         val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
         val track = player.playingTrack
-            ?: return ctx.send("oh? the queue is empty! play something first nya~")
+            ?: return ctx.respondUnit("oh? the queue is empty! play something first nya~")
 
-        ctx.send {
+        ctx.respond {
             setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
             addField(
                 "${Formats.INFO_EMOTE}  Now Playing ${Formats.PLAY_EMOTE}",
@@ -135,7 +135,7 @@ class Audio : Cog {
         val ah = PlayerRegistry.playerFor(ctx.guild!!.idLong)
 
         if (ah.queue.isEmpty()) {
-            return ctx.send("The queue is currently empty!")
+            return ctx.respondUnit("The queue is currently empty, nya~")
         }
 
         val current = ah.playingTrack
@@ -145,7 +145,7 @@ class Audio : Cog {
         val totalDuration = ah.queue.sumByLong { it.duration }
         val paginator = Paginator(items).apply { page(page) }
 
-        ctx.send {
+        ctx.respond {
             setColor(Colors.getRandomColor())
             setTitle("Now Playing ${Formats.PLAY_EMOTE}")
             setDescription(
@@ -165,23 +165,23 @@ class Audio : Cog {
         }
 
         if (!Checks.audioChecks(ctx)) {
-            return ctx.send("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
+            return ctx.respondUnit("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
         }
 
         val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
 
         if (player.playingTrack == null) {
-            return ctx.send("oh? the queue is empty! play something first nya~")
+            return ctx.respondUnit("oh? the queue is empty! play something first nya~")
         }
 
         when (loop) {
             "all", "queue" -> player.loopSetting = LoopMode.ALL
             "current", "single" -> player.loopSetting = LoopMode.SINGLE
             "off", "none" -> player.loopSetting = LoopMode.NONE
-            else -> return ctx.send("You need to specify `all`, `current` or `none` nya~")
+            else -> return ctx.respondUnit("You need to specify `all`, `current` or `none` nya~")
         }
 
-        ctx.send("Alright nya, I have set repeat to `${player.loopSetting.name.lowercase()}` ${Formats.randomCat()}")
+        ctx.respond("Alright nya, I have set repeat to `${player.loopSetting.name.lowercase()}` ${Formats.randomCat()}")
     }
 
     @Command(aliases = ["shuffle", "mix"], description = "Shuffles the current queue.", guildOnly = true)
@@ -191,17 +191,17 @@ class Audio : Cog {
         }
 
         if (!Checks.audioChecks(ctx)) {
-            return ctx.send("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
+            return ctx.respondUnit("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
         }
 
         val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
 
         if (player.queue.isEmpty()) {
-            return ctx.send("oh? the queue is empty! play something first nya~")
+            return ctx.respondUnit("oh? the queue is empty! play something first nya~")
         }
 
         player.queue.shuffle()
-        ctx.send("owo I mixed them all up ${Formats.randomCat()}")
+        ctx.respond("owo I mixed them all up ${Formats.randomCat()}")
     }
 
     @Command(aliases = ["s", "next"], description = "Skips the current track.", guildOnly = true)
@@ -211,21 +211,21 @@ class Audio : Cog {
         }
 
         if (!Checks.audioChecks(ctx)) {
-            return ctx.send("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
+            return ctx.respondUnit("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
         }
 
         val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
 
         if (player.playingTrack == null) {
-            return ctx.send("oh? the queue is empty! play something first nya~")
+            return ctx.respondUnit("oh? the queue is empty! play something first nya~")
         }
 
         player.nextTrack()
 
         val nextTrack = player.playingTrack
-            ?: return ctx.send("There's nothing left to play, nya~")
+            ?: return ctx.respondUnit("There's nothing left to play, nya~")
 
-        ctx.send {
+        ctx.respond {
             setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
             addField(
                 "${Formats.INFO_EMOTE}  Now Playing ${Formats.PLAY_EMOTE}",
@@ -240,11 +240,11 @@ class Audio : Cog {
     @Command(aliases = ["quit", "disconnect"], description = "Stops playback, clears queue and disconnects.", guildOnly = true)
     fun stop(ctx: Context) {
         if (!Checks.audioChecks(ctx)) {
-            return ctx.send("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
+            return ctx.respondUnit("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
         }
 
         PlayerRegistry.destroyPlayer(ctx.guild!!.idLong)
-        ctx.send("Done, Nya~ ${Formats.STOP_EMOTE} ${Formats.randomCat()}")
+        ctx.respond("Done, Nya~ ${Formats.STOP_EMOTE} ${Formats.randomCat()}")
     }
 
     @DonorOnly
@@ -255,17 +255,17 @@ class Audio : Cog {
         }
 
         if (!Checks.audioChecks(ctx)) {
-            return ctx.send("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
+            return ctx.respondUnit("nu nya!~ You don't have permission to do this. ${Formats.NEKO_C_EMOTE}")
         }
 
         val player = PlayerRegistry.playerFor(ctx.guild!!.idLong)
 
         if (vol == null) {
-            return ctx.send("My volume is currently ${Formats.getVolEmote(player.volume)}**${player.volume}** nya~ ${Formats.randomCat()}")
+            return ctx.respondUnit("My volume is currently ${Formats.getVolEmote(player.volume)}**${player.volume}** nya~ ${Formats.randomCat()}")
         }
 
         player.volume = vol.coerceIn(0, 100)
-        ctx.send("I set the volume to ${Formats.getVolEmote(player.volume)}**${player.volume}**, nya~ ${Formats.randomCat()}")
+        ctx.respond("I set the volume to ${Formats.getVolEmote(player.volume)}**${player.volume}**, nya~ ${Formats.randomCat()}")
     }
 
 }

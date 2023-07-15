@@ -1,10 +1,11 @@
 package life.nekos.bot.commands.guild
 
+import kotlinx.coroutines.future.await
 import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.WumpDump
-import life.nekos.bot.utils.extensions.send
+import life.nekos.bot.utils.extensions.respondUnit
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.context.Context
 import me.devoxin.flight.api.context.MessageContext
@@ -23,15 +24,17 @@ class Guild : Cog {
         aliases = ["nsfw", "toggle"], description = "Toggles the current channel's NSFW setting", guildOnly = true,
         botPermissions = [Permission.MANAGE_CHANNEL], userPermissions = [Permission.MANAGE_CHANNEL]
     )
-    fun nsfwtoggle(ctx: Context) {
+    suspend fun nsfwtoggle(ctx: Context) {
         val tc = ctx.messageChannel as? TextChannel
-            ?: return ctx.send("Nya, I can't toggle the NSFW status of this channel!")
+            ?: return ctx.respondUnit("Nya, I can't toggle the NSFW status of this channel!")
 
         val newSetting = !tc.isNSFW
-        tc.manager.setNSFW(newSetting).queue {
-            val str = if (newSetting) "enabled" else "disabled"
-            ctx.send("Nya, I have $str NSFW on this channel! ${Formats.randomCat()}")
-        }
+
+        ctx.asSlashContext?.deferAsync()
+        tc.manager.setNSFW(newSetting).submit().await()
+
+        val str = if (newSetting) "enabled" else "disabled"
+        ctx.respond("Nya, I have $str NSFW on this channel! ${Formats.randomCat()}")
     }
 
     @DonorOnly
@@ -69,7 +72,7 @@ class Guild : Cog {
     @Command(aliases = ["r"], description = "Shows server role info", guildOnly = true)
     fun roles(ctx: Context, role: Role?) {
         if (role == null) {
-            return ctx.send("You must provide the name of the role whose information you want to see, nya~")
+            return ctx.respondUnit("You must provide the name of the role whose information you want to see, nya~")
         }
 
         val color = role.color
@@ -77,7 +80,7 @@ class Guild : Cog {
         val permissions = role.permissionsExplicit.joinToString("\n") { it.getName() }
         val permissionsUrl = WumpDump.paste(permissions).get(5, TimeUnit.SECONDS)
 
-        ctx.send {
+        ctx.respond {
             setColor(role.color)
             setTitle("${role.name} (${role.id}) | ${role.asMention}")
             addField("Color", "#$hexStr", true)
