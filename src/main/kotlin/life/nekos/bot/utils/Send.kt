@@ -16,9 +16,6 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
 class Send(private val message: Message, private val organic: Boolean) {
-    private fun fetchContextualNeko(): CompletableFuture<String> {
-        return if ((message.guildChannel as? TextChannel)?.isNSFW == true) NekosLife.lewd else NekosLife.neko
-    }
 
     fun neko(dropper: Long) {
         if (!message.guild.selfMember.hasPermission(message.guildChannel, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_MANAGE)) {
@@ -27,22 +24,19 @@ class Send(private val message: Message, private val organic: Boolean) {
 
         val keyword = PREFIXES.random() + SUFFIXES.random()
 
-        fetchContextualNeko()
-            .thenCompose {
-                message.channel.sendMessage(MessageCreateData.fromEmbeds(
-                    EmbedBuilder().apply {
-                        setColor(Colors.getRandomColor())
-                        setImage(it)
-                        setFooter("${Formats.randomCat()} A wild neko has appeared! Use $keyword to catch it before it gets away \\o/")
-                    }.build()
-                )).submit()
-            }
-            .thenAccept { drop ->
-                commandClient.waitFor(DEFAULT_PREDICATE(drop, dropper, keyword, organic), DEFAULT_TIMEOUT)
-                    .thenAccept { handleAccept(drop, it) }
-                    .thenException { handleException(drop, it, "Neko") }
-            }
-            .thenException { log.error("[Neko:Drop]", it) }
+        NekosLife.neko.thenCompose {
+            message.channel.sendMessage(MessageCreateData.fromEmbeds(
+                EmbedBuilder().apply {
+                    setColor(Colors.getRandomColor())
+                    setImage(it)
+                    setFooter("${Formats.randomCat()} A wild neko has appeared! Use $keyword to catch it before it gets away \\o/")
+                }.build()
+            )).submit()
+        }.thenAccept { drop ->
+            commandClient.waitFor(DEFAULT_PREDICATE(drop, dropper, keyword, organic), DEFAULT_TIMEOUT)
+                .thenAccept { handleAccept(drop, it) }
+                .thenException { handleException(drop, it, "Neko") }
+        }.thenException { log.error("[Neko:Drop]", it) }
     }
 
     fun poke(dropper: Long) {

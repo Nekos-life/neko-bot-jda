@@ -19,7 +19,6 @@ object NekosLife : Api() {
     val anal: StringResponse get() = jsonEndpoint("/img/anal", "url")
     val pussy: StringResponse get() = jsonEndpoint("/img/pussy", "url")
     val neko: StringResponse get() = jsonEndpoint("/img/neko", "url")
-    val lewd: StringResponse get() = jsonEndpoint("/img/lewd", "url")
     val fox: StringResponse get() = jsonEndpoint("/img/fox_girl", "url")
     val kuni: StringResponse get() = jsonEndpoint("/img/kuni", "url")
     val hug: StringResponse get() = jsonEndpoint("/img/hug", "url")

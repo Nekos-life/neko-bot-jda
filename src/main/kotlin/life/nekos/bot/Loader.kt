@@ -29,7 +29,7 @@ object Loader {
         val token = if (isDebug) Config["debug_token"] else Config["token"]
 
         commandClient = CommandClientBuilder()
-            .setOwnerIds(248294452307689473L, 180093157554388993L)
+            .setOwnerIds(248294452307689473L, 180093157554388993L, 596330574109474848L) // Tails, devo, dyna
             .setPrefixProvider(NekoPrefixProvider())
             .registerDefaultParsers()
             .addCustomParser(StringBool::class.java, StringOrBool())

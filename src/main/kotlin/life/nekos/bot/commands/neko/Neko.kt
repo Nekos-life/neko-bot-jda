@@ -15,10 +15,7 @@ import net.dv8tion.jda.api.utils.messages.MessageEditData
 import java.awt.Color
 
 class Neko : Cog {
-    fun embed(
-        ctx: Context, description: String, imageUrl: String,
-        embedOptions: EmbedBuilder.() -> Unit = {}
-    ) {
+    private fun embed(ctx: Context, description: String, imageUrl: String, embedOptions: EmbedBuilder.() -> Unit = {}) {
         ctx.send {
             setColor(Colors.getEffectiveColor(ctx))
             setDescription(description)
@@ -34,15 +31,6 @@ class Neko : Cog {
         }
     }
 
-    @Command(description = "Random nekos owO", aliases = ["owo", "wew", "nyaaaa"], nsfw = true)
-    fun lewd(ctx: Context) {
-        NekosLife.lewd.thenAccept {
-            embed(ctx, "Nekos owo", it) {
-                setColor(Color.magenta)
-            }
-        }
-    }
-
     @Command(description = "Random nekos owO")
     fun neko(ctx: Context) {
         NekosLife.neko.thenAccept {
@@ -54,23 +42,6 @@ class Neko : Cog {
     fun nya(ctx: Context) {
         ctx.send("${ctx.author.asMention}, Mew!!~ ${Formats.cats.random()}")
     }
-
-    @DonorOnly
-    @Command(description = "Neko slideshow \\o//", aliases = ["lewdslideshow", "lss", "mewww", "o.o"], nsfw = true)
-    suspend fun lewds(ctx: MessageContext) =
-        Shell.slideshow(ctx) { m, cycle, total ->
-            val image = NekosLife.lewd.await()
-
-            m.editMessage(
-                MessageEditData.fromEmbeds(
-                    EmbedBuilder()
-                        .setColor(Colors.getEffectiveColor(ctx))
-                        .setDescription("$cycle of $total")
-                        .setImage(image)
-                        .build()
-                )
-            ).submit().await()
-        }
 
     @Command(description = "Neko slideshow", aliases = ["slideshow", "ss", "mew", "nyaa"])
     suspend fun nekos(ctx: MessageContext) =

@@ -154,12 +154,8 @@ class User : Cog {
     }
 
     @Command(description = "Send someone a neko image.", guildOnly = true)
-    suspend fun send(ctx: Context, type: String, @Greedy user: User = ctx.author) {
-        val image = when (type) {
-            "neko" -> NekosLife.neko.await()
-            "lewd" -> NekosLife.lewd.await()
-            else -> return ctx.send("What do you want to send, nya? You must specify `neko` or `lewd`~")
-        }
+    suspend fun sendNeko(ctx: Context, type: String, @Greedy user: User = ctx.author) {
+        val image = NekosLife.neko.await()
 
         val embed = EmbedBuilder().setColor(Colors.getEffectiveColor(ctx))
             .setTitle("hey ${user.name}, ${ctx.author.name} has sent you a $type")
