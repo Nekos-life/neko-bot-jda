@@ -43,10 +43,10 @@ class FlightEventAdapter : DefaultCommandEventAdapter() {
 
     override fun onCommandPreInvoke(ctx: Context, command: CommandFunction): Boolean {
         if (command.method.hasAnnotation<DonorOnly>()) {
-            if (!Checks.isDonor(ctx.author.idLong)) {
-                ctx.send("Nya~ This command is restricted to donors only~\nBecome a donor here~ <https://www.patreon.com/Nekos_life>")
-                return false
-            }
+//            if (!Checks.isDonor(ctx.author.idLong)) {
+//                ctx.send("Nya~ This command is restricted to donors only~\nBecome a donor here~ <https://www.patreon.com/Nekos_life>")
+//                return false
+//            }
             // check donor, send error otherwise with emote 475801484282429450
         }
 
