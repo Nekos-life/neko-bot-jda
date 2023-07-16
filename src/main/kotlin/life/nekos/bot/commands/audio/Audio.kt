@@ -176,7 +176,7 @@ class Audio : Cog {
 
         when (loop) {
             "all", "queue" -> player.loopSetting = LoopMode.ALL
-            "current", "single" -> player.loopSetting = LoopMode.SINGLE
+            "current", "single", "track" -> player.loopSetting = LoopMode.SINGLE
             "off", "none" -> player.loopSetting = LoopMode.NONE
             else -> return ctx.respondUnit("You need to specify `all`, `current` or `none` nya~")
         }
