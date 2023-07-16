@@ -20,23 +20,6 @@ import java.util.concurrent.TimeoutException
 import kotlin.streams.toList
 
 class Guild : Cog {
-    @Command(
-        aliases = ["nsfw", "toggle"], description = "Toggles the current channel's NSFW setting", guildOnly = true,
-        botPermissions = [Permission.MANAGE_CHANNEL], userPermissions = [Permission.MANAGE_CHANNEL]
-    )
-    suspend fun nsfwtoggle(ctx: Context) {
-        val tc = ctx.messageChannel as? TextChannel
-            ?: return ctx.respondUnit("Nya, I can't toggle the NSFW status of this channel!")
-
-        val newSetting = !tc.isNSFW
-
-        ctx.asSlashContext?.deferAsync()
-        tc.manager.setNSFW(newSetting).submit().await()
-
-        val str = if (newSetting) "enabled" else "disabled"
-        ctx.respond("Nya, I have $str NSFW on this channel! ${Formats.randomCat()}")
-    }
-
     @DonorOnly
     @Command(
         aliases = ["rc"], description = "Changes all hoisted roles to a random color", guildOnly = true,

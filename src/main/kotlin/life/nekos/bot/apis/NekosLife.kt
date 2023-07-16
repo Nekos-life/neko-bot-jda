@@ -14,7 +14,6 @@ object NekosLife : Api() {
     val meme: StringResponse get() = jsonEndpoint("/img/gecg", "url")
     val avatar: StringResponse get() = jsonEndpoint("/img/avatar", "url")
     val slap: StringResponse get() = jsonEndpoint("/img/slap", "url")
-    val nsfwAvatar: StringResponse get() = jsonEndpoint("/img/nsfw_avatar", "url")
     val poke: StringResponse get() = jsonEndpoint("/img/poke", "url")
     val anal: StringResponse get() = jsonEndpoint("/img/anal", "url")
     val pussy: StringResponse get() = jsonEndpoint("/img/pussy", "url")

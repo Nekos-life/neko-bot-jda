@@ -8,7 +8,6 @@ import life.nekos.bot.framework.annotations.DonorOnly
 import life.nekos.bot.utils.Colors
 import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats
-import life.nekos.bot.utils.extensions.isNsfw
 import life.nekos.bot.utils.extensions.respondUnit
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.annotations.Greedy
@@ -33,7 +32,7 @@ class Fun : Cog {
         """
         options:
           --dm : Sends the image to you privately.
-          --new: Sends you a new avatar. You can specify "--nsfw" for a new NSFW avatar.
+          --new: Sends you a new avatar.
     """
     )
     suspend fun avatar(ctx: Context, user: User, @Greedy options: String = "") {
@@ -41,16 +40,8 @@ class Fun : Cog {
         val response = EmbedBuilder().setColor(Colors.getEffectiveColor(ctx))
 
         if (options.contains("--new")) {
-            if (options.contains("--nsfw")) {
-                if (!ctx.isNsfw) {
-                    return ctx.respondUnit("Nu, nya use this in an nsfw channel or add `--dm`")
-                }
-                response.setDescription("${Formats.INFO_EMOTE} Hey ${ctx.author.name}! Here is a new nsfw avatar, nya~ ${Formats.randomCat()}")
-                    .setImage(NekosLife.nsfwAvatar.await())
-            } else {
-                response.setDescription("${Formats.INFO_EMOTE} Hey ${ctx.author.name}! Here is a new avatar, nya~ ${Formats.randomCat()}")
-                    .setImage(NekosLife.avatar.await())
-            }
+            response.setDescription("${Formats.INFO_EMOTE} Hey ${ctx.author.name}! Here is a new avatar, nya~ ${Formats.randomCat()}")
+                .setImage(NekosLife.avatar.await())
         } else {
             val fsAvatarUrl = user.effectiveAvatarUrl + "?size=2048"
             response.setDescription("${Formats.INFO_EMOTE} Here is ${user.name}'s avatar, nya~ ${Formats.randomCat()}\n\n[**Link**]($fsAvatarUrl)")
