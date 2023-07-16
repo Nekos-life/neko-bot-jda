@@ -2,6 +2,7 @@ package life.nekos.bot.commands.mod
 
 import kotlinx.coroutines.future.await
 import life.nekos.bot.utils.Formats
+import life.nekos.bot.utils.extensions.respondUnit
 import me.devoxin.flight.api.annotations.Command
 import me.devoxin.flight.api.context.Context
 import me.devoxin.flight.api.entities.Cog
@@ -15,6 +16,14 @@ class Mod : Cog {
         botPermissions = [Permission.BAN_MEMBERS], userPermissions = [Permission.BAN_MEMBERS]
     )
     suspend fun ban(ctx: Context, member: Member, reason: String = "None specified") {
+        if (!ctx.member!!.canInteract(member)) {
+            return ctx.respondUnit("Nu nya, you don't have permission to ban this member~")
+        }
+
+        if (!ctx.guild!!.selfMember.canInteract(member)) {
+            return ctx.respondUnit("Nu nya, I don't have permission to ban this member~")
+        }
+
         member.ban(7, TimeUnit.DAYS).reason(reason).submit().await()
         ctx.respond("${Formats.INFO_EMOTE} Banned `${member.user.asTag}`, nya~")
     }
@@ -24,6 +33,14 @@ class Mod : Cog {
         userPermissions = [Permission.KICK_MEMBERS]
     )
     suspend fun kick(ctx: Context, member: Member, reason: String = "None specified") {
+        if (!ctx.member!!.canInteract(member)) {
+            return ctx.respondUnit("Nu nya, you don't have permission to kick this member~")
+        }
+
+        if (!ctx.guild!!.selfMember.canInteract(member)) {
+            return ctx.respondUnit("Nu nya, I don't have permission to kick this member~")
+        }
+
         member.kick().reason(reason).submit().await()
         ctx.respond("${Formats.INFO_EMOTE} Kicked `${member.user.asTag}`, nya~")
     }
