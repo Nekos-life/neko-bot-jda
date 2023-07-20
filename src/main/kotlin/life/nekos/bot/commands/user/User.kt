@@ -21,74 +21,9 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateData
 import java.time.Instant
 
 class User : Cog {
-    override fun localCheck(ctx: Context, command: CommandFunction): Boolean {
-        // Model.statsUp(command.name)
-        return true
-    }
-
-    private fun findUserById(ctx: Context, id: String): String {
-        if (NekoBot.simpleLbCache.containsKey(id)) {
-            return NekoBot.simpleLbCache[id]!!
-        }
-
-        val tag = ctx.jda.shardManager!!.retrieveUserById(id).submit().get()?.name ?: "Unknown User"
-        NekoBot.simpleLbCache[id] = tag
-        return tag
-    }
-
-    @Command(
-        aliases = ["lb", "top", "ranks"],
-        description = "Global leaderboard. Category must be either \"nekos\" or \"levels\""
-    )
-    @CommandHelp(
-        """
-        category:
-          nekos
-          levels
-    """
-    )
-    suspend fun leaderboard(ctx: Context, category: String, page: Int = 1) {
-        val items = when (category) {
-            "nekos" -> Database.getTopNekos().map {
-                "\n${Formats.USER_EMOTE} **__Name__**: **${findUserById(ctx, it.id)}**\n**${Formats.NEKO_V_EMOTE} __Nekos__**: **${it.nekos}**\n"
-            }
-            "levels" -> Database.getTopExp().map {
-                "\n${Formats.USER_EMOTE} **__Name__**: **${findUserById(ctx, it.id)}**\n${Formats.MAGIC_EMOTE} **__Level__**: **${it.level}** \n" +
-                    "${Formats.LEVEL_EMOTE} **__Experience__**: **${it.exp}**\n"
-            }
-            else -> return ctx.respondUnit(Formats.error("**Use `lb nekos` or `lb levels`**"))
-        }
-
-        val paginator = Paginator(items) {
-            selectedPage = page
-        }
-
-        ctx.asSlashContext?.deferAsync()
-
-        val link = WumpDump.paste(
-            items.toString()
-                .replace(Formats.NEKO_V_EMOTE, "")
-                .replace(Formats.USER_EMOTE, "")
-                .replace(Formats.LEVEL_EMOTE, "")
-                .replace(Formats.MAGIC_EMOTE, "")
-                .replace("_", "")
-                .replace("*", "")
-        ).await()
-
-        ctx.respond {
-            embed {
-                setColor(Colors.getEffectiveColor(ctx))
-                setTitle("${Formats.MAGIC_EMOTE} **Global leaderboard for Nekos** ${Formats.NEKO_C_EMOTE}", link)
-                setDescription(paginator.display())
-                setFooter("Page ${paginator.page()}/${paginator.maxPages}")
-                setTimestamp(Instant.now())
-            }
-        }
-    }
-
     @Command(aliases = ["rank", "exp"], description = "Shows your, or another user's profile.", guildOnly = true)
-    fun profile(ctx: Context, @Greedy user: Member = ctx.member!!) {
-        val targetUser = user.user.takeIf { !it.isBot }
+    fun profile(ctx: Context, @Greedy user: User = ctx.author) {
+        val targetUser = user.takeIf { !it.isBot }
             ?: return ctx.respondUnit("Bots don't have profiles ;p")
 
         val profile = Database.getUser(user.id)

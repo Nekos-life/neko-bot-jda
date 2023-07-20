@@ -10,6 +10,7 @@ import life.nekos.bot.utils.Database
 import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.extensions.respondUnit
 import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.annotations.Describe
 import me.devoxin.flight.api.annotations.Greedy
 import me.devoxin.flight.api.context.Context
 import me.devoxin.flight.api.context.MessageContext
@@ -35,7 +36,7 @@ class Fun : Cog {
           --new: Sends you a new avatar.
     """
     )
-    suspend fun avatar(ctx: Context, user: User, @Greedy options: String = "") {
+    suspend fun avatar(ctx: Context, user: User, @Describe("Specify '--dm' for DM, '--new' for a new avatar.") @Greedy options: String = "") {
         val isDm = options.contains("--dm")
         val response = EmbedBuilder().setColor(Colors.getEffectiveColor(ctx))
 
@@ -63,7 +64,7 @@ class Fun : Cog {
     }
 
     @Command(aliases = ["8", "8ball", "8b"], description = "random why?")
-    suspend fun ball(ctx: Context, @Greedy question: String) {
+    suspend fun ball(ctx: Context, @Describe("The question to ask the 8ball.") @Greedy question: String) {
         if (!question.endsWith('?')) {
             return ctx.respondUnit("\uD83D\uDEAB Nuu, nya! That doesn't look like a question? didn't anyone teach you punctuation??")
         }
@@ -141,7 +142,7 @@ class Fun : Cog {
     }
 
     @Command(description = "Flip a coin", guildOnly = true, developerOnly = true)
-    fun flip(ctx: Context, side: String, bet: Int) {
+    fun flip(ctx: Context, @Describe("'heads' or 'tails'.") side: String, bet: Int) {
         if (!sides.contains(side.lowercase())) {
             return ctx.respondUnit("You must pick heads or tails, nya~")
         }

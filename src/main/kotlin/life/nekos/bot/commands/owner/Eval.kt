@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.script.jsr223.KotlinJsr223JvmLocalScriptEngineFactor
 
 class Eval : Cog {
     private val engine = KotlinJsr223JvmLocalScriptEngineFactory().scriptEngine
-    private val evalThread = Thread("fuck")
+    private val evalThread = Thread("neko-eval")
 
     init {
         evalThread.priority = Thread.MIN_PRIORITY

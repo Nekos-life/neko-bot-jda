@@ -7,6 +7,7 @@ import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.TextUtils
 import life.nekos.bot.utils.extensions.thenException
 import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.annotations.Describe
 import me.devoxin.flight.api.context.Context
 import me.devoxin.flight.api.entities.Cog
 import net.dv8tion.jda.api.Permission
@@ -24,7 +25,7 @@ class Bot : Cog {
         botPermissions = [Permission.MESSAGE_MANAGE],
         guildOnly = true
     )
-    fun clean(ctx: Context, amount: Int = 100) {
+    fun clean(ctx: Context, @Describe("The maximum amount of messages to remove.") amount: Int = 100) {
         ctx.asSlashContext?.defer(ephemeral = true)
 
         ctx.messageChannel.iterableHistory

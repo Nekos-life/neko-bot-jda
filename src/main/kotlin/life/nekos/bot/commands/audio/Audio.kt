@@ -10,6 +10,7 @@ import life.nekos.bot.utils.Formats
 import life.nekos.bot.utils.TextUtils
 import life.nekos.bot.utils.extensions.respondUnit
 import me.devoxin.flight.api.annotations.Command
+import me.devoxin.flight.api.annotations.Describe
 import me.devoxin.flight.api.annotations.Greedy
 import me.devoxin.flight.api.context.Context
 import me.devoxin.flight.api.entities.Cog
@@ -120,7 +121,7 @@ class Audio : Cog {
     }
 
     @Command(aliases = ["p"], description = "Play a song from a URL, or search.", guildOnly = true)
-    fun play(ctx: Context, @Greedy query: String) {
+    fun play(ctx: Context, @Describe("The query to search for.") @Greedy query: String) {
         if (!connectToVoice(ctx)) {
             return
         }
@@ -135,7 +136,7 @@ class Audio : Cog {
     }
 
     @Command(aliases = ["q"], description = "Shows the audio queue", guildOnly = true)
-    fun queue(ctx: Context, page: Int = 1) {
+    fun queue(ctx: Context, @Describe("The page of results to view.") page: Int = 1) {
         val ah = PlayerRegistry.playerFor(ctx.guild!!.idLong)
 
         if (ah.queue.isEmpty()) {
@@ -165,7 +166,7 @@ class Audio : Cog {
 
     @DonorOnly
     @Command(aliases = ["loop"], description = "Set repeat for a track.", guildOnly = true)
-    fun repeat(ctx: Context, loop: String) {
+    fun repeat(ctx: Context, @Describe("The loop setting. Can be one of 'all', 'current' or 'off'.") loop: String) {
         if (!checkVoice(ctx)) {
             return
         }
@@ -257,7 +258,7 @@ class Audio : Cog {
 
     @DonorOnly
     @Command(aliases = ["vol", "v"], description = "Sets the volume.", guildOnly = true)
-    fun volume(ctx: Context, vol: Int? = null) {
+    fun volume(ctx: Context, @Describe("The new volume level. Omit to view the volume level.") vol: Int? = null) {
         if (!checkVoice(ctx)) {
             return
         }
