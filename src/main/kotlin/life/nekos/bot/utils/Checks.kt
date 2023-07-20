@@ -12,8 +12,7 @@ object Checks {
     fun isDonor(userId: Long) = hasRole(userId, 392350099331743765L)
     fun isDonorPlus(userId: Long) = hasRole(userId, 475508839266123786L)
 
-    fun isMessageRemovable(ctx: Context) = ctx.member?.hasPermission(ctx.guildChannel!!, Permission.MESSAGE_MANAGE)
-        ?: false
+    fun isMessageRemovable(ctx: Context) = ctx.asMessageContext?.member?.hasPermission(ctx.guildChannel!!, Permission.MESSAGE_MANAGE) == true
 
     fun isBotOwner(ctx: Context) = ctx.commandClient.ownerIds.contains(ctx.author.idLong)
     fun isMod(ctx: Context) = isBotOwner(ctx) || ctx.member?.hasPermission(Permission.MESSAGE_MANAGE) ?: false

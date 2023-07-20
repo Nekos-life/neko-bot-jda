@@ -29,8 +29,8 @@ class Mod : Cog {
     }
 
     @Command(
-        description = "Kicks an asshat", guildOnly = true, botPermissions = [Permission.KICK_MEMBERS],
-        userPermissions = [Permission.KICK_MEMBERS]
+        description = "Kicks an asshat", guildOnly = true,
+        botPermissions = [Permission.KICK_MEMBERS], userPermissions = [Permission.KICK_MEMBERS]
     )
     suspend fun kick(ctx: Context, member: Member, reason: String = "None specified") {
         if (!ctx.member!!.canInteract(member)) {

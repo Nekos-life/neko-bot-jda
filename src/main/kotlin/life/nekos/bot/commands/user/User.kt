@@ -86,18 +86,13 @@ class User : Cog {
         }
     }
 
-    @Command(aliases = ["rank", "exp"], description = "Shows your, or another user's profile.")
-    fun profile(ctx: MessageContext, @Greedy user: Member = ctx.member!!) {
-        val targetUser = user.user
-
-        if (targetUser.isBot) {
-            return ctx.send {
-                setDescription("Bots don't have profiles ;p")
-            }
-        }
+    @Command(aliases = ["rank", "exp"], description = "Shows your, or another user's profile.", guildOnly = true)
+    fun profile(ctx: Context, @Greedy user: Member = ctx.member!!) {
+        val targetUser = user.user.takeIf { !it.isBot }
+            ?: return ctx.respondUnit("Bots don't have profiles ;p")
 
         val profile = Database.getUser(user.id)
-        ctx.message.addReaction(Formats.USER_EMOTE.toEmoji()).queue()
+        ctx.asMessageContext?.message?.addReaction(Formats.USER_EMOTE.toEmoji())?.queue()
 
         ctx.respond {
             embed {
@@ -132,23 +127,19 @@ class User : Cog {
 
     @Command(
         aliases = ["free", "catch"],
-        description = "Releases one of your nekos for others to catch >.< (You cannot catch a neko you released)"
+        description = "Releases one of your nekos for others to catch >.< (You cannot catch a neko you released)",
+        guildOnly = true
     )
-    fun release(ctx: MessageContext) {
-        val data = Database.getUser(ctx.author.id)
+    fun release(ctx: Context) {
+        val data = Database.getUser(ctx.author.id).takeIf { it.nekos > 0 }
+            ?: return ctx.respondUnit("Nya~ You do not have any nekos to release nya~")
 
-        if (data.nekos < 1) {
-            return ctx.respondUnit("Nya~ You do not have any nekos to release nya~")
-        }
+        data.update { nekos-- }
 
-        data.update {
-            nekos--
-        }
-
-        Send(ctx.message, false).neko(ctx.author.idLong)
+        Send(ctx.guildChannel!!, false).neko(ctx.author.idLong)
 
         if (Checks.isMessageRemovable(ctx)) {
-            ctx.message.delete().queue()
+            ctx.asMessageContext?.message?.delete()?.queue()
         }
     }
 

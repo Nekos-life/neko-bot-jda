@@ -101,8 +101,8 @@ class Fun : Cog {
 
     @Command(aliases = ["colour"], description = "See information about a color")
     suspend fun color(ctx: MessageContext, @Greedy color: String) {
-        val m = memberConverter.parse(ctx, color)
-        val parsedColor = m.map { it.color }
+        val parsedColor = memberConverter.parse(ctx, color)
+            .map { it.color }
             .orElseGet { Colors.parse(color) }
             ?: return ctx.respondUnit("Nu nya, that doesn't look like a color to me. Try a hex `#0000ff`, or a name `Blue`")
 
@@ -137,7 +137,7 @@ class Fun : Cog {
         ctx.asSlashContext?.deferAsync()
         val (top, bottom) = dym.split("|")
         val result = AlexFlipnote.didYouMean(top, bottom).await()
-        ctx.respond(MessageCreateData.fromFiles(FileUpload.fromData(result, "didyoumean.png")))
+        ctx.respond(FileUpload.fromData(result, "didyoumean.png"))
     }
 
     @Command(description = "Flip a coin", guildOnly = true, developerOnly = true)

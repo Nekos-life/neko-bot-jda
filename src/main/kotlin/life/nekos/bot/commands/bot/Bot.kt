@@ -21,7 +21,8 @@ class Bot : Cog {
 
     @Command(
         aliases = ["cleanup", "purge", "del"], description = "Cleans up all the bot and command messages.",
-        botPermissions = [Permission.MESSAGE_MANAGE]
+        botPermissions = [Permission.MESSAGE_MANAGE],
+        guildOnly = true
     )
     fun clean(ctx: Context, amount: Int = 100) {
         ctx.asSlashContext?.defer(ephemeral = true)

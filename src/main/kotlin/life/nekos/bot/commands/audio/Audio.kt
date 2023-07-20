@@ -134,7 +134,7 @@ class Audio : Cog {
         }
     }
 
-    @Command(aliases = ["q"], description = "Shows the audio queue")
+    @Command(aliases = ["q"], description = "Shows the audio queue", guildOnly = true)
     fun queue(ctx: Context, page: Int = 1) {
         val ah = PlayerRegistry.playerFor(ctx.guild!!.idLong)
 

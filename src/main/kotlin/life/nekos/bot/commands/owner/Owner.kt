@@ -22,10 +22,10 @@ class Owner : Cog {
             .queue()
     }
 
-    @Command(description = "Force-send a neko.", developerOnly = true)
-    fun coin(ctx: MessageContext) {
-        Send(ctx.message, false).poke(ctx.author.idLong)
-        ctx.message.delete().queue()
+    @Command(description = "Force-send a neko.", guildOnly = true, developerOnly = true)
+    fun coin(ctx: Context) {
+        Send(ctx.guildChannel!!, false).poke(ctx.author.idLong)
+        ctx.asMessageContext?.message?.delete()?.queue()
     }
 
     @Command(description = "Sets the bot's avatar.", developerOnly = true)

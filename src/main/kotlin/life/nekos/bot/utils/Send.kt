@@ -7,25 +7,24 @@ import life.nekos.bot.utils.extensions.thenException
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
+import net.dv8tion.jda.api.entities.channel.middleman.GuildMessageChannel
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.utils.messages.MessageCreateData
 import org.slf4j.LoggerFactory
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
-class Send(private val message: Message, private val organic: Boolean) {
+class Send(private val channel: GuildMessageChannel, private val organic: Boolean) {
 
     fun neko(dropper: Long) {
-        if (!message.guild.selfMember.hasPermission(message.guildChannel, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_MANAGE)) {
+        if (!channel.guild.selfMember.hasPermission(channel, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_MANAGE)) {
             return
         }
 
         val keyword = PREFIXES.random() + SUFFIXES.random()
 
         NekosLife.neko.thenCompose {
-            message.channel.sendMessage(MessageCreateData.fromEmbeds(
+            channel.sendMessage(MessageCreateData.fromEmbeds(
                 EmbedBuilder().apply {
                     setColor(Colors.getRandomColor())
                     setImage(it)
@@ -40,7 +39,7 @@ class Send(private val message: Message, private val organic: Boolean) {
     }
 
     fun poke(dropper: Long) {
-        if (!message.guild.selfMember.hasPermission(message.guildChannel, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_MANAGE)) {
+        if (!channel.guild.selfMember.hasPermission(channel, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_MANAGE)) {
             return
         }
 
@@ -48,7 +47,7 @@ class Send(private val message: Message, private val organic: Boolean) {
 
         PokeApi.getPokemon(pokeNum)
             .thenCompose {
-                message.channel.sendMessage(MessageCreateData.fromEmbeds(
+                channel.sendMessage(MessageCreateData.fromEmbeds(
                     EmbedBuilder().apply {
                         setColor(Colors.getRandomColor())
                         setImage("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${it.id}.png")
@@ -87,7 +86,7 @@ class Send(private val message: Message, private val organic: Boolean) {
     private fun handleException(drop: Message, ex: Throwable, type: String) {
         drop.delete().queue()
         if (ex.cause is TimeoutException) {
-            message.channel.sendMessage("Time's up! The $type escaped!").submit()
+            channel.sendMessage("Time's up! The $type escaped!").submit()
                 .thenAccept { it.delete().queueAfter(15, TimeUnit.SECONDS) }
         } else {
             log.error("[$type:Waiter]", ex)

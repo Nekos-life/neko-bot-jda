@@ -50,7 +50,7 @@ class MessageHandler : ListenerAdapter() {
                 // val userMessageCount = messages.map { it.author }.toSet().count { !it.isBot }
                 // if (userMessageCount >= 3) {
                 guild.update { msgCnt = 0 }
-                Send(event.message, true).neko(event.message.author.idLong)
+                Send(event.guildChannel, true).neko(event.message.author.idLong)
                 //}
             }
         }
