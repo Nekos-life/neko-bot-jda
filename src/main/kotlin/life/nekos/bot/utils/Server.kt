@@ -15,16 +15,13 @@ import org.json.JSONObject
 
 
 class Server {
-
     fun server(port: Int?) {
         embeddedServer(
             Netty,
             port = port ?: 8080,
             module = Application::api
         ).apply { start(wait = false) }
-
     }
-
 }
 
 
