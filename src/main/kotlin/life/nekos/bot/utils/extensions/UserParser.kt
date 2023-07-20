@@ -12,9 +12,7 @@ class UserParser : Parser<User> {
         val user =
             if (snowflake.isPresent) {
                 ctx.message.mentions.users.firstOrNull { it.idLong == snowflake.get().resolved }
-                    ?: ctx.jda.retrieveUserById(
-                        snowflake.get().resolved
-                    ).submit().get()
+                    ?: ctx.jda.retrieveUserById(snowflake.get().resolved).submit().get()
             } else {
                 if (param.length > 5 && param[param.length - 5].toString() == "#") {
                     val tag = param.split("#")

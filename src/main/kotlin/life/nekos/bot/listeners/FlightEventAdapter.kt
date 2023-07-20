@@ -23,7 +23,7 @@ class FlightEventAdapter : DefaultCommandEventAdapter() {
             "\n\n```\n${it.help.trimIndent()}```"
         } ?: ""
 
-        ctx.send("You must provide an argument for `${error.argument.name}`, nya~$extraInfo")
+        ctx.respond("You must provide an argument for `${error.argument.name}`, nya~$extraInfo")
     }
 
     override fun onCommandError(ctx: Context, command: CommandFunction, error: Throwable) {
@@ -31,7 +31,7 @@ class FlightEventAdapter : DefaultCommandEventAdapter() {
         val type = cause::class.java.simpleName
         log.error("Command {} encountered an error!", command.name, error)
 
-        ctx.send(
+        ctx.respond(
             "There was a problem processing the command\n" +
                     "The error has been logged, nya~\n```\n$type: ${cause.message}```"
         )

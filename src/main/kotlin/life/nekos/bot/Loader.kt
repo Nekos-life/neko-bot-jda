@@ -15,9 +15,6 @@ import net.dv8tion.jda.api.entities.Activity
 object Loader {
     val bootTime = System.currentTimeMillis()
 
-    var isDebug = false
-        private set
-
     lateinit var bot: NekoBot
     lateinit var commandClient: CommandClient
 
@@ -25,12 +22,12 @@ object Loader {
     @JvmStatic
     fun main(args: Array<String>) {
         Server().server(7000)
-        isDebug = args.any { it == "--debug" }
+        val isDebug = args.any { it == "--debug" }
         val token = if (isDebug) Config["debug_token"] else Config["token"]
 
         commandClient = CommandClientBuilder()
             .setOwnerIds(248294452307689473L, 180093157554388993L, 596330574109474848L) // Tails, devo, dyna
-            .setPrefixProvider(NekoPrefixProvider())
+            .setPrefixProvider(NekoPrefixProvider(isDebug))
             .registerDefaultParsers()
             .addCustomParser(StringBool::class.java, StringOrBool())
             .addEventListeners(FlightEventAdapter())

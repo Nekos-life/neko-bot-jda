@@ -77,11 +77,10 @@ class Ship : Cog {
             ImageIO.setUseCache(false)
             ImageIO.write(template, "png", it)
 
-            val createData = MessageCreateBuilder().setContent("${mixString(user1.name, user2.name)} ${Formats.NEKO_C_EMOTE}")
-                .addFiles(FileUpload.fromData(it.toByteArray(), "shipped.png"))
-                .build()
-
-            ctx.respond(createData)
+            ctx.respond {
+                setContent("${mixString(user1.name, user2.name)} ${Formats.NEKO_C_EMOTE}")
+                addFiles(FileUpload.fromData(it.toByteArray(), "shipped.png"))
+            }
         }
     }
 

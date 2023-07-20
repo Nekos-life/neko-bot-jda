@@ -40,7 +40,7 @@ class EventHandler : EventListener {
     private fun onReady(event: ReadyEvent) {
         log.info(
             "Logged in as {} on {} ({}/{} guilds available)",
-            event.jda.selfUser.asTag, event.jda.shardInfo, event.guildAvailableCount, event.guildTotalCount
+            event.jda.selfUser.name, event.jda.shardInfo, event.guildAvailableCount, event.guildTotalCount
         )
 
         if (event.jda.shardInfo.shardId + 1 == event.jda.shardInfo.shardTotal) {

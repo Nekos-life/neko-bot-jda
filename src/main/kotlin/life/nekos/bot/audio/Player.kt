@@ -48,13 +48,15 @@ class Player(audioPlayer: AudioPlayer) : AudioEventAdapter(), AudioPlayer by aud
                 playOrEnqueue(track.apply { userData = ctx.author })
 
                 ctx.respond {
-                    setColor(Colors.getEffectiveColor(ctx))
-                    setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
-                    addField(
-                        Formats.info("Queued ${Formats.PLAY_EMOTE}"),
-                        "Track: **${track.info.title}**\nDuration: **${TextUtils.toTimeString(track.info.length)}**",
-                        false
-                    )
+                    embed {
+                        setColor(Colors.getEffectiveColor(ctx))
+                        setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
+                        addField(
+                            Formats.info("Queued ${Formats.PLAY_EMOTE}"),
+                            "Track: **${track.info.title}**\nDuration: **${TextUtils.toTimeString(track.info.length)}**",
+                            false
+                        )
+                    }
                 }
             }
 
@@ -68,13 +70,15 @@ class Player(audioPlayer: AudioPlayer) : AudioEventAdapter(), AudioPlayer by aud
                 }
 
                 ctx.respond {
-                    setColor(Colors.getEffectiveColor(ctx))
-                    setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
-                    addField(
-                        Formats.info("Info"),
-                        "Added **${playlist.tracks.size}** from playlist **${playlist.name}**, nya~",
-                        false
-                    )
+                    embed {
+                        setColor(Colors.getEffectiveColor(ctx))
+                        setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
+                        addField(
+                            Formats.info("Info"),
+                            "Added **${playlist.tracks.size}** from playlist **${playlist.name}**, nya~",
+                            false
+                        )
+                    }
                 }
             }
 

@@ -64,13 +64,15 @@ class Guild : Cog {
         val permissionsUrl = WumpDump.paste(permissions).get(5, TimeUnit.SECONDS)
 
         ctx.respond {
-            setColor(role.color)
-            setTitle("${role.name} (${role.id}) | ${role.asMention}")
-            addField("Color", "#$hexStr", true)
-            addField("Hoisted", role.isHoisted.toString(), true)
-            addField("Managed", role.isManaged.toString(), true)
-            addField("Mentionable", role.isMentionable.toString(), true)
-            addField("Permissions", "[Click to view]($permissionsUrl)", true)
+            embed {
+                setColor(role.color)
+                setTitle("${role.name} (${role.id}) | ${role.asMention}")
+                addField("Color", "#$hexStr", true)
+                addField("Hoisted", role.isHoisted.toString(), true)
+                addField("Managed", role.isManaged.toString(), true)
+                addField("Mentionable", role.isMentionable.toString(), true)
+                addField("Permissions", "[Click to view]($permissionsUrl)", true)
+            }
         }
     }
 }

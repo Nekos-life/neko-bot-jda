@@ -25,7 +25,7 @@ class Mod : Cog {
         }
 
         member.ban(7, TimeUnit.DAYS).reason(reason).submit().await()
-        ctx.respond("${Formats.INFO_EMOTE} Banned `${member.user.asTag}`, nya~")
+        ctx.respond("${Formats.INFO_EMOTE} Banned `${member.user.name}`, nya~")
     }
 
     @Command(
@@ -42,6 +42,6 @@ class Mod : Cog {
         }
 
         member.kick().reason(reason).submit().await()
-        ctx.respond("${Formats.INFO_EMOTE} Kicked `${member.user.asTag}`, nya~")
+        ctx.respond("${Formats.INFO_EMOTE} Kicked `${member.user.name}`, nya~")
     }
 }

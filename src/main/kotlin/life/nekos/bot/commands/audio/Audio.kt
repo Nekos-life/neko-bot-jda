@@ -87,13 +87,15 @@ class Audio : Cog {
 
         player.playTrack(track.makeClone())
         ctx.respond {
-            setColor(Colors.getEffectiveColor(ctx))
-            setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
-            addField(
-                "${Formats.INFO_EMOTE}  Now Playing ${Formats.BACK_EMOTE}",
-                "Track: ${track.info.title}\nDuration: ${TextUtils.toTimeString(track.info.length)}",
-                false
-            )
+            embed {
+                setColor(Colors.getEffectiveColor(ctx))
+                setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
+                addField(
+                    "${Formats.INFO_EMOTE}  Now Playing ${Formats.BACK_EMOTE}",
+                    "Track: ${track.info.title}\nDuration: ${TextUtils.toTimeString(track.info.length)}",
+                    false
+                )
+            }
         }
     }
 
@@ -104,14 +106,16 @@ class Audio : Cog {
             ?: return ctx.respondUnit("oh? the queue is empty! play something first nya~")
 
         ctx.respond {
-            setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
-            addField(
-                "${Formats.INFO_EMOTE}  Now Playing ${Formats.PLAY_EMOTE}",
-                "Track: ${track.info.title}\n" +
-                        "Duration: ${TextUtils.toTimeString(track.position)}/${TextUtils.toTimeString(track.info.length)}\n" +
-                        "Requested by: ${track.getUserData(User::class.java).name}",
-                false
-            )
+            embed {
+                setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
+                addField(
+                    "${Formats.INFO_EMOTE}  Now Playing ${Formats.PLAY_EMOTE}",
+                    "Track: ${track.info.title}\n" +
+                            "Duration: ${TextUtils.toTimeString(track.position)}/${TextUtils.toTimeString(track.info.length)}\n" +
+                            "Requested by: ${track.getUserData(User::class.java).name}",
+                    false
+                )
+            }
         }
     }
 
@@ -146,14 +150,16 @@ class Audio : Cog {
         val paginator = Paginator(items).apply { page(page) }
 
         ctx.respond {
-            setColor(Colors.getRandomColor())
-            setTitle("Now Playing ${Formats.PLAY_EMOTE}")
-            setDescription(
-                "Track: ${current.info.title} `[${TextUtils.toTimeString(current.duration)}]`\n" +
-                        "Queued by: ${(current.userData as User).name}"
-            )
-            addField("Queue", paginator.display(), false)
-            setFooter("Current Playlist: Total Tracks: ${ah.queue.size}, Total Length: ${TextUtils.toTimeString(totalDuration)}")
+            embed {
+                setColor(Colors.getRandomColor())
+                setTitle("Now Playing ${Formats.PLAY_EMOTE}")
+                setDescription(
+                    "Track: ${current.info.title} `[${TextUtils.toTimeString(current.duration)}]`\n" +
+                            "Queued by: ${(current.userData as User).name}"
+                )
+                addField("Queue", paginator.display(), false)
+                setFooter("Current Playlist: Total Tracks: ${ah.queue.size}, Total Length: ${TextUtils.toTimeString(totalDuration)}")
+            }
         }
     }
 
@@ -226,14 +232,16 @@ class Audio : Cog {
             ?: return ctx.respondUnit("There's nothing left to play, nya~")
 
         ctx.respond {
-            setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
-            addField(
-                "${Formats.INFO_EMOTE}  Now Playing ${Formats.PLAY_EMOTE}",
-                "Track: ${nextTrack.info.title}\n" +
+            embed {
+                setAuthor(ctx.jda.selfUser.name, ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
+                addField(
+                    "${Formats.INFO_EMOTE}  Now Playing ${Formats.PLAY_EMOTE}",
+                    "Track: ${nextTrack.info.title}\n" +
                         "Duration: ${TextUtils.toTimeString(nextTrack.position)}/${TextUtils.toTimeString(nextTrack.info.length)}\n" +
                         "Requested by: ${nextTrack.getUserData(User::class.java).name}",
-                false
-            )
+                    false
+                )
+            }
         }
     }
 

@@ -31,7 +31,7 @@ class User : Cog {
             return NekoBot.simpleLbCache[id]!!
         }
 
-        val tag = ctx.jda.shardManager!!.retrieveUserById(id).submit().get()?.asTag ?: "Unknown User#0000"
+        val tag = ctx.jda.shardManager!!.retrieveUserById(id).submit().get()?.name ?: "Unknown User"
         NekoBot.simpleLbCache[id] = tag
         return tag
     }
@@ -50,23 +50,11 @@ class User : Cog {
     suspend fun leaderboard(ctx: Context, category: String, page: Int = 1) {
         val items = when (category) {
             "nekos" -> Database.getTopNekos().map {
-                "\n${Formats.USER_EMOTE} **__Name__**: **${
-                    findUserById(
-                        ctx,
-                        it.id
-                    )
-                }" + "**\n**${Formats.NEKO_V_EMOTE} __Nekos__**: **${it.nekos}**\n"
+                "\n${Formats.USER_EMOTE} **__Name__**: **${findUserById(ctx, it.id)}**\n**${Formats.NEKO_V_EMOTE} __Nekos__**: **${it.nekos}**\n"
             }
             "levels" -> Database.getTopExp().map {
-                "\n${Formats.USER_EMOTE} **__Name__**: **${
-                    findUserById(
-                        ctx,
-                        it.id
-                    )
-                }" +
-                        "**\n${Formats.MAGIC_EMOTE} **__Level__**: **${it.level}** \n" +
-                        "${Formats.LEVEL_EMOTE} **__Experience__**: **${it.exp}**\n"
-
+                "\n${Formats.USER_EMOTE} **__Name__**: **${findUserById(ctx, it.id)}**\n${Formats.MAGIC_EMOTE} **__Level__**: **${it.level}** \n" +
+                    "${Formats.LEVEL_EMOTE} **__Experience__**: **${it.exp}**\n"
             }
             else -> return ctx.respondUnit(Formats.error("**Use `lb nekos` or `lb levels`**"))
         }
@@ -88,11 +76,13 @@ class User : Cog {
         ).await()
 
         ctx.respond {
-            setColor(Colors.getEffectiveColor(ctx))
-            setTitle("${Formats.MAGIC_EMOTE} **Global leaderboard for Nekos** ${Formats.NEKO_C_EMOTE}", link)
-            setDescription(paginator.display())
-            setFooter("Page ${paginator.page()}/${paginator.maxPages}")
-            setTimestamp(Instant.now())
+            embed {
+                setColor(Colors.getEffectiveColor(ctx))
+                setTitle("${Formats.MAGIC_EMOTE} **Global leaderboard for Nekos** ${Formats.NEKO_C_EMOTE}", link)
+                setDescription(paginator.display())
+                setFooter("Page ${paginator.page()}/${paginator.maxPages}")
+                setTimestamp(Instant.now())
+            }
         }
     }
 
@@ -110,26 +100,32 @@ class User : Cog {
         ctx.message.addReaction(Formats.USER_EMOTE.toEmoji()).queue()
 
         ctx.respond {
-            setColor(Colors.getEffectiveColor(ctx))
-            setAuthor("Profile for ${targetUser.name}", targetUser.effectiveAvatarUrl, targetUser.effectiveAvatarUrl)
-            setThumbnail(targetUser.effectiveAvatarUrl)
-            setFooter(
-                "Profile for ${targetUser.name}",
-                "https://media.discordapp.net/attachments/333742928218554368/374966699524620289/profile.png"
-            )
-            setTimestamp(Instant.now())
-            addField("${Formats.LEVEL_EMOTE} Level", "**${profile.level}**", false)
-            addField("${Formats.MAGIC_EMOTE} Total Experience", "**${profile.exp}**", false)
-            addField("${Formats.NEKO_V_EMOTE} Total Nekos Caught", "**${profile.nekosAll}**", false)
-            addField("${Formats.NEKO_C_EMOTE} Current Nekos", "**${profile.nekos}**", false)
-            addField("${Formats.DATE_EMOTE} Date Registered", "**${profile.registerDate}**", false)
+            embed {
+                setColor(Colors.getEffectiveColor(ctx))
+                setAuthor(
+                    "Profile for ${targetUser.name}",
+                    targetUser.effectiveAvatarUrl,
+                    targetUser.effectiveAvatarUrl
+                )
+                setThumbnail(targetUser.effectiveAvatarUrl)
+                setFooter(
+                    "Profile for ${targetUser.name}",
+                    "https://media.discordapp.net/attachments/333742928218554368/374966699524620289/profile.png"
+                )
+                setTimestamp(Instant.now())
+                addField("${Formats.LEVEL_EMOTE} Level", "**${profile.level}**", false)
+                addField("${Formats.MAGIC_EMOTE} Total Experience", "**${profile.exp}**", false)
+                addField("${Formats.NEKO_V_EMOTE} Total Nekos Caught", "**${profile.nekosAll}**", false)
+                addField("${Formats.NEKO_C_EMOTE} Current Nekos", "**${profile.nekos}**", false)
+                addField("${Formats.DATE_EMOTE} Date Registered", "**${profile.registerDate}**", false)
 
-            if (Checks.isDonor(user.idLong)) {
-                addField("${Formats.PATRON_EMOTE} Donor", "**Commands unlocked**", false)
-            }
+                if (Checks.isDonor(user.idLong)) {
+                    addField("${Formats.PATRON_EMOTE} Donor", "**Commands unlocked**", false)
+                }
 
-            if (Checks.isDonorPlus(user.idLong)) {
-                addField("${Formats.PATRON_EMOTE} Donor+", "**Commands, 2x exp and nekos unlocked**", false)
+                if (Checks.isDonorPlus(user.idLong)) {
+                    addField("${Formats.PATRON_EMOTE} Donor+", "**Commands, 2x exp and nekos unlocked**", false)
+                }
             }
         }
     }

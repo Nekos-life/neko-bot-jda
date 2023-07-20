@@ -20,10 +20,12 @@ class Neko : Cog {
         val image = imageUrl.await()
 
         ctx.respond {
-            setColor(Colors.getEffectiveColor(ctx))
-            setDescription(description)
-            setImage(image)
-            apply(embedOptions)
+            embed {
+                setColor(Colors.getEffectiveColor(ctx))
+                setDescription(description)
+                setImage(image)
+                apply(embedOptions)
+            }
         }
     }
 

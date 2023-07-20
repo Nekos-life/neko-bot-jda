@@ -6,7 +6,7 @@ object IntentHelper {
     private val disabledIntents = setOf(
         GatewayIntent.DIRECT_MESSAGE_REACTIONS,
         GatewayIntent.DIRECT_MESSAGE_TYPING,
-        GatewayIntent.GUILD_BANS,
+        GatewayIntent.GUILD_MODERATION,
         GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
         GatewayIntent.GUILD_INVITES,
         GatewayIntent.GUILD_MESSAGE_TYPING,

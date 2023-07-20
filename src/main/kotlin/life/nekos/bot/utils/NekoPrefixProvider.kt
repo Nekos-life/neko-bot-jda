@@ -4,7 +4,7 @@ import life.nekos.bot.Loader
 import me.devoxin.flight.api.entities.PrefixProvider
 import net.dv8tion.jda.api.entities.Message
 
-class NekoPrefixProvider : PrefixProvider {
+class NekoPrefixProvider(private val isDebug: Boolean) : PrefixProvider {
     override fun provide(message: Message): List<String> {
         val selfUserId = message.jda.selfUser.id
         val prefixes = mutableListOf<String>()
@@ -12,7 +12,7 @@ class NekoPrefixProvider : PrefixProvider {
         prefixes.add("<@$selfUserId> ")
         prefixes.add("<@!$selfUserId> ")
 
-        if (Loader.isDebug) {
+        if (isDebug) {
             prefixes.add("~~~")
         } else {
             if (message.isFromGuild) {

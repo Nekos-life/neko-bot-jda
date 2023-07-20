@@ -30,13 +30,13 @@ dependencies {
     implementation "io.ktor:ktor-server-netty:$ktor_version"
 
     // Discord
-    implementation('net.dv8tion:JDA:5.0.0-beta.3') {
+    implementation('net.dv8tion:JDA:5.0.0-beta.12') {
         exclude module: 'opus-java'
     }
     implementation "club.minnced:discord-webhooks:0.2.0"
 
     // Command Handler
-    implementation 'com.github.Devoxin:Flight:3.0.3'
+    implementation 'com.github.devoxin:flight:3.0.4'
 
     // Audio
     implementation 'com.github.walkyst:lavaplayer-fork:1.4.2'

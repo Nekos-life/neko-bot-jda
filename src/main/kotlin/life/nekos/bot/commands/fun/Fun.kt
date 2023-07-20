@@ -51,12 +51,14 @@ class Fun : Cog {
         if (isDm) {
             ctx.asSlashContext?.deferAsync()
 
-            ctx.author.openPrivateChannel()
+            return ctx.author.openPrivateChannel()
                 .flatMap { it.sendMessage(MessageCreateData.fromEmbeds(response.build())) }
                 .flatMap { it.channel.delete() }
                 .queue()
-        } else {
-            ctx.respond(MessageCreateData.fromEmbeds(response.build()))
+        }
+
+        ctx.respond {
+            setEmbeds(response.build())
         }
     }
 
@@ -72,10 +74,12 @@ class Fun : Cog {
         val imageUrl = res.getString("url")
 
         ctx.respond {
-            Colors.getEffectiveColor(ctx)
-            setAuthor("Magic \uD83C\uDFB1", ctx.jda.getInviteUrl(), ctx.author.effectiveAvatarUrl)
-            setDescription("❓: $question\nℹ: $answer")
-            setImage(imageUrl)
+            embed {
+                Colors.getEffectiveColor(ctx)
+                setAuthor("Magic \uD83C\uDFB1", ctx.jda.getInviteUrl(), ctx.author.effectiveAvatarUrl)
+                setDescription("❓: $question\nℹ: $answer")
+                setImage(imageUrl)
+            }
         }
     }
 
@@ -86,10 +90,12 @@ class Fun : Cog {
         val coffee = AlexFlipnote.coffee().await()
 
         ctx.respond {
-            setColor(Colors.getEffectiveColor(ctx))
-            setDescription("coffee \\o/")
-            setImage(coffee)
-            setFooter("API provided by AlexFlipnote")
+            embed {
+                setColor(Colors.getEffectiveColor(ctx))
+                setDescription("coffee \\o/")
+                setImage(coffee)
+                setFooter("API provided by AlexFlipnote")
+            }
         }
     }
 
@@ -105,13 +111,15 @@ class Fun : Cog {
         val info = AlexFlipnote.color(hex).await()
 
         ctx.respond {
-            setColor(parsedColor)
-            setDescription(Formats.info("Color info for $color"))
-            setImage(info.imageUrl)
-            addField("Name", info.name, true)
-            addField("Hex", info.hex, true)
-            addField("RGB", info.rgb, true)
-            setFooter("API provided by AlexFlipnote")
+            embed {
+                setColor(parsedColor)
+                setDescription(Formats.info("Color info for $color"))
+                setImage(info.imageUrl)
+                addField("Name", info.name, true)
+                addField("Hex", info.hex, true)
+                addField("RGB", info.rgb, true)
+                setFooter("API provided by AlexFlipnote")
+            }
         }
     }
 
@@ -192,9 +200,11 @@ class Fun : Cog {
         val nekoWhy = NekosLife.why.await()
 
         ctx.respond {
-            setColor(Colors.getEffectiveColor(ctx))
-            setAuthor("Why??", ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
-            setDescription(nekoWhy)
+            embed {
+                setColor(Colors.getEffectiveColor(ctx))
+                setAuthor("Why??", ctx.jda.getInviteUrl(), ctx.jda.selfUser.effectiveAvatarUrl)
+                setDescription(nekoWhy)
+            }
         }
     }
 
@@ -205,9 +215,11 @@ class Fun : Cog {
         val nekoMeme = NekosLife.meme.await()
 
         ctx.respond {
-            setColor(Colors.getEffectiveColor(ctx))
-            setDescription("owo")
-            setImage(nekoMeme)
+            embed {
+                setColor(Colors.getEffectiveColor(ctx))
+                setDescription("owo")
+                setImage(nekoMeme)
+            }
         }
     }
 
@@ -232,37 +244,38 @@ class Fun : Cog {
         val imgUrl = img.await()
 
         ctx.respond {
-            setColor(Colors.getEffectiveColor(ctx))
-            setDescription("${who.asMention}, you got a $action from ${ctx.author.name} ${Formats.randomCat()}")
-            setImage(imgUrl)
+            embed {
+                setColor(Colors.getEffectiveColor(ctx))
+                setDescription("${who.asMention}, you got a $action from ${ctx.author.name} ${Formats.randomCat()}")
+                setImage(imgUrl)
+            }
         }
     }
 
     @DonorOnly
     @Command(aliases = ["lf", "sf"], description = "You want sum fuk?")
-    fun sumfuk(ctx: MessageContext, who: User) {
+    suspend fun sumfuk(ctx: Context, who: User) {
         when (who.idLong) {
             ctx.jda.selfUser.idLong -> return ctx.respondUnit("Nu nya, your tail's not big enough for me~ >.<")
             ctx.author.idLong -> return ctx.respondUnit("Nu nya, I don't think you need to ask to fuk yourself~")
         }
 
-        ctx.typing {
-            val bg = ImageIO.read(this.javaClass.getResource("/sf.jpg"))
-            val font = Font("Whitney", Font.BOLD, 30)
-            val g = bg.createGraphics().also {
-                it.color = Color.BLACK
-                it.font = font
-            }
+        ctx.think().await()
+        val bg = ImageIO.read(this.javaClass.getResource("/sf.jpg"))
+        val font = Font("Whitney", Font.BOLD, 30)
+        val g = bg.createGraphics().also {
+            it.color = Color.BLACK
+            it.font = font
+        }
 
-            g.drawString(who.name, 228, 116)
-            g.drawString(ctx.author.name, 248, 165)
-            g.dispose()
+        g.drawString(who.name, 228, 116)
+        g.drawString(ctx.author.name, 248, 165)
+        g.dispose()
 
-            ByteArrayOutputStream().use {
-                ImageIO.setUseCache(false)
-                ImageIO.write(bg, "png", it)
-                ctx.send(FileUpload.fromData(it.toByteArray(), "sumfuk.png"))
-            }
+        ByteArrayOutputStream().use {
+            ImageIO.setUseCache(false)
+            ImageIO.write(bg, "png", it)
+            ctx.respond(FileUpload.fromData(it.toByteArray(), "sumfuk.png"))
         }
     }
 

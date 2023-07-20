@@ -44,11 +44,13 @@ class Settings : Cog {
             ?: "None"
 
         ctx.respond {
-            setColor(Colors.getEffectiveColor(ctx))
-            setTitle("Guild Settings for ${ctx.guild!!.name}")
-            addField("Prefix", settings.prefix ?: "Default", true)
-            addField("Neko Channel", nekoChannel, true)
-            addBlankField(true)
+            embed {
+                setColor(Colors.getEffectiveColor(ctx))
+                setTitle("Guild Settings for ${ctx.guild!!.name}")
+                addField("Prefix", settings.prefix ?: "Default", true)
+                addField("Neko Channel", nekoChannel, true)
+                addBlankField(true)
+            }
         }
     }
 }

@@ -40,11 +40,13 @@ class Bot : Cog {
     )
     fun invite(ctx: Context) {
         ctx.respond {
-            setColor(Colors.getRandomColor())
-            setAuthor(ctx.jda.selfUser.name, ctx.jda.selfUser.effectiveAvatarUrl, ctx.jda.selfUser.effectiveAvatarUrl)
-            setDescription(Formats.LING_MSG)
-            setFooter("Requested by ${ctx.author.name}", ctx.author.effectiveAvatarUrl)
-            setTimestamp(Instant.now())
+            embed {
+                setColor(Colors.getRandomColor())
+                setAuthor(ctx.jda.selfUser.name, ctx.jda.selfUser.effectiveAvatarUrl, ctx.jda.selfUser.effectiveAvatarUrl)
+                setDescription(Formats.LING_MSG)
+                setFooter("Requested by ${ctx.author.name}", ctx.author.effectiveAvatarUrl)
+                setTimestamp(Instant.now())
+            }
         }
     }
 
