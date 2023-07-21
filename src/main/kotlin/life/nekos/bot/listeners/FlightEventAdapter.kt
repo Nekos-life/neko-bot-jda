@@ -57,12 +57,12 @@ class FlightEventAdapter : DefaultCommandEventAdapter() {
         log.error("Failed to parse argument for command {}", command.name, error)
     }
 
-    override fun onBotMissingPermissions(ctx: MessageContext, command: CommandFunction, permissions: List<Permission>) {
+    override fun onBotMissingPermissions(ctx: Context, command: CommandFunction, permissions: List<Permission>) {
         val gimme = permissions.joinToString(prefix = "`", postfix = "`", separator = "`\n`") { it.getName() }
         ctx.send("You need to give me these permissions, nya~\n$gimme")
     }
 
-    override fun onUserMissingPermissions(ctx: MessageContext, command: CommandFunction, permissions: List<Permission>) {
+    override fun onUserMissingPermissions(ctx: Context, command: CommandFunction, permissions: List<Permission>) {
         val missing = permissions.joinToString(prefix = "`", postfix = "`", separator = "`\n`") { it.getName() }
         ctx.send("You need to have these permissions, nya~\n$missing")
     }
