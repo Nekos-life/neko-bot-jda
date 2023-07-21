@@ -80,6 +80,10 @@ class User : Cog {
 
     @Command(description = "Send someone a neko image.", guildOnly = true)
     suspend fun sendNeko(ctx: Context, type: String, @Greedy user: User = ctx.author) {
+        if (user.isBot) {
+            return ctx.respondUnit("Nu nya, bots can't appreciate pictures of nekos~")
+        }
+
         ctx.asSlashContext?.deferAsync()
         val image = NekosLife.neko.await()
 
