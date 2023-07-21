@@ -36,7 +36,7 @@ dependencies {
     implementation "club.minnced:discord-webhooks:0.2.0"
 
     // Command Handler
-    implementation 'com.github.devoxin:flight:3.0.4'
+    implementation 'com.github.devoxin:flight:3.0.5'
 
     // Audio
     implementation 'com.github.walkyst:lavaplayer-fork:1.4.2'
