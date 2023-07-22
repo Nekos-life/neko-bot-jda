@@ -77,7 +77,7 @@ class Send(private val channel: GuildMessageChannel, private val organic: Boolea
                         else -> {
                             removeCapture()
                             drop.delete().queue()
-                            it.reply("${it.user.asMention} caught it! ${Formats.randomCat()}").queue { r -> r.deleteOriginal().queueAfter(5, TimeUnit.SECONDS) }
+                            it.channel.sendMessage("${it.user.asMention} caught it! ${Formats.randomCat()}").queue { r -> r.delete().queueAfter(5, TimeUnit.SECONDS) }
 
                             val multiplier = when {
                                 Checks.isDonorPlus(it.user.idLong) -> 2
