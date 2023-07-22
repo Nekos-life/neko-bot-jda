@@ -30,7 +30,7 @@ object Loader {
         buttonWaiter = ButtonWaiter()
 
         commandClient = CommandClientBuilder()
-            .setOwnerIds(248294452307689473L, 180093157554388993L, 596330574109474848L) // Tails, devo, dyna
+            .setOwnerIds(248294452307689473L, 180093157554388993L, 596330574109474848L, 173237945149423619L) // Tails, devo, dyna, kanin
             .setPrefixProvider(NekoPrefixProvider(isDebug))
             .registerDefaultParsers()
             .addCustomParser(StringBool::class.java, StringOrBool())
