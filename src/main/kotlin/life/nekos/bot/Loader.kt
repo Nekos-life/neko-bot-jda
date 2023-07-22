@@ -4,6 +4,7 @@ import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory
 import life.nekos.bot.framework.CustomHelpCommand
 import life.nekos.bot.framework.parsers.stringorbool.StringBool
 import life.nekos.bot.framework.parsers.stringorbool.StringOrBool
+import life.nekos.bot.listeners.ButtonWaiter
 import life.nekos.bot.listeners.FlightEventAdapter
 import life.nekos.bot.utils.NekoPrefixProvider
 import life.nekos.bot.utils.Server
@@ -17,6 +18,7 @@ object Loader {
 
     lateinit var bot: NekoBot
     lateinit var commandClient: CommandClient
+    lateinit var buttonWaiter: ButtonWaiter
 
     @ExperimentalStdlibApi
     @JvmStatic
@@ -24,6 +26,8 @@ object Loader {
         Server().server(7000)
         val isDebug = args.any { it == "--debug" }
         val token = if (isDebug) Config["debug_token"] else Config["token"]
+
+        buttonWaiter = ButtonWaiter()
 
         commandClient = CommandClientBuilder()
             .setOwnerIds(248294452307689473L, 180093157554388993L, 596330574109474848L) // Tails, devo, dyna
@@ -36,7 +40,7 @@ object Loader {
             .build()
 
         bot = NekoBot.new {
-            addEventListeners(commandClient)
+            addEventListeners(commandClient, buttonWaiter)
             setActivity(Activity.playing("https://nekos.life"))
             setAudioSendFactory(NativeAudioSendFactory())
             setToken(token)

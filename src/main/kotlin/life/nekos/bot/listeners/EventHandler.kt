@@ -9,6 +9,7 @@ import life.nekos.bot.utils.WebhookManager
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent
 import net.dv8tion.jda.api.events.session.ReadyEvent
 import net.dv8tion.jda.api.events.session.SessionDisconnectEvent
 import net.dv8tion.jda.api.events.session.SessionRecreateEvent

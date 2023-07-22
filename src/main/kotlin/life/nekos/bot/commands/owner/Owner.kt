@@ -23,8 +23,14 @@ class Owner : Cog {
     }
 
     @Command(description = "Force-send a neko.", guildOnly = true, developerOnly = true)
-    fun coin(ctx: Context) {
+    fun dropPoke(ctx: Context) {
         Send(ctx.guildChannel!!, false).poke(ctx.author.idLong)
+        ctx.asMessageContext?.message?.delete()?.queue()
+    }
+
+    @Command(description = "Force-send a neko.", guildOnly = true, developerOnly = true)
+    fun dropNeko(ctx: Context) {
+        Send(ctx.guildChannel!!, false).neko(ctx.author.idLong)
         ctx.asMessageContext?.message?.delete()?.queue()
     }
 
