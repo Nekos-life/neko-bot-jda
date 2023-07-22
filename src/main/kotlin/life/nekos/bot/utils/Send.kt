@@ -46,7 +46,7 @@ class Send(private val channel: GuildMessageChannel, private val organic: Boolea
         val buttons = createButtons(10, "$dropId:$dropperUserId")
         val buttonRows = buttons.chunked(5, ActionRow::of)
 
-        val winningIndex = (0..buttons.size).random()
+        val winningIndex = buttons.indices.random()
         val winnerButton = buttons[winningIndex]
 
         supplier().thenCompose {
@@ -65,7 +65,7 @@ class Send(private val channel: GuildMessageChannel, private val organic: Boolea
                     drop.delete().queue()
                     channel.sendMessage("Time's up! The $type escaped!").queue { r -> r.delete().queueAfter(15, TimeUnit.SECONDS) }
                 }
-                handle = {
+                handle = { it, removeCapture ->
                     val checkOrganic = organicCheck(organic, dropperUserId, it)
                     val idParts = it.componentId.split(':')
                     val buttonIndex = idParts[2].toInt()
@@ -75,6 +75,7 @@ class Send(private val channel: GuildMessageChannel, private val organic: Boolea
                         !checkOrganic -> it.reply("Nu nya! You can't claim this...").setEphemeral(true).queue()
                         !lock.tryLock() -> it.reply("Nu nya! You were too slow~")
                         else -> {
+                            removeCapture()
                             drop.delete().queue()
                             it.reply("${it.user.asMention} caught it! ${Formats.randomCat()}").queue { r -> r.deleteOriginal().queueAfter(5, TimeUnit.SECONDS) }
 
@@ -104,7 +105,7 @@ class Send(private val channel: GuildMessageChannel, private val organic: Boolea
         private val BUTTON_STYLES = listOf(ButtonStyle.PRIMARY, ButtonStyle.SECONDARY, ButtonStyle.SUCCESS, ButtonStyle.DANGER)
 
         private val _COLOUR_MAPPING = mapOf(
-            ButtonStyle.PRIMARY to "purple",
+            ButtonStyle.PRIMARY to "blue-purple",
             ButtonStyle.SECONDARY to "grey",
             ButtonStyle.SUCCESS to "green",
             ButtonStyle.DANGER to "red"

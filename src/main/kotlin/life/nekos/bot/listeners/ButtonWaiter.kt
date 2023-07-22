@@ -9,6 +9,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 typealias TestPredicate = (ButtonInteractionEvent) -> Boolean
+typealias RemoveFn = () -> Unit
 
 class ButtonWaiter : EventListener {
     private val scheduler = Executors.newSingleThreadScheduledExecutor()
@@ -23,7 +24,7 @@ class ButtonWaiter : EventListener {
         capturing.removeAll(captures.filter { it.singleUse }.toSet())
 
         for (capture in captures) {
-            runCatching { capture.handle?.invoke(event) }
+            runCatching { capture.handle?.invoke(event) { capturing.remove(capture) } }
         }
     }
 
@@ -48,7 +49,7 @@ class ButtonWaiter : EventListener {
         constructor(): this(UUID.randomUUID().toString())
 
         var test: TestPredicate = { true }
-        var handle: ((ButtonInteractionEvent) -> Unit)? = null
+        var handle: ((ButtonInteractionEvent, RemoveFn) -> Unit)? = null
         var timeout: (() -> Unit)? = null
         var singleUse: Boolean = false
         var lifespan: Long = 0
